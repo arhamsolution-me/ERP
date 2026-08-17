@@ -191,10 +191,10 @@ export function MarketingHeader() {
               <Box className="w-6 h-6" />
             </div>
             <div className="flex items-center gap-2">
-              <span className={`text-2xl font-extrabold tracking-tight font-sans transition-colors ${
+              <span className={`text-2xl font-black tracking-tight transition-colors ${
                 isScrolled ? "text-white" : "text-slate-900"
               }`}>
-                Nex<span className={isScrolled ? "text-blue-200 font-black" : "text-blue-600 font-black"}>ERP</span>
+                Nex<span className={isScrolled ? "text-blue-200" : "text-blue-600"}>ERP</span>
               </span>
             </div>
           </Link>
@@ -206,14 +206,14 @@ export function MarketingHeader() {
             <button
               onClick={() => toggleMenu("modules")}
               onMouseEnter={() => setActiveMenu("modules")}
-              className={`flex items-center gap-1.5 px-4 py-2.5 text-base font-bold rounded-lg transition-all ${
+              className={`flex items-center gap-1.5 px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
                 activeMenu === "modules"
                   ? isScrolled ? "bg-blue-800 text-white" : "bg-blue-50 text-blue-600"
-                  : isScrolled ? "text-blue-50 hover:bg-blue-800/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+                  : isScrolled ? "text-white/90 hover:bg-blue-800/70 hover:text-white" : "text-slate-800 hover:text-blue-600 hover:bg-slate-100"
               }`}
             >
-              <span>Modules & Capabilities</span>
-              <ChevronDown className={`w-4.5 h-4.5 transition-transform duration-200 ${
+              <span>Modules &amp; Capabilities</span>
+              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                 activeMenu === "modules" ? "rotate-180" : ""
               } ${isScrolled ? "text-blue-200" : "text-slate-400"}`} />
             </button>
@@ -222,14 +222,14 @@ export function MarketingHeader() {
             <button
               onClick={() => toggleMenu("industries")}
               onMouseEnter={() => setActiveMenu("industries")}
-              className={`flex items-center gap-1.5 px-4 py-2.5 text-base font-bold rounded-lg transition-all ${
+              className={`flex items-center gap-1.5 px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
                 activeMenu === "industries"
                   ? isScrolled ? "bg-blue-800 text-white" : "bg-blue-50 text-blue-600"
-                  : isScrolled ? "text-blue-50 hover:bg-blue-800/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+                  : isScrolled ? "text-white/90 hover:bg-blue-800/70 hover:text-white" : "text-slate-800 hover:text-blue-600 hover:bg-slate-100"
               }`}
             >
-              <span>Industries & Solutions</span>
-              <ChevronDown className={`w-4.5 h-4.5 transition-transform duration-200 ${
+              <span>Industries &amp; Solutions</span>
+              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                 activeMenu === "industries" ? "rotate-180" : ""
               } ${isScrolled ? "text-blue-200" : "text-slate-400"}`} />
             </button>
@@ -238,8 +238,8 @@ export function MarketingHeader() {
             <Link 
               href="/pricing" 
               onClick={() => setActiveMenu(null)}
-              className={`px-4 py-2.5 text-base font-bold rounded-lg transition-all ${
-                isScrolled ? "text-blue-50 hover:bg-blue-800/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+              className={`px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
+                isScrolled ? "text-white/90 hover:bg-blue-800/70 hover:text-white" : "text-slate-800 hover:text-blue-600 hover:bg-slate-100"
               }`}
             >
               Pricing Plans
@@ -249,14 +249,14 @@ export function MarketingHeader() {
             <button
               onClick={() => toggleMenu("platform")}
               onMouseEnter={() => setActiveMenu("platform")}
-              className={`flex items-center gap-1.5 px-4 py-2.5 text-base font-bold rounded-lg transition-all ${
+              className={`flex items-center gap-1.5 px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
                 activeMenu === "platform"
                   ? isScrolled ? "bg-blue-800 text-white" : "bg-blue-50 text-blue-600"
-                  : isScrolled ? "text-blue-50 hover:bg-blue-800/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+                  : isScrolled ? "text-white/90 hover:bg-blue-800/70 hover:text-white" : "text-slate-800 hover:text-blue-600 hover:bg-slate-100"
               }`}
             >
-              <span>Platform & Governance</span>
-              <ChevronDown className={`w-4.5 h-4.5 transition-transform duration-200 ${
+              <span>Platform &amp; Governance</span>
+              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                 activeMenu === "platform" ? "rotate-180" : ""
               } ${isScrolled ? "text-blue-200" : "text-slate-400"}`} />
             </button>

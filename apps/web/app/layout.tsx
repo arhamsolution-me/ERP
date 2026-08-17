@@ -25,8 +25,8 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" className={cn("font-sans", jakarta.variable, jakarta.className)}>
-        <body className={`${jakarta.className} antialiased bg-gray-50 text-slate-900`}>
+      <html lang="en" className={`${jakarta.variable} font-sans antialiased`} style={{ fontFamily: "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif" }}>
+        <body className={`${jakarta.className} antialiased bg-gray-50 text-slate-900`} style={{ fontFamily: "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif" }}>
           <Providers>
             {children}
           </Providers>
