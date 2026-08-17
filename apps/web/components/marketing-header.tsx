@@ -175,7 +175,7 @@ export function MarketingHeader() {
     <header 
       className={`fixed top-0 inset-x-0 z-50 w-full transition-all duration-300 ${
         isScrolled 
-          ? "bg-[#0a1628] border-b border-blue-950/80 text-white shadow-2xl shadow-black/40" 
+          ? "bg-blue-700 border-b border-blue-800 text-white shadow-xl shadow-blue-950/30" 
           : "bg-transparent border-b border-transparent text-slate-900"
       }`}
       onMouseLeave={() => setActiveMenu(null)}

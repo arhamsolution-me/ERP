@@ -79,8 +79,8 @@ export default function Homepage() {
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900 font-sans overflow-hidden">
       
-      {/* WHITE THEME HERO SECTION WITH MULTI-IMAGE CAROUSEL */}
-      <section className="relative flex items-center bg-white border-b border-slate-200 overflow-hidden pt-32 sm:pt-36 pb-16 min-h-[660px] lg:min-h-[720px]">
+      {/* DARK CINEMATIC HERO SECTION WITH MULTI-IMAGE CAROUSEL */}
+      <section className="relative flex items-center bg-slate-950 overflow-hidden pt-32 sm:pt-36 pb-16 min-h-[660px] lg:min-h-[720px]">
         
         {/* Background Multi-Image Slideshow */}
         <div className="absolute inset-0 z-0">
@@ -96,9 +96,9 @@ export default function Homepage() {
             />
           </AnimatePresence>
           
-          {/* Balanced White Gradient Overlay for High Text Readability & Image Vibrancy */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-white/20 z-10" />
-          <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-white/20 z-10" />
+          {/* Dark Cinematic Overlay for Dramatic Look */}
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/75 to-slate-950/20 z-10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-slate-950/30 z-10" />
         </div>
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-20 text-left">
@@ -112,12 +112,12 @@ export default function Homepage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.4 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50/90 border border-blue-200/90 text-blue-700 text-xs sm:text-sm font-bold shadow-sm backdrop-blur-md"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-blue-300 text-xs sm:text-sm font-semibold shadow-sm backdrop-blur-md"
               >
-                <span className="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
-                <Box className="w-4 h-4 text-blue-600" />
+                <span className="flex h-2 w-2 rounded-full bg-blue-400 animate-pulse" />
+                <Box className="w-4 h-4 text-blue-400" />
                 <span>{slides[currentSlide].badge}</span>
-                <span className="ml-2 pl-2 border-l border-blue-200/90 text-blue-500 font-mono text-[11px] font-bold">
+                <span className="ml-2 pl-2 border-l border-white/20 text-white/50 font-mono text-[11px] font-bold">
                   0{currentSlide + 1} / 0{slides.length}
                 </span>
               </motion.div>
@@ -131,10 +131,10 @@ export default function Homepage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.4, delay: 0.1 }}
-                className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 leading-[1.1]"
+                className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.1] drop-shadow-lg"
               >
                 {slides[currentSlide].title.split('. ')[0]}. <br />
-                <span className="bg-gradient-to-r from-blue-700 via-indigo-600 to-cyan-600 bg-clip-text text-transparent drop-shadow-xs">
+                <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-400 bg-clip-text text-transparent">
                   {slides[currentSlide].title.split('. ').slice(1).join('. ')}
                 </span>
               </motion.h1>
@@ -148,7 +148,7 @@ export default function Homepage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.4, delay: 0.2 }}
-                className="text-slate-600 text-lg sm:text-xl max-w-2xl leading-relaxed font-normal"
+                className="text-white/70 text-lg sm:text-xl max-w-2xl leading-relaxed font-normal"
               >
                 {slides[currentSlide].desc}
               </motion.p>
@@ -160,7 +160,7 @@ export default function Homepage() {
                 href="/sign-in" 
                 className={cn(
                   buttonVariants({ variant: "default", size: "lg" }), 
-                  "w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-base h-13 px-8 rounded-lg shadow-lg shadow-blue-600/25 flex items-center justify-center gap-2 group transition-all"
+                  "w-full sm:w-auto bg-blue-500 hover:bg-blue-400 text-white font-bold text-base h-13 px-8 rounded-lg shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 group transition-all"
                 )}
               >
                 <span>Get Started</span>
@@ -171,28 +171,26 @@ export default function Homepage() {
                 href="/contact" 
                 className={cn(
                   buttonVariants({ variant: "outline", size: "lg" }), 
-                  "w-full sm:w-auto bg-white/90 hover:bg-white text-slate-800 border-slate-300 font-bold text-base h-13 px-8 rounded-lg shadow-xs flex items-center justify-center gap-2"
+                  "w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white border-white/25 font-bold text-base h-13 px-8 rounded-lg shadow-xs flex items-center justify-center gap-2 backdrop-blur-sm"
                 )}
               >
                 <span>Book a Demo</span>
-                <Play className="w-4 h-4 fill-slate-800 text-slate-800" />
+                <Play className="w-4 h-4 fill-white text-white" />
               </Link>
             </div>
 
             {/* Benefit Strip at Bottom */}
-            <div className="pt-8 border-t border-slate-200/80 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl text-left">
-              <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-800">
-                <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
-                <span>Secure & Reliable</span>
+            <div className="pt-8 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl text-left">
+              <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-white/70">
+                <ShieldCheck className="w-4 h-4 text-blue-400 shrink-0" />
+                <span>Secure &amp; Reliable</span>
               </div>
-
-              <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-800">
-                <Zap className="w-4 h-4 text-blue-600 shrink-0" />
+              <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-white/70">
+                <Zap className="w-4 h-4 text-blue-400 shrink-0" />
                 <span>Real-time Sync</span>
               </div>
-
-              <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-800">
-                <TrendingUp className="w-4 h-4 text-blue-600 shrink-0" />
+              <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-white/70">
+                <TrendingUp className="w-4 h-4 text-blue-400 shrink-0" />
                 <span>Scalable Solution</span>
               </div>
             </div>
@@ -201,7 +199,7 @@ export default function Homepage() {
             <div className="pt-4 flex items-center justify-start gap-4">
               <button 
                 onClick={prevSlide}
-                className="p-2.5 rounded-full bg-white/90 hover:bg-white border border-slate-200 text-slate-700 shadow-md transition-all hover:scale-105"
+                className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white shadow-md transition-all hover:scale-105 backdrop-blur-sm"
                 aria-label="Previous Slide"
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -212,8 +210,8 @@ export default function Homepage() {
                   <button
                     key={idx}
                     onClick={() => setCurrentSlide(idx)}
-                    className={`h-2.5 rounded-full transition-all ${
-                      currentSlide === idx ? "w-8 bg-blue-600" : "w-2.5 bg-slate-300 hover:bg-slate-400"
+                    className={`h-2 rounded-full transition-all ${
+                      currentSlide === idx ? "w-8 bg-blue-400" : "w-2 bg-white/25 hover:bg-white/50"
                     }`}
                     aria-label={`Go to slide ${idx + 1}`}
                   />
@@ -222,7 +220,7 @@ export default function Homepage() {
 
               <button 
                 onClick={nextSlide}
-                className="p-2.5 rounded-full bg-white/90 hover:bg-white border border-slate-200 text-slate-700 shadow-md transition-all hover:scale-105"
+                className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white shadow-md transition-all hover:scale-105 backdrop-blur-sm"
                 aria-label="Next Slide"
               >
                 <ChevronRight className="w-5 h-5" />
