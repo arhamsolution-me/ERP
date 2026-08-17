@@ -112,12 +112,12 @@ export default function Homepage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.4 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50/90 border border-blue-200/90 text-blue-700 text-xs sm:text-sm font-bold shadow-sm backdrop-blur-md"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-50/90 border border-sky-200/90 text-sky-700 text-xs sm:text-sm font-bold shadow-sm backdrop-blur-md"
               >
-                <span className="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
-                <Box className="w-4 h-4 text-blue-600" />
+                <span className="flex h-2 w-2 rounded-full bg-sky-600 animate-pulse" />
+                <Box className="w-4 h-4 text-sky-600" />
                 <span>{slides[currentSlide].badge}</span>
-                <span className="ml-2 pl-2 border-l border-blue-200/90 text-blue-500 font-mono text-[11px] font-bold">
+                <span className="ml-2 pl-2 border-l border-sky-200/90 text-sky-500 font-mono text-[11px] font-bold">
                   0{currentSlide + 1} / 0{slides.length}
                 </span>
               </motion.div>
@@ -134,7 +134,7 @@ export default function Homepage() {
                 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 leading-[1.1]"
               >
                 {slides[currentSlide].title.split('. ')[0]}. <br />
-                <span className="bg-gradient-to-r from-blue-700 via-indigo-600 to-cyan-600 bg-clip-text text-transparent drop-shadow-xs">
+                <span className="bg-gradient-to-r from-sky-600 via-cyan-600 to-blue-700 bg-clip-text text-transparent drop-shadow-xs">
                   {slides[currentSlide].title.split('. ').slice(1).join('. ')}
                 </span>
               </motion.h1>
@@ -160,7 +160,7 @@ export default function Homepage() {
                 href="/sign-in" 
                 className={cn(
                   buttonVariants({ variant: "default", size: "lg" }), 
-                  "w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-base h-13 px-8 rounded-lg shadow-lg shadow-blue-600/25 flex items-center justify-center gap-2 group transition-all"
+                  "w-full sm:w-auto bg-sky-600 hover:bg-sky-700 text-white font-bold text-base h-13 px-8 rounded-lg shadow-lg shadow-sky-600/25 flex items-center justify-center gap-2 group transition-all"
                 )}
               >
                 <span>Get Started</span>
@@ -182,17 +182,17 @@ export default function Homepage() {
             {/* Benefit Strip at Bottom */}
             <div className="pt-8 border-t border-slate-200/80 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl text-left">
               <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-800">
-                <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
-                <span>Secure & Reliable</span>
+                <ShieldCheck className="w-4 h-4 text-sky-600 shrink-0" />
+                <span>Secure &amp; Reliable</span>
               </div>
 
               <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-800">
-                <Zap className="w-4 h-4 text-blue-600 shrink-0" />
+                <Zap className="w-4 h-4 text-sky-600 shrink-0" />
                 <span>Real-time Sync</span>
               </div>
 
               <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-800">
-                <TrendingUp className="w-4 h-4 text-blue-600 shrink-0" />
+                <TrendingUp className="w-4 h-4 text-sky-600 shrink-0" />
                 <span>Scalable Solution</span>
               </div>
             </div>
@@ -213,7 +213,7 @@ export default function Homepage() {
                     key={idx}
                     onClick={() => setCurrentSlide(idx)}
                     className={`h-2.5 rounded-full transition-all ${
-                      currentSlide === idx ? "w-8 bg-blue-600" : "w-2.5 bg-slate-300 hover:bg-slate-400"
+                      currentSlide === idx ? "w-8 bg-sky-600" : "w-2.5 bg-slate-300 hover:bg-slate-400"
                     }`}
                     aria-label={`Go to slide ${idx + 1}`}
                   />
@@ -238,19 +238,19 @@ export default function Homepage() {
       <section className="py-24 bg-white border-b border-slate-200">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-blue-600">Built for Modern Operations</h2>
+            <h2 className="text-xs font-bold uppercase tracking-widest text-sky-600">Built for Modern Operations</h2>
             <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900">One Integrated Platform. Every Key Workflow.</h3>
             <p className="text-slate-600 text-base">Eliminate data silos between your factory floor, warehouses, retail stores, and finance team.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <div className="bg-slate-50/80 p-8 rounded-3xl border border-slate-200 hover:border-blue-500/50 hover:shadow-xl transition-all group">
-              <div className="bg-blue-100 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                <Factory className="h-7 w-7 text-blue-600 group-hover:text-white transition-colors" />
+            <div className="bg-slate-50/80 p-8 rounded-3xl border border-slate-200 hover:border-sky-500/50 hover:shadow-xl transition-all group">
+              <div className="bg-sky-100 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-sky-600 group-hover:text-white transition-all">
+                <Factory className="h-7 w-7 text-sky-600 group-hover:text-white transition-colors" />
               </div>
               <h4 className="text-xl font-bold text-slate-900 mb-3">Textile Production (MES)</h4>
               <p className="text-slate-600 text-sm leading-relaxed mb-6">Track batches, raw materials, weaving metrics, dyeing recipes, and machine downtime in real-time.</p>
-              <Link href="/features#production" className="text-blue-600 font-bold text-sm hover:underline flex items-center gap-1 group-hover:gap-2 transition-all">
+              <Link href="/features#production" className="text-sky-600 font-bold text-sm hover:underline flex items-center gap-1 group-hover:gap-2 transition-all">
                 Explore Production MES <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -259,10 +259,10 @@ export default function Homepage() {
               <div className="bg-emerald-100 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-emerald-600 group-hover:text-white transition-all">
                 <Store className="h-7 w-7 text-emerald-600 group-hover:text-white transition-colors" />
               </div>
-              <h4 className="text-xl font-bold text-slate-900 mb-3">Retail POS & Inventory</h4>
+              <h4 className="text-xl font-bold text-slate-900 mb-3">Retail POS &amp; Inventory</h4>
               <p className="text-slate-600 text-sm leading-relaxed mb-6">High-speed barcode checkout counters, offline operation mode, inter-branch stock transfers, and customer loyalty.</p>
               <Link href="/features#inventory" className="text-emerald-600 font-bold text-sm hover:underline flex items-center gap-1 group-hover:gap-2 transition-all">
-                Explore Retail & Stock <ArrowRight className="h-4 w-4" />
+                Explore Retail &amp; Stock <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
 
@@ -270,10 +270,10 @@ export default function Homepage() {
               <div className="bg-purple-100 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-purple-600 group-hover:text-white transition-all">
                 <TrendingUp className="h-7 w-7 text-purple-600 group-hover:text-white transition-colors" />
               </div>
-              <h4 className="text-xl font-bold text-slate-900 mb-3">Finance & AI Forecasting</h4>
+              <h4 className="text-xl font-bold text-slate-900 mb-3">Finance &amp; AI Forecasting</h4>
               <p className="text-slate-600 text-sm leading-relaxed mb-6">Automated general ledger, automated bank reconciliation, and machine-learning demand forecasting models.</p>
               <Link href="/features#finance" className="text-purple-600 font-bold text-sm hover:underline flex items-center gap-1 group-hover:gap-2 transition-all">
-                Explore Finance & AI <ArrowRight className="h-4 w-4" />
+                Explore Finance &amp; AI <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
@@ -283,14 +283,14 @@ export default function Homepage() {
       {/* POWERED BY DEVNEXES DIGITAL SOLUTIONS STRIP */}
       <section className="py-16 bg-slate-900 text-white">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-4">Engineered & Powered By</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-sky-400 mb-4">Engineered &amp; Powered By</p>
           <div className="flex items-center justify-center gap-3">
-            <span className="text-3xl sm:text-4xl font-black tracking-tight text-white font-sans bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-400 bg-clip-text text-transparent">
+            <span className="text-3xl sm:text-4xl font-black tracking-tight text-white font-sans bg-gradient-to-r from-sky-400 via-cyan-300 to-sky-200 bg-clip-text text-transparent">
               Devnexes Digital Solutions
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-3 max-w-xl mx-auto">
-            Architecting next-generation SaaS enterprise operating systems & multi-tenant cloud platforms.
+            Architecting next-generation SaaS enterprise operating systems &amp; multi-tenant cloud platforms.
           </p>
         </div>
       </section>
