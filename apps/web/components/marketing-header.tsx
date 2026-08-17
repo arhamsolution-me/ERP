@@ -23,7 +23,12 @@ import {
   Lock,
   ShoppingCart,
   Truck,
-  ChevronRight
+  ChevronRight,
+  Mail,
+  Phone,
+  Globe,
+  Share2,
+  Code2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -31,6 +36,8 @@ export function MarketingHeader() {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeModuleTab, setActiveModuleTab] = useState<string>("production");
+  const [activeIndustryTab, setActiveIndustryTab] = useState<string>("textile");
+  const [activePlatformTab, setActivePlatformTab] = useState<string>("security_rls");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,13 +47,199 @@ export function MarketingHeader() {
         setIsScrolled(false);
       }
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const toggleMenu = (menu: string) => {
     setActiveMenu(activeMenu === menu ? null : menu);
   };
+
+  const platformTabs = [
+    {
+      id: "security_rls",
+      title: "Multi-Tenant Data Isolation",
+      icon: ShieldCheck,
+      desc: "PostgreSQL Row-Level Security (RLS) ensuring 100% strict data isolation per tenant organization.",
+      features: [
+        "PostgreSQL RLS Rules",
+        "Multi-Tenant Isolation",
+        "Tenant Schema Mapping",
+        "Zero Data Leakage",
+        "Encrypted Connection",
+        "Tenant Backup Dumps"
+      ],
+      link: "/features#security"
+    },
+    {
+      id: "rbac",
+      title: "User Roles & Permissions",
+      icon: Lock,
+      desc: "Fine-grained role-based access control, permission decorators, and user group management.",
+      features: [
+        "Granular RBAC Roles",
+        "Permission Decorators",
+        "Cashier/Manager Groups",
+        "Clerk OAuth & MFA",
+        "Session Timeout Rules",
+        "User Access Audits"
+      ],
+      link: "/features#security"
+    },
+    {
+      id: "offline_pos",
+      title: "Offline POS Queue & Sync",
+      icon: Zap,
+      desc: "Local indexedDB offline sales queue that automatically reconciles when internet connection resumes.",
+      features: [
+        "IndexedDB Local Queue",
+        "Auto Internet Recon",
+        "Zero-Downtime Billing",
+        "Conflict Resolution",
+        "Offline Register Sync",
+        "Receipt Fallback"
+      ],
+      link: "/features#security"
+    },
+    {
+      id: "audit_logs",
+      title: "Activity Audit Logs & History",
+      icon: FileCheck,
+      desc: "Complete immutable audit trail for every financial voucher, stock movement, and user login action.",
+      features: [
+        "Immutable Audit Trails",
+        "Stock Movement Logs",
+        "Voucher Edit History",
+        "User Login IP Tracking",
+        "CSV Audit Export",
+        "Compliance Archiving"
+      ],
+      link: "/features#security"
+    },
+    {
+      id: "cloud_sla",
+      title: "High Availability & Cloud SLA",
+      icon: Cpu,
+      desc: "Engineered on NestJS microservices & Next.js SSR with 99.99% uptime SLA guarantee.",
+      features: [
+        "99.99% Cloud SLA",
+        "NestJS Microservices",
+        "PostgreSQL Replicas",
+        "Automatic Failover",
+        "Global Edge CDN",
+        "Real-Time Health Checks"
+      ],
+      link: "/features#security"
+    },
+    {
+      id: "api_integrations",
+      title: "REST & GraphQL APIs",
+      icon: Code2,
+      desc: "Robust API endpoints for custom ERP integrations, webhook triggers, and third-party tools.",
+      features: [
+        "REST API v1 Endpoints",
+        "GraphQL Query Engine",
+        "Webhook Triggers",
+        "API Key Management",
+        "Rate Limiting",
+        "Swagger OpenAPI Spec"
+      ],
+      link: "/features#security"
+    }
+  ];
+
+  const industryTabs = [
+    {
+      id: "textile",
+      title: "Spinning & Weaving Mills",
+      icon: Building2,
+      desc: "Raw cotton bale inventory, yarn count tracking, weaving loom shift efficiency, and chemical vat dyeing recipes.",
+      features: [
+        "Bale Lot Quality Control",
+        "Weaving Machine Downtime",
+        "Yarn Production Slips",
+        "Dyeing Batch Recipes",
+        "Shift Allocation",
+        "Looms Yield Analytics"
+      ],
+      link: "/industries#textile"
+    },
+    {
+      id: "apparel",
+      title: "Apparel & Garment Units",
+      icon: Layers,
+      desc: "Cut-to-pack garment tracking, piece-rate worker payroll, trim inventory, and order milestone tracking.",
+      features: [
+        "Cut-Piece Lot Bundles",
+        "Worker Piece-Rate Payroll",
+        "Trims & Buttons Stock",
+        "Stitching Quality Control",
+        "Export Packing Lists",
+        "Subcontractor POs"
+      ],
+      link: "/industries#apparel"
+    },
+    {
+      id: "retail",
+      title: "Fashion & Retail Chains",
+      icon: Store,
+      desc: "Fast barcode POS billing, multi-store stock transfers, cashier shift registers, and loyalty points.",
+      features: [
+        "1.2s Barcode Scanning",
+        "Inter-Store Stock Transfer",
+        "Cashier Shift Audit",
+        "Customer Loyalty Points",
+        "Discounts & Vouchers",
+        "Offline Billing Queue"
+      ],
+      link: "/industries#retail"
+    },
+    {
+      id: "wholesale",
+      title: "Wholesale B2B Supply",
+      icon: ShoppingCart,
+      desc: "Tiered distributor pricing, bulk customer credit limits, proforma invoices, and gate pass dispatches.",
+      features: [
+        "Tiered Wholesale Rates",
+        "Customer Credit Limits",
+        "Bulk PO Invoicing",
+        "Rep Sales Tracking",
+        "Dispatch Gate Passes",
+        "Accounts Receivable"
+      ],
+      link: "/industries#wholesale"
+    },
+    {
+      id: "logistics",
+      title: "Warehousing & Logistics Hubs",
+      icon: Package,
+      desc: "Multi-warehouse WMS, barcode SKU bin locations, automated reorder alerts, and stock valuation audits.",
+      features: [
+        "Multi-Bin Stock Locations",
+        "Automated Reorder Alerts",
+        "Stock Audit Adjustments",
+        "Batch Expiry Dates",
+        "Barcode Scanning WMS",
+        "Valuation (FIFO/AVG)"
+      ],
+      link: "/industries#logistics"
+    },
+    {
+      id: "finance_ent",
+      title: "Enterprise Group Holdings",
+      icon: Receipt,
+      desc: "Consolidated multi-company general ledger, inter-company billing, bank reconciliation, and P&L.",
+      features: [
+        "Multi-Company Ledger",
+        "Inter-Company Invoicing",
+        "Bank Direct Sync",
+        "Consolidated P&L",
+        "Balance Sheet Engine",
+        "Tax Audit Trail"
+      ],
+      link: "/industries#finance"
+    }
+  ];
 
   const moduleTabs = [
     {
@@ -173,30 +366,92 @@ export function MarketingHeader() {
 
   return (
     <header 
-      className={`fixed top-0 inset-x-0 z-50 w-full transition-all duration-300 ${
+      className={`fixed top-0 inset-x-0 z-50 w-full transition-all duration-300 ease-out ${
         isScrolled 
-          ? "bg-blue-700 border-b border-blue-800 text-white shadow-xl shadow-blue-950/30" 
+          ? "bg-[#0284c7] backdrop-blur-md border-b border-sky-500/80 text-white shadow-xl shadow-sky-950/20" 
           : "bg-transparent border-b border-transparent text-slate-900"
       }`}
       onMouseLeave={() => setActiveMenu(null)}
     >
+      {/* TOP MINI INFO BAR - Smooth GPU-accelerated CSS transition with zero DOM lag */}
+      <div 
+        className={`w-full bg-sky-700 text-white border-b border-sky-800/80 overflow-hidden transition-all duration-300 ease-out ${
+          isScrolled 
+            ? "max-h-0 opacity-0 py-0 border-none pointer-events-none" 
+            : "max-h-16 opacity-100 py-2.5 px-4 sm:px-6"
+        }`}
+      >
+        <div className="container mx-auto flex items-center justify-between text-xs sm:text-sm font-bold">
+          
+          {/* Left: Social Media Logos (Facebook, Instagram, GitHub, LinkedIn, X, YouTube) */}
+          <div className="flex items-center gap-4 text-white">
+            {/* Facebook */}
+            <a href="#" className="hover:text-sky-200 transition-transform hover:scale-110" aria-label="Facebook">
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+            {/* Instagram */}
+            <a href="#" className="hover:text-sky-200 transition-transform hover:scale-110" aria-label="Instagram">
+              <svg className="w-4 h-4 fill-none stroke-current stroke-[2]" viewBox="0 0 24 24">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+              </svg>
+            </a>
+            {/* GitHub */}
+            <a href="#" className="hover:text-sky-200 transition-transform hover:scale-110" aria-label="GitHub">
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+            </a>
+            {/* LinkedIn */}
+            <a href="#" className="hover:text-sky-200 transition-transform hover:scale-110" aria-label="LinkedIn">
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.762-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+              </svg>
+            </a>
+            {/* X / Twitter */}
+            <a href="#" className="hover:text-sky-200 transition-transform hover:scale-110" aria-label="X (Twitter)">
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+            </a>
+            {/* YouTube */}
+            <a href="#" className="hover:text-sky-200 transition-transform hover:scale-110" aria-label="YouTube">
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+            </a>
+          </div>
+
+          {/* Right: Contact Email & Phone */}
+          <div className="flex items-center gap-6">
+            <a href="mailto:devnexes.support@gmail.com" className="flex items-center gap-2 hover:text-sky-200 transition-colors">
+              <Mail className="w-4 h-4 text-sky-200" />
+              <span>devnexes.support@gmail.com</span>
+            </a>
+
+            <a href="tel:+923030111550" className="flex items-center gap-2 hover:text-sky-200 transition-colors">
+              <Phone className="w-4 h-4 text-sky-200" />
+              <span>+92 3030111550</span>
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+      {/* STICKY MAIN HEADER */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 sm:h-22 items-center justify-between">
           
-          {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-3 group" onClick={() => setActiveMenu(null)}>
-            <div className={`w-10.5 h-10.5 rounded-xl flex items-center justify-center shadow-md transition-all ${
-              isScrolled ? "bg-white text-blue-700 font-bold" : "bg-blue-600 text-white shadow-blue-600/25 group-hover:bg-blue-700"
+          {/* Brand Logo - Pure Typography Logo (Exact Replica of Screenshot) */}
+          <Link href="/" className="flex items-center group py-2" onClick={() => setActiveMenu(null)}>
+            <span className={`text-3xl sm:text-4xl font-extrabold tracking-[-0.03em] transition-colors ${
+              isScrolled ? "text-white" : "text-[#0B192C]"
             }`}>
-              <Box className="w-6 h-6" />
-            </div>
-            <div className="flex items-center gap-2">
-              <span className={`text-2xl font-extrabold tracking-tight font-sans transition-colors ${
-                isScrolled ? "text-white" : "text-slate-900"
-              }`}>
-                Nex<span className={isScrolled ? "text-blue-200 font-black" : "text-blue-600 font-black"}>ERP</span>
-              </span>
-            </div>
+              Infinite<span className={isScrolled ? "text-sky-200" : "text-[#0084FF]"}>Enterprise</span>
+            </span>
           </Link>
 
           {/* Navigation Items with Mega Dropdown triggers */}
@@ -206,40 +461,40 @@ export function MarketingHeader() {
             <button
               onClick={() => toggleMenu("modules")}
               onMouseEnter={() => setActiveMenu("modules")}
-              className={`flex items-center gap-1.5 px-4 py-2.5 text-base font-bold rounded-lg transition-all ${
+              className={`flex items-center gap-1.5 px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
                 activeMenu === "modules"
-                  ? isScrolled ? "bg-blue-800 text-white" : "bg-blue-50 text-blue-600"
-                  : isScrolled ? "text-blue-50 hover:bg-blue-800/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+                  ? isScrolled ? "bg-sky-700/60 text-white" : "bg-sky-50 text-sky-600"
+                  : isScrolled ? "text-white/95 hover:bg-sky-700/40 hover:text-white" : "text-slate-800 hover:text-sky-600 hover:bg-slate-100"
               }`}
             >
-              <span>Modules & Capabilities</span>
-              <ChevronDown className={`w-4.5 h-4.5 transition-transform duration-200 ${
+              <span>Modules &amp; Capabilities</span>
+              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                 activeMenu === "modules" ? "rotate-180" : ""
-              } ${isScrolled ? "text-blue-200" : "text-slate-400"}`} />
+              } ${isScrolled ? "text-sky-200" : "text-slate-400"}`} />
             </button>
 
             {/* Nav Item 2: Industries */}
             <button
               onClick={() => toggleMenu("industries")}
               onMouseEnter={() => setActiveMenu("industries")}
-              className={`flex items-center gap-1.5 px-4 py-2.5 text-base font-bold rounded-lg transition-all ${
+              className={`flex items-center gap-1.5 px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
                 activeMenu === "industries"
-                  ? isScrolled ? "bg-blue-800 text-white" : "bg-blue-50 text-blue-600"
-                  : isScrolled ? "text-blue-50 hover:bg-blue-800/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+                  ? isScrolled ? "bg-sky-700/60 text-white" : "bg-sky-50 text-sky-600"
+                  : isScrolled ? "text-white/95 hover:bg-sky-700/40 hover:text-white" : "text-slate-800 hover:text-sky-600 hover:bg-slate-100"
               }`}
             >
-              <span>Industries & Solutions</span>
-              <ChevronDown className={`w-4.5 h-4.5 transition-transform duration-200 ${
+              <span>Industries &amp; Solutions</span>
+              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                 activeMenu === "industries" ? "rotate-180" : ""
-              } ${isScrolled ? "text-blue-200" : "text-slate-400"}`} />
+              } ${isScrolled ? "text-sky-200" : "text-slate-400"}`} />
             </button>
 
             {/* Nav Item 3: Pricing */}
             <Link 
               href="/pricing" 
               onClick={() => setActiveMenu(null)}
-              className={`px-4 py-2.5 text-base font-bold rounded-lg transition-all ${
-                isScrolled ? "text-blue-50 hover:bg-blue-800/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+              className={`px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
+                isScrolled ? "text-white/95 hover:bg-sky-700/40 hover:text-white" : "text-slate-800 hover:text-sky-600 hover:bg-slate-100"
               }`}
             >
               Pricing Plans
@@ -249,16 +504,16 @@ export function MarketingHeader() {
             <button
               onClick={() => toggleMenu("platform")}
               onMouseEnter={() => setActiveMenu("platform")}
-              className={`flex items-center gap-1.5 px-4 py-2.5 text-base font-bold rounded-lg transition-all ${
+              className={`flex items-center gap-1.5 px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
                 activeMenu === "platform"
-                  ? isScrolled ? "bg-blue-800 text-white" : "bg-blue-50 text-blue-600"
-                  : isScrolled ? "text-blue-50 hover:bg-blue-800/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+                  ? isScrolled ? "bg-sky-700/60 text-white" : "bg-sky-50 text-sky-600"
+                  : isScrolled ? "text-white/95 hover:bg-sky-700/40 hover:text-white" : "text-slate-800 hover:text-sky-600 hover:bg-slate-100"
               }`}
             >
-              <span>Platform & Governance</span>
-              <ChevronDown className={`w-4.5 h-4.5 transition-transform duration-200 ${
+              <span>Platform &amp; Governance</span>
+              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                 activeMenu === "platform" ? "rotate-180" : ""
-              } ${isScrolled ? "text-blue-200" : "text-slate-400"}`} />
+              } ${isScrolled ? "text-sky-200" : "text-slate-400"}`} />
             </button>
 
           </nav>
@@ -267,7 +522,7 @@ export function MarketingHeader() {
           <div className="flex items-center space-x-3">
             <Link href="/sign-in" onClick={() => setActiveMenu(null)}>
               <Button variant="ghost" className={`text-base font-bold h-11 px-4 rounded-lg transition-colors ${
-                isScrolled ? "text-white hover:bg-blue-800" : "text-slate-700 hover:text-slate-900"
+                isScrolled ? "text-white hover:bg-sky-700/50" : "text-slate-700 hover:text-slate-900"
               }`}>
                 Sign In
               </Button>
@@ -275,8 +530,8 @@ export function MarketingHeader() {
             <Link href="/contact" onClick={() => setActiveMenu(null)}>
               <Button className={`text-base font-bold h-11 px-5 rounded-lg transition-all ${
                 isScrolled 
-                  ? "bg-white text-blue-800 hover:bg-slate-100 shadow-md font-extrabold" 
-                  : "bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-600/25"
+                  ? "bg-white text-sky-700 hover:bg-sky-50 shadow-md font-extrabold" 
+                  : "bg-sky-600 hover:bg-sky-700 text-white shadow-md shadow-sky-600/25"
               }`}>
                 Book a Demo
               </Button>
@@ -294,7 +549,7 @@ export function MarketingHeader() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.99 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute top-full inset-x-0 bg-white text-slate-900 border-b border-slate-200 overflow-hidden z-50 pointer-events-auto"
+            className={`absolute top-full inset-x-0 bg-white text-slate-900 border-t-4 border-sky-600 border-b border-slate-200 shadow-2xl shadow-black/20 overflow-hidden z-50 pointer-events-auto`}
           >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-7">
               
@@ -304,8 +559,8 @@ export function MarketingHeader() {
                   
                   {/* LEFT SIDEBAR NAVIGATION */}
                   <div className="lg:col-span-4 space-y-1">
-                    <span className="text-[10px] font-extrabold tracking-widest text-slate-400 uppercase mb-3 block px-3">
-                      OUR MODULES & CAPABILITIES
+                    <span className="text-sm font-black tracking-widest text-slate-500 uppercase mb-3 block px-4 font-sans">
+                      INFINITE MODULES
                     </span>
                     {moduleTabs.map((tab) => {
                       const IconComp = tab.icon;
@@ -315,24 +570,24 @@ export function MarketingHeader() {
                           key={tab.id}
                           onMouseEnter={() => setActiveModuleTab(tab.id)}
                           onClick={() => setActiveModuleTab(tab.id)}
-                          className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all ${
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${
                             isActive
-                              ? "bg-blue-600 text-white shadow-md shadow-blue-600/25"
-                              : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+                              ? "bg-sky-600 text-white shadow-md shadow-sky-600/25"
+                              : "text-slate-800 hover:text-sky-600 hover:bg-slate-50"
                           }`}
                         >
                           <div className="flex items-center gap-3">
-                            <IconComp className={`w-4.5 h-4.5 ${isActive ? "text-white" : "text-blue-600"}`} />
+                            <IconComp className={`w-4.5 h-4.5 shrink-0 ${isActive ? "text-white" : "text-sky-600"}`} />
                             <span>{tab.title}</span>
                           </div>
-                          <ChevronRight className={`w-4 h-4 transition-transform ${isActive ? "text-white translate-x-0.5" : "text-slate-400"}`} />
+                          <ChevronRight className={`w-4 h-4 shrink-0 transition-transform ${isActive ? "text-white" : "text-slate-400"}`} />
                         </button>
                       );
                     })}
                   </div>
 
-                  {/* VERTICAL DIVIDER & RIGHT CONTENT DISPLAY PANEL */}
-                  <div className="lg:col-span-8 border-l border-slate-200/90 pl-6 space-y-6">
+                  {/* RIGHT CONTENT DISPLAY PANEL */}
+                  <div className="lg:col-span-8 pl-5 space-y-5">
                     {(() => {
                       const currentTab = moduleTabs.find(t => t.id === activeModuleTab) || moduleTabs[0];
                       const IconMain = currentTab.icon;
@@ -340,7 +595,7 @@ export function MarketingHeader() {
                         <div className="space-y-6">
                           {/* Module Header & Description */}
                           <div className="flex items-start gap-4">
-                            <div className="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-600/25 shrink-0">
+                            <div className="w-11 h-11 rounded-xl bg-sky-600 text-white flex items-center justify-center shadow-md shadow-sky-600/25 shrink-0">
                               <IconMain className="w-6 h-6" />
                             </div>
                             <div className="space-y-1">
@@ -357,7 +612,7 @@ export function MarketingHeader() {
                           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-4 pb-4 border-t border-b border-slate-100">
                             {currentTab.features.map((feat, idx) => (
                               <div key={idx} className="flex items-center gap-2 text-xs font-semibold text-slate-700">
-                                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-sky-600 shrink-0" />
                                 <span>{feat}</span>
                               </div>
                             ))}
@@ -367,7 +622,7 @@ export function MarketingHeader() {
                           <Link 
                             href={currentTab.link}
                             onClick={() => setActiveMenu(null)}
-                            className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 group transition-colors"
+                            className="inline-flex items-center gap-2 text-sm font-bold text-sky-600 hover:text-sky-700 group transition-colors"
                           >
                             <span>View all {currentTab.title} capabilities</span>
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -380,79 +635,165 @@ export function MarketingHeader() {
                 </div>
               )}
 
-              {/* SUBHEADER MENU 2: INDUSTRIES & SOLUTIONS */}
+              {/* SUBHEADER MENU 2: INDUSTRIES & SOLUTIONS (SIDEBAR TABBED LAYOUT) */}
               {activeMenu === "industries" && (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                   
-                  <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group">
-                    <h5 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-1">
-                      <Building2 className="w-4 h-4 text-slate-900 group-hover:text-blue-600" />
-                      <span>Spinning & Weaving Mills</span>
-                    </h5>
-                    <p className="text-xs text-slate-500 leading-relaxed">Cotton bale inventory, yarn counts, and loom shift tracking.</p>
+                  {/* LEFT SIDEBAR NAVIGATION */}
+                  <div className="lg:col-span-4 space-y-1">
+                    <span className="text-sm font-black tracking-widest text-slate-500 uppercase mb-3 block px-4 font-sans">
+                      INFINITE INDUSTRIES
+                    </span>
+                    {industryTabs.map((tab) => {
+                      const IconComp = tab.icon;
+                      const isActive = activeIndustryTab === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          onMouseEnter={() => setActiveIndustryTab(tab.id)}
+                          onClick={() => setActiveIndustryTab(tab.id)}
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                            isActive
+                              ? "bg-sky-600 text-white shadow-md shadow-sky-600/25"
+                              : "text-slate-800 hover:text-sky-600 hover:bg-slate-50"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <IconComp className={`w-4.5 h-4.5 shrink-0 ${isActive ? "text-white" : "text-sky-600"}`} />
+                            <span>{tab.title}</span>
+                          </div>
+                          <ChevronRight className={`w-4 h-4 shrink-0 transition-transform ${isActive ? "text-white" : "text-slate-400"}`} />
+                        </button>
+                      );
+                    })}
                   </div>
 
-                  <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group">
-                    <h5 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-1">
-                      <Store className="w-4 h-4 text-slate-900 group-hover:text-blue-600" />
-                      <span>Fashion & Retail Chains</span>
-                    </h5>
-                    <p className="text-xs text-slate-500 leading-relaxed">Multi-outlet POS billing, barcode tags, and central warehouse sync.</p>
-                  </div>
+                  {/* RIGHT CONTENT DISPLAY PANEL */}
+                  <div className="lg:col-span-8 pl-5 space-y-5">
+                    {(() => {
+                      const currentTab = industryTabs.find(t => t.id === activeIndustryTab) || industryTabs[0];
+                      const IconMain = currentTab.icon;
+                      return (
+                        <div className="space-y-6">
+                          {/* Industry Header & Description */}
+                          <div className="flex items-start gap-4">
+                            <div className="w-11 h-11 rounded-xl bg-sky-600 text-white flex items-center justify-center shadow-md shadow-sky-600/25 shrink-0">
+                              <IconMain className="w-6 h-6" />
+                            </div>
+                            <div className="space-y-1">
+                              <h3 className="text-lg font-extrabold text-slate-900 leading-tight">
+                                {currentTab.title}
+                              </h3>
+                              <p className="text-xs text-slate-500 leading-relaxed max-w-xl">
+                                {currentTab.desc}
+                              </p>
+                            </div>
+                          </div>
 
-                  <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group">
-                    <h5 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-1">
-                      <Package className="w-4 h-4 text-slate-900 group-hover:text-blue-600" />
-                      <span>Wholesale B2B Supply</span>
-                    </h5>
-                    <p className="text-xs text-slate-500 leading-relaxed">Tiered customer pricing, credit limits, and bulk order dispatch.</p>
-                  </div>
+                          {/* 3-Column Bullet Features Grid */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-4 pb-4 border-t border-b border-slate-100">
+                            {currentTab.features.map((feat, idx) => (
+                              <div key={idx} className="flex items-center gap-2 text-xs font-semibold text-slate-700">
+                                <span className="w-1.5 h-1.5 rounded-full bg-sky-600 shrink-0" />
+                                <span>{feat}</span>
+                              </div>
+                            ))}
+                          </div>
 
-                  <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group">
-                    <h5 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-1">
-                      <Users2 className="w-4 h-4 text-slate-900 group-hover:text-blue-600" />
-                      <span>Apparel Stitching Units</span>
-                    </h5>
-                    <p className="text-xs text-slate-500 leading-relaxed">Cut-piece tracking, worker piece-rate payroll, and trim inventory.</p>
+                          {/* Bottom CTA Action Link */}
+                          <Link 
+                            href={currentTab.link}
+                            onClick={() => setActiveMenu(null)}
+                            className="inline-flex items-center gap-2 text-sm font-bold text-sky-600 hover:text-sky-700 group transition-colors"
+                          >
+                            <span>View all {currentTab.title} solutions</span>
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          </Link>
+                        </div>
+                      );
+                    })()}
                   </div>
 
                 </div>
               )}
 
-              {/* SUBHEADER MENU 3: PLATFORM & GOVERNANCE */}
+              {/* SUBHEADER MENU 3: PLATFORM & GOVERNANCE (SIDEBAR TABBED LAYOUT) */}
               {activeMenu === "platform" && (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                   
-                  <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all">
-                    <div className="flex items-center gap-2 text-sm font-bold text-slate-900 mb-1">
-                      <ShieldCheck className="w-4 h-4 text-slate-900" />
-                      <span>Multi-Tenant Data Isolation</span>
-                    </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">Database row-level security ensuring strict data isolation for every client.</p>
+                  {/* LEFT SIDEBAR NAVIGATION */}
+                  <div className="lg:col-span-4 space-y-1">
+                    <span className="text-sm font-black tracking-widest text-slate-500 uppercase mb-3 block px-4 font-sans">
+                      INFINITE PLATFORM
+                    </span>
+                    {platformTabs.map((tab) => {
+                      const IconComp = tab.icon;
+                      const isActive = activePlatformTab === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          onMouseEnter={() => setActivePlatformTab(tab.id)}
+                          onClick={() => setActivePlatformTab(tab.id)}
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                            isActive
+                              ? "bg-sky-600 text-white shadow-md shadow-sky-600/25"
+                              : "text-slate-800 hover:text-sky-600 hover:bg-slate-50"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <IconComp className={`w-4.5 h-4.5 shrink-0 ${isActive ? "text-white" : "text-sky-600"}`} />
+                            <span>{tab.title}</span>
+                          </div>
+                          <ChevronRight className={`w-4 h-4 shrink-0 transition-transform ${isActive ? "text-white" : "text-slate-400"}`} />
+                        </button>
+                      );
+                    })}
                   </div>
 
-                  <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all">
-                    <div className="flex items-center gap-2 text-sm font-bold text-slate-900 mb-1">
-                      <Lock className="w-4 h-4 text-slate-900" />
-                      <span>User Roles & Permissions</span>
-                    </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">Role-based access controls for cashiers, managers, and accountants.</p>
-                  </div>
+                  {/* RIGHT CONTENT DISPLAY PANEL */}
+                  <div className="lg:col-span-8 pl-5 space-y-5">
+                    {(() => {
+                      const currentTab = platformTabs.find(t => t.id === activePlatformTab) || platformTabs[0];
+                      const IconMain = currentTab.icon;
+                      return (
+                        <div className="space-y-6">
+                          {/* Platform Header & Description */}
+                          <div className="flex items-start gap-4">
+                            <div className="w-11 h-11 rounded-xl bg-sky-600 text-white flex items-center justify-center shadow-md shadow-sky-600/25 shrink-0">
+                              <IconMain className="w-6 h-6" />
+                            </div>
+                            <div className="space-y-1">
+                              <h3 className="text-lg font-extrabold text-slate-900 leading-tight">
+                                {currentTab.title}
+                              </h3>
+                              <p className="text-xs text-slate-500 leading-relaxed max-w-xl">
+                                {currentTab.desc}
+                              </p>
+                            </div>
+                          </div>
 
-                  <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all">
-                    <div className="flex items-center gap-2 text-sm font-bold text-slate-900 mb-1">
-                      <Zap className="w-4 h-4 text-slate-900" />
-                      <span>Offline POS Operation</span>
-                    </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">Local offline sales queue that automatically syncs when internet resumes.</p>
-                  </div>
+                          {/* 3-Column Bullet Features Grid */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-4 pb-4 border-t border-b border-slate-100">
+                            {currentTab.features.map((feat, idx) => (
+                              <div key={idx} className="flex items-center gap-2 text-xs font-semibold text-slate-700">
+                                <span className="w-1.5 h-1.5 rounded-full bg-sky-600 shrink-0" />
+                                <span>{feat}</span>
+                              </div>
+                            ))}
+                          </div>
 
-                  <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all">
-                    <div className="flex items-center gap-2 text-sm font-bold text-slate-900 mb-1">
-                      <FileCheck className="w-4 h-4 text-slate-900" />
-                      <span>Audit Logs & History</span>
-                    </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">Full system activity trails for all financial entries and stock movements.</p>
+                          {/* Bottom CTA Action Link */}
+                          <Link 
+                            href={currentTab.link}
+                            onClick={() => setActiveMenu(null)}
+                            className="inline-flex items-center gap-2 text-sm font-bold text-sky-600 hover:text-sky-700 group transition-colors"
+                          >
+                            <span>View all {currentTab.title} features</span>
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          </Link>
+                        </div>
+                      );
+                    })()}
                   </div>
 
                 </div>
