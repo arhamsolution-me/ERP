@@ -37,6 +37,7 @@ export function MarketingHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeModuleTab, setActiveModuleTab] = useState<string>("production");
   const [activeIndustryTab, setActiveIndustryTab] = useState<string>("textile");
+  const [activePlatformTab, setActivePlatformTab] = useState<string>("security_rls");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,6 +54,99 @@ export function MarketingHeader() {
   const toggleMenu = (menu: string) => {
     setActiveMenu(activeMenu === menu ? null : menu);
   };
+
+  const platformTabs = [
+    {
+      id: "security_rls",
+      title: "Multi-Tenant Data Isolation",
+      icon: ShieldCheck,
+      desc: "PostgreSQL Row-Level Security (RLS) ensuring 100% strict data isolation per tenant organization.",
+      features: [
+        "PostgreSQL RLS Rules",
+        "Multi-Tenant Isolation",
+        "Tenant Schema Mapping",
+        "Zero Data Leakage",
+        "Encrypted Connection",
+        "Tenant Backup Dumps"
+      ],
+      link: "/features#security"
+    },
+    {
+      id: "rbac",
+      title: "User Roles & Permissions",
+      icon: Lock,
+      desc: "Fine-grained role-based access control, permission decorators, and user group management.",
+      features: [
+        "Granular RBAC Roles",
+        "Permission Decorators",
+        "Cashier/Manager Groups",
+        "Clerk OAuth & MFA",
+        "Session Timeout Rules",
+        "User Access Audits"
+      ],
+      link: "/features#security"
+    },
+    {
+      id: "offline_pos",
+      title: "Offline POS Queue & Sync",
+      icon: Zap,
+      desc: "Local indexedDB offline sales queue that automatically reconciles when internet connection resumes.",
+      features: [
+        "IndexedDB Local Queue",
+        "Auto Internet Recon",
+        "Zero-Downtime Billing",
+        "Conflict Resolution",
+        "Offline Register Sync",
+        "Receipt Fallback"
+      ],
+      link: "/features#security"
+    },
+    {
+      id: "audit_logs",
+      title: "Activity Audit Logs & History",
+      icon: FileCheck,
+      desc: "Complete immutable audit trail for every financial voucher, stock movement, and user login action.",
+      features: [
+        "Immutable Audit Trails",
+        "Stock Movement Logs",
+        "Voucher Edit History",
+        "User Login IP Tracking",
+        "CSV Audit Export",
+        "Compliance Archiving"
+      ],
+      link: "/features#security"
+    },
+    {
+      id: "cloud_sla",
+      title: "High Availability & Cloud SLA",
+      icon: Cpu,
+      desc: "Engineered on NestJS microservices & Next.js SSR with 99.99% uptime SLA guarantee.",
+      features: [
+        "99.99% Cloud SLA",
+        "NestJS Microservices",
+        "PostgreSQL Replicas",
+        "Automatic Failover",
+        "Global Edge CDN",
+        "Real-Time Health Checks"
+      ],
+      link: "/features#security"
+    },
+    {
+      id: "api_integrations",
+      title: "REST & GraphQL APIs",
+      icon: Code2,
+      desc: "Robust API endpoints for custom ERP integrations, webhook triggers, and third-party tools.",
+      features: [
+        "REST API v1 Endpoints",
+        "GraphQL Query Engine",
+        "Webhook Triggers",
+        "API Key Management",
+        "Rate Limiting",
+        "Swagger OpenAPI Spec"
+      ],
+      link: "/features#security"
+    }
+  ];
 
   const industryTabs = [
     {
@@ -630,40 +724,83 @@ export function MarketingHeader() {
                 </div>
               )}
 
-              {/* SUBHEADER MENU 3: PLATFORM & GOVERNANCE */}
+              {/* SUBHEADER MENU 3: PLATFORM & GOVERNANCE (SIDEBAR TABBED LAYOUT) */}
               {activeMenu === "platform" && (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                   
-                  <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all">
-                    <div className="flex items-center gap-2 text-sm font-bold text-slate-900 mb-1">
-                      <ShieldCheck className="w-4 h-4 text-slate-900" />
-                      <span>Multi-Tenant Data Isolation</span>
-                    </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">Database row-level security ensuring strict data isolation for every client.</p>
+                  {/* LEFT SIDEBAR NAVIGATION */}
+                  <div className="lg:col-span-4 space-y-1">
+                    <span className="text-sm font-black tracking-widest text-slate-500 uppercase mb-3 block px-4 font-sans">
+                      INFINITE PLATFORM
+                    </span>
+                    {platformTabs.map((tab) => {
+                      const IconComp = tab.icon;
+                      const isActive = activePlatformTab === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          onMouseEnter={() => setActivePlatformTab(tab.id)}
+                          onClick={() => setActivePlatformTab(tab.id)}
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                            isActive
+                              ? "bg-sky-600 text-white shadow-md shadow-sky-600/25"
+                              : "text-slate-800 hover:text-sky-600 hover:bg-slate-50"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <IconComp className={`w-4.5 h-4.5 shrink-0 ${isActive ? "text-white" : "text-sky-600"}`} />
+                            <span>{tab.title}</span>
+                          </div>
+                          <ChevronRight className={`w-4 h-4 shrink-0 transition-transform ${isActive ? "text-white" : "text-slate-400"}`} />
+                        </button>
+                      );
+                    })}
                   </div>
 
-                  <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all">
-                    <div className="flex items-center gap-2 text-sm font-bold text-slate-900 mb-1">
-                      <Lock className="w-4 h-4 text-slate-900" />
-                      <span>User Roles & Permissions</span>
-                    </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">Role-based access controls for cashiers, managers, and accountants.</p>
-                  </div>
+                  {/* RIGHT CONTENT DISPLAY PANEL */}
+                  <div className="lg:col-span-8 pl-5 space-y-5">
+                    {(() => {
+                      const currentTab = platformTabs.find(t => t.id === activePlatformTab) || platformTabs[0];
+                      const IconMain = currentTab.icon;
+                      return (
+                        <div className="space-y-6">
+                          {/* Platform Header & Description */}
+                          <div className="flex items-start gap-4">
+                            <div className="w-11 h-11 rounded-xl bg-sky-600 text-white flex items-center justify-center shadow-md shadow-sky-600/25 shrink-0">
+                              <IconMain className="w-6 h-6" />
+                            </div>
+                            <div className="space-y-1">
+                              <h3 className="text-lg font-extrabold text-slate-900 leading-tight">
+                                {currentTab.title}
+                              </h3>
+                              <p className="text-xs text-slate-500 leading-relaxed max-w-xl">
+                                {currentTab.desc}
+                              </p>
+                            </div>
+                          </div>
 
-                  <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all">
-                    <div className="flex items-center gap-2 text-sm font-bold text-slate-900 mb-1">
-                      <Zap className="w-4 h-4 text-slate-900" />
-                      <span>Offline POS Operation</span>
-                    </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">Local offline sales queue that automatically syncs when internet resumes.</p>
-                  </div>
+                          {/* 3-Column Bullet Features Grid */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-4 pb-4 border-t border-b border-slate-100">
+                            {currentTab.features.map((feat, idx) => (
+                              <div key={idx} className="flex items-center gap-2 text-xs font-semibold text-slate-700">
+                                <span className="w-1.5 h-1.5 rounded-full bg-sky-600 shrink-0" />
+                                <span>{feat}</span>
+                              </div>
+                            ))}
+                          </div>
 
-                  <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all">
-                    <div className="flex items-center gap-2 text-sm font-bold text-slate-900 mb-1">
-                      <FileCheck className="w-4 h-4 text-slate-900" />
-                      <span>Audit Logs & History</span>
-                    </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">Full system activity trails for all financial entries and stock movements.</p>
+                          {/* Bottom CTA Action Link */}
+                          <Link 
+                            href={currentTab.link}
+                            onClick={() => setActiveMenu(null)}
+                            className="inline-flex items-center gap-2 text-sm font-bold text-sky-600 hover:text-sky-700 group transition-colors"
+                          >
+                            <span>View all {currentTab.title} features</span>
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          </Link>
+                        </div>
+                      );
+                    })()}
                   </div>
 
                 </div>
