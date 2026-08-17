@@ -445,12 +445,14 @@ export function MarketingHeader() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 sm:h-22 items-center justify-between">
           
-          {/* Brand Logo - Infinite Enterprise */}
+          {/* Brand Logo - Infinite Enterprise Image Logo with Background */}
           <Link href="/" className="flex items-center gap-3 group" onClick={() => setActiveMenu(null)}>
-            <div className={`w-10.5 h-10.5 rounded-xl flex items-center justify-center shadow-md transition-all font-black text-lg ${
-              isScrolled ? "bg-white text-sky-600" : "bg-sky-600 text-white shadow-sky-600/25 group-hover:bg-sky-700"
-            }`}>
-              IE
+            <div className="w-11 h-11 rounded-xl overflow-hidden shadow-md shadow-sky-600/30 border border-sky-400/40 shrink-0 bg-slate-900 group-hover:scale-105 transition-transform">
+              <img 
+                src="/infinite-logo.png" 
+                alt="Infinite Enterprise Logo" 
+                className="w-full h-full object-cover"
+              />
             </div>
             <div className="flex items-center gap-2">
               <span className={`text-2xl font-black tracking-tight transition-colors ${
