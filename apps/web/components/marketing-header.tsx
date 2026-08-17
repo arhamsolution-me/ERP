@@ -303,10 +303,13 @@ export function MarketingHeader() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                   
                   {/* LEFT SIDEBAR NAVIGATION */}
-                  <div className="lg:col-span-4 space-y-1">
-                    <span className="text-[10px] font-extrabold tracking-widest text-slate-400 uppercase mb-3 block px-3">
-                      OUR MODULES & CAPABILITIES
-                    </span>
+                  <div className="lg:col-span-4 space-y-0.5 border-r border-slate-100 pr-5">
+                    <div className="flex items-center gap-2 px-3 pb-3 mb-2 border-b border-slate-100">
+                      <div className="w-1 h-4 rounded-full bg-blue-600" />
+                      <span className="text-[11px] font-semibold tracking-[0.12em] text-slate-500 uppercase">
+                        Our Modules &amp; Capabilities
+                      </span>
+                    </div>
                     {moduleTabs.map((tab) => {
                       const IconComp = tab.icon;
                       const isActive = activeModuleTab === tab.id;
@@ -315,24 +318,28 @@ export function MarketingHeader() {
                           key={tab.id}
                           onMouseEnter={() => setActiveModuleTab(tab.id)}
                           onClick={() => setActiveModuleTab(tab.id)}
-                          className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all ${
+                          className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-[13.5px] font-semibold transition-all ${
                             isActive
                               ? "bg-blue-600 text-white shadow-md shadow-blue-600/25"
-                              : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+                              : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                           }`}
                         >
                           <div className="flex items-center gap-3">
-                            <IconComp className={`w-4.5 h-4.5 ${isActive ? "text-white" : "text-blue-600"}`} />
+                            <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all ${
+                              isActive ? "bg-white/20" : "bg-blue-50"
+                            }`}>
+                              <IconComp className={`w-4 h-4 ${isActive ? "text-white" : "text-blue-600"}`} />
+                            </div>
                             <span>{tab.title}</span>
                           </div>
-                          <ChevronRight className={`w-4 h-4 transition-transform ${isActive ? "text-white translate-x-0.5" : "text-slate-400"}`} />
+                          <ChevronRight className={`w-3.5 h-3.5 shrink-0 transition-transform ${isActive ? "text-white/80 translate-x-0.5" : "text-slate-300"}`} />
                         </button>
                       );
                     })}
                   </div>
 
-                  {/* VERTICAL DIVIDER & RIGHT CONTENT DISPLAY PANEL */}
-                  <div className="lg:col-span-8 border-l border-slate-200/90 pl-6 space-y-6">
+                  {/* RIGHT CONTENT DISPLAY PANEL */}
+                  <div className="lg:col-span-8 pl-5 space-y-5">
                     {(() => {
                       const currentTab = moduleTabs.find(t => t.id === activeModuleTab) || moduleTabs[0];
                       const IconMain = currentTab.icon;
