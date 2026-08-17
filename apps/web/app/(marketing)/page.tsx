@@ -76,7 +76,7 @@ export default function Homepage() {
     <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900 font-sans overflow-hidden">
       
       {/* WHITE THEME HERO SECTION WITH MULTI-IMAGE CAROUSEL */}
-      <section className="relative flex items-center bg-white border-b border-slate-200 overflow-hidden pt-40 sm:pt-44 lg:pt-48 pb-20 min-h-[700px] lg:min-h-[760px]">
+      <section className="relative flex items-center bg-white border-b border-slate-200 overflow-hidden pt-48 sm:pt-56 lg:pt-64 pb-32 sm:pb-40 min-h-[850px] lg:min-h-[920px] xl:min-h-[980px]">
         
         {/* Background Multi-Image Slideshow */}
         <div className="absolute inset-0 z-0">
@@ -98,7 +98,7 @@ export default function Homepage() {
         </div>
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-20 text-left">
-          <div className="max-w-3xl space-y-6 pt-4 sm:pt-6">
+          <div className="max-w-3xl space-y-8 sm:space-y-10 pt-8 sm:pt-12">
 
             {/* Dynamic Animated Title in Fixed Height Container (Zero Layout Jump) */}
             <div className="min-h-[160px] sm:min-h-[200px] lg:min-h-[220px] flex items-center">
