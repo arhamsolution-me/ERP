@@ -351,18 +351,18 @@ export function MarketingHeader() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 sm:h-22 items-center justify-between">
           
-          {/* Brand Logo */}
+          {/* Brand Logo - Infinite Enterprise */}
           <Link href="/" className="flex items-center gap-3 group" onClick={() => setActiveMenu(null)}>
-            <div className={`w-10.5 h-10.5 rounded-xl flex items-center justify-center shadow-md transition-all ${
-              isScrolled ? "bg-white text-sky-600 font-bold" : "bg-sky-600 text-white shadow-sky-600/25 group-hover:bg-sky-700"
+            <div className={`w-10.5 h-10.5 rounded-xl flex items-center justify-center shadow-md transition-all font-black text-lg ${
+              isScrolled ? "bg-white text-sky-600" : "bg-sky-600 text-white shadow-sky-600/25 group-hover:bg-sky-700"
             }`}>
-              <Box className="w-6 h-6" />
+              IE
             </div>
             <div className="flex items-center gap-2">
               <span className={`text-2xl font-black tracking-tight transition-colors ${
                 isScrolled ? "text-white" : "text-slate-900"
               }`}>
-                Nex<span className={isScrolled ? "text-sky-200" : "text-sky-600"}>ERP</span>
+                Infinite<span className={isScrolled ? "text-sky-200" : "text-sky-600"}>Enterprise</span>
               </span>
             </div>
           </Link>
@@ -473,7 +473,7 @@ export function MarketingHeader() {
                   {/* LEFT SIDEBAR NAVIGATION */}
                   <div className="lg:col-span-4 space-y-1">
                     <span className="text-sm font-black tracking-widest text-slate-500 uppercase mb-3 block px-4 font-sans">
-                      OUR MODULES
+                      INFINITE MODULES
                     </span>
                     {moduleTabs.map((tab) => {
                       const IconComp = tab.icon;
@@ -555,7 +555,7 @@ export function MarketingHeader() {
                   {/* LEFT SIDEBAR NAVIGATION */}
                   <div className="lg:col-span-4 space-y-1">
                     <span className="text-sm font-black tracking-widest text-slate-500 uppercase mb-3 block px-4 font-sans">
-                      OUR INDUSTRIES
+                      INFINITE INDUSTRIES
                     </span>
                     {industryTabs.map((tab) => {
                       const IconComp = tab.icon;
