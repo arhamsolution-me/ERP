@@ -22,13 +22,15 @@ import {
   Zap,
   Lock,
   ShoppingCart,
-  Truck
+  Truck,
+  ChevronRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function MarketingHeader() {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeModuleTab, setActiveModuleTab] = useState<string>("production");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,6 +47,129 @@ export function MarketingHeader() {
   const toggleMenu = (menu: string) => {
     setActiveMenu(activeMenu === menu ? null : menu);
   };
+
+  const moduleTabs = [
+    {
+      id: "production",
+      title: "Production & Textile MES",
+      icon: Factory,
+      desc: "Raw cotton yarn tracking, weaving looms, chemical dyeing recipes, and machine scorecards.",
+      features: [
+        "Cotton Bale Lot Tracking",
+        "Weaving Loom Efficiency",
+        "Chemical Vat Dye Recipes",
+        "Worker Shift Allocation",
+        "Fabric Roll Quality Control",
+        "Scrap & Wastage Reports"
+      ],
+      link: "/features#production"
+    },
+    {
+      id: "inventory",
+      title: "Inventory & Smart WMS",
+      icon: Package,
+      desc: "Multi-warehouse inventory management, inter-store transfers, and automated reorder limits.",
+      features: [
+        "Multi-Warehouse Control",
+        "Inter-Store Stock Transfers",
+        "Barcode & SKU Tags",
+        "Reorder Limit Alerts",
+        "Batch Expiry Tracking",
+        "Audit Stock Valuation"
+      ],
+      link: "/features#warehouse"
+    },
+    {
+      id: "pos",
+      title: "Retail POS Terminals",
+      icon: Store,
+      desc: "Fast barcode billing, offline transaction queue, receipt printing, and cashier registers.",
+      features: [
+        "1.2s Barcode Scanning",
+        "Offline Sales Queue",
+        "Cashier Register Shifts",
+        "Thermal Receipt Print",
+        "Customer Loyalty Points",
+        "Discount Voucher Engine"
+      ],
+      link: "/features#pos"
+    },
+    {
+      id: "sales",
+      title: "Sales & B2B Wholesale",
+      icon: ShoppingCart,
+      desc: "Bulk B2B customer orders, distributor pricing tiers, and credit limit management.",
+      features: [
+        "Bulk Wholesale Orders",
+        "Tiered Distributor Prices",
+        "Customer Credit Limits",
+        "Proforma Invoicing",
+        "Sales Rep Tracking",
+        "Dispatch Gate Passes"
+      ],
+      link: "/features#sales"
+    },
+    {
+      id: "finance",
+      title: "Finance & General Ledger",
+      icon: Receipt,
+      desc: "Double-entry general ledger, customer invoicing, bank reconciliation, and P&L reporting.",
+      features: [
+        "Automated Double-Entry GL",
+        "Customer Tax Invoices",
+        "Bank Statement Sync",
+        "Profit & Loss (P&L)",
+        "Balance Sheet Engine",
+        "Tax Audit Compliance"
+      ],
+      link: "/features#finance"
+    },
+    {
+      id: "procurement",
+      title: "Procurement & Purchase PO",
+      icon: Truck,
+      desc: "Purchase orders PO, goods received note GRN physical verification, and vendor aging.",
+      features: [
+        "Purchase Orders (PO)",
+        "GRN Physical Verification",
+        "Vendor Price Quotes",
+        "AP Vendor Payable Aging",
+        "Return Debit Notes",
+        "Supplier Performance"
+      ],
+      link: "/features#procurement"
+    },
+    {
+      id: "hr",
+      title: "HR & Worker Payroll",
+      icon: Users2,
+      desc: "Staff attendance, piece-rate worker payroll slips, advances, and department management.",
+      features: [
+        "Staff Attendance Logs",
+        "Piece-Rate Worker Slips",
+        "Advance Salary Loans",
+        "Monthly Payroll Slips",
+        "Department Hierarchy",
+        "Leave Approval Workflows"
+      ],
+      link: "/features#hr"
+    },
+    {
+      id: "platform",
+      title: "Platform & Governance",
+      icon: ShieldCheck,
+      desc: "Multi-tenant PostgreSQL row-level security RLS, enterprise RBAC, and audit logs.",
+      features: [
+        "PostgreSQL Multi-Tenant RLS",
+        "Enterprise RBAC Roles",
+        "Full Activity Audit Logs",
+        "Clerk OAuth & MFA Sync",
+        "99.99% SLA Uptime Cloud",
+        "REST & GraphQL APIs"
+      ],
+      link: "/features#security"
+    }
+  ];
 
   return (
     <header 
@@ -173,113 +298,84 @@ export function MarketingHeader() {
           >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-7">
               
-              {/* SUBHEADER MENU 1: MODULES & CAPABILITIES (ALL 8 CORE SYSTEM MODULES) */}
+              {/* SUBHEADER MENU 1: MODULES & CAPABILITIES (SIDEBAR TABBED LAYOUT MATCHED TO SCREENSHOT) */}
               {activeMenu === "modules" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                   
-                  {/* Module 1: Production MES */}
-                  <Link 
-                    href="/features#production" 
-                    onClick={() => setActiveMenu(null)}
-                    className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-200"
-                  >
-                    <div className="flex items-center gap-2.5 mb-1.5">
-                      <Factory className="w-4.5 h-4.5 text-blue-600" />
-                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Production & Textile MES</h4>
-                    </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">Raw yarn lot tracking, weaving looms, dyeing recipes, and quality control.</p>
-                  </Link>
+                  {/* LEFT SIDEBAR NAVIGATION */}
+                  <div className="lg:col-span-4 space-y-1">
+                    <span className="text-[10px] font-extrabold tracking-widest text-slate-400 uppercase mb-3 block px-3">
+                      OUR MODULES & CAPABILITIES
+                    </span>
+                    {moduleTabs.map((tab) => {
+                      const IconComp = tab.icon;
+                      const isActive = activeModuleTab === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          onMouseEnter={() => setActiveModuleTab(tab.id)}
+                          onClick={() => setActiveModuleTab(tab.id)}
+                          className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all ${
+                            isActive
+                              ? "bg-blue-600 text-white shadow-md shadow-blue-600/25"
+                              : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <IconComp className={`w-4.5 h-4.5 ${isActive ? "text-white" : "text-blue-600"}`} />
+                            <span>{tab.title}</span>
+                          </div>
+                          <ChevronRight className={`w-4 h-4 transition-transform ${isActive ? "text-white translate-x-0.5" : "text-slate-400"}`} />
+                        </button>
+                      );
+                    })}
+                  </div>
 
-                  {/* Module 2: Inventory WMS */}
-                  <Link 
-                    href="/features#warehouse" 
-                    onClick={() => setActiveMenu(null)}
-                    className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-200"
-                  >
-                    <div className="flex items-center gap-2.5 mb-1.5">
-                      <Package className="w-4.5 h-4.5 text-blue-600" />
-                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Inventory & Smart WMS</h4>
-                    </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">Multi-warehouse stock tracking, inter-store transfers, and reorder limits.</p>
-                  </Link>
+                  {/* VERTICAL DIVIDER & RIGHT CONTENT DISPLAY PANEL */}
+                  <div className="lg:col-span-8 border-l border-slate-200/90 pl-6 space-y-6">
+                    {(() => {
+                      const currentTab = moduleTabs.find(t => t.id === activeModuleTab) || moduleTabs[0];
+                      const IconMain = currentTab.icon;
+                      return (
+                        <div className="space-y-6">
+                          {/* Module Header & Description */}
+                          <div className="flex items-start gap-4">
+                            <div className="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-600/25 shrink-0">
+                              <IconMain className="w-6 h-6" />
+                            </div>
+                            <div className="space-y-1">
+                              <h3 className="text-lg font-extrabold text-slate-900 leading-tight">
+                                {currentTab.title}
+                              </h3>
+                              <p className="text-xs text-slate-500 leading-relaxed max-w-xl">
+                                {currentTab.desc}
+                              </p>
+                            </div>
+                          </div>
 
-                  {/* Module 3: Retail POS */}
-                  <Link 
-                    href="/features#pos" 
-                    onClick={() => setActiveMenu(null)}
-                    className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-200"
-                  >
-                    <div className="flex items-center gap-2.5 mb-1.5">
-                      <Store className="w-4.5 h-4.5 text-blue-600" />
-                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Retail POS Terminals</h4>
-                    </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">1.2s fast barcode checkout, offline register queue, and receipt printing.</p>
-                  </Link>
+                          {/* 3-Column Bullet Features Grid */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-4 pb-4 border-t border-b border-slate-100">
+                            {currentTab.features.map((feat, idx) => (
+                              <div key={idx} className="flex items-center gap-2 text-xs font-semibold text-slate-700">
+                                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />
+                                <span>{feat}</span>
+                              </div>
+                            ))}
+                          </div>
 
-                  {/* Module 4: Sales B2B */}
-                  <Link 
-                    href="/features#sales" 
-                    onClick={() => setActiveMenu(null)}
-                    className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-200"
-                  >
-                    <div className="flex items-center gap-2.5 mb-1.5">
-                      <ShoppingCart className="w-4.5 h-4.5 text-blue-600" />
-                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Sales & B2B Wholesale</h4>
-                    </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">Bulk B2B orders, tiered distributor pricing, and customer credit limits.</p>
-                  </Link>
-
-                  {/* Module 5: Finance GL */}
-                  <Link 
-                    href="/features#finance" 
-                    onClick={() => setActiveMenu(null)}
-                    className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-200"
-                  >
-                    <div className="flex items-center gap-2.5 mb-1.5">
-                      <Receipt className="w-4.5 h-4.5 text-blue-600" />
-                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Finance & General Ledger</h4>
-                    </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">Double-entry accounting, customer invoicing, bank reconciliation, and P&L.</p>
-                  </Link>
-
-                  {/* Module 6: Procurement PO */}
-                  <Link 
-                    href="/features#procurement" 
-                    onClick={() => setActiveMenu(null)}
-                    className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-200"
-                  >
-                    <div className="flex items-center gap-2.5 mb-1.5">
-                      <Truck className="w-4.5 h-4.5 text-blue-600" />
-                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Procurement & Purchase PO</h4>
-                    </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">Purchase orders PO, GRN physical verification, and AP vendor aging.</p>
-                  </Link>
-
-                  {/* Module 7: HR & Payroll */}
-                  <Link 
-                    href="/features#hr" 
-                    onClick={() => setActiveMenu(null)}
-                    className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-200"
-                  >
-                    <div className="flex items-center gap-2.5 mb-1.5">
-                      <Users2 className="w-4.5 h-4.5 text-blue-600" />
-                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">HR & Worker Payroll</h4>
-                    </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">Staff attendance, piece-rate worker payroll slips, and loan tracking.</p>
-                  </Link>
-
-                  {/* Module 8: Platform Governance */}
-                  <Link 
-                    href="/features#security" 
-                    onClick={() => setActiveMenu(null)}
-                    className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-200"
-                  >
-                    <div className="flex items-center gap-2.5 mb-1.5">
-                      <ShieldCheck className="w-4.5 h-4.5 text-blue-600" />
-                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Platform & Governance</h4>
-                    </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">Multi-Tenant Row-Level Security RLS, enterprise RBAC, and audit logs.</p>
-                  </Link>
+                          {/* Bottom CTA Action Link */}
+                          <Link 
+                            href={currentTab.link}
+                            onClick={() => setActiveMenu(null)}
+                            className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 group transition-colors"
+                          >
+                            <span>View all {currentTab.title} capabilities</span>
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          </Link>
+                        </div>
+                      );
+                    })()}
+                  </div>
 
                 </div>
               )}
