@@ -102,26 +102,7 @@ export default function Homepage() {
         </div>
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-20 text-left">
-          <div className="max-w-3xl space-y-8">
-            
-            {/* Animated Category Badge */}
-            <AnimatePresence mode="wait">
-              <motion.div 
-                key={currentSlide}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.4 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-50/90 border border-sky-200/90 text-sky-700 text-xs sm:text-sm font-bold shadow-sm backdrop-blur-md"
-              >
-                <span className="flex h-2 w-2 rounded-full bg-sky-600 animate-pulse" />
-                <Box className="w-4 h-4 text-sky-600" />
-                <span>{slides[currentSlide].badge}</span>
-                <span className="ml-2 pl-2 border-l border-sky-200/90 text-sky-500 font-mono text-[11px] font-bold">
-                  0{currentSlide + 1} / 0{slides.length}
-                </span>
-              </motion.div>
-            </AnimatePresence>
+          <div className="max-w-3xl space-y-8 pt-10 sm:pt-12">
 
             {/* Dynamic Animated Title */}
             <AnimatePresence mode="wait">
