@@ -76,7 +76,7 @@ export default function Homepage() {
     <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900 font-sans overflow-hidden">
       
       {/* WHITE THEME HERO SECTION WITH MULTI-IMAGE CAROUSEL */}
-      <section className="relative flex items-center bg-white border-b border-slate-200 overflow-hidden pt-32 sm:pt-36 pb-16 min-h-[660px] lg:min-h-[720px]">
+      <section className="relative flex items-center bg-white border-b border-slate-200 overflow-hidden pt-40 sm:pt-44 lg:pt-48 pb-20 min-h-[700px] lg:min-h-[760px]">
         
         {/* Background Multi-Image Slideshow */}
         <div className="absolute inset-0 z-0">
