@@ -88,28 +88,28 @@ export default function ContactPage() {
                 <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
                   <User className="w-4 h-4 text-slate-400" /> Full Name
                 </label>
-                <Input required name="name" placeholder="John Doe" className="h-12 bg-slate-50" />
+                <Input required name="name" placeholder="Your Full Name" className="h-12 bg-slate-50" />
               </div>
               
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
                   <Mail className="w-4 h-4 text-slate-400" /> Work Email
                 </label>
-                <Input required type="email" name="email" placeholder="john@company.com" className="h-12 bg-slate-50" />
+                <Input required type="email" name="email" placeholder="name@company.com" className="h-12 bg-slate-50" />
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
                   <Building2 className="w-4 h-4 text-slate-400" /> Company Name
                 </label>
-                <Input required name="company" placeholder="Acme Textiles Ltd." className="h-12 bg-slate-50" />
+                <Input required name="company" placeholder="Your Company Name" className="h-12 bg-slate-50" />
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
                   <MessageSquare className="w-4 h-4 text-slate-400" /> How can we help?
                 </label>
-                <Textarea required name="message" placeholder="Tell us about your current challenges..." className="min-h-[120px] bg-slate-50" />
+                <Textarea required name="message" placeholder="Tell us about your requirements..." className="min-h-[120px] bg-slate-50" />
               </div>
 
               <Button 

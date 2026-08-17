@@ -1,8 +1,19 @@
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PlusCircle, Activity, AlertCircle, Settings2, BarChart3, Clock } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import Link from "next/link";
+
+const stageDistributionData = [
+  { stage: 'Spinning', count: 5 },
+  { stage: 'Weaving', count: 8 },
+  { stage: 'Dyeing', count: 6 },
+  { stage: 'Finishing', count: 3 },
+  { stage: 'QC Pass', count: 2 },
+];
 
 export default function ProductionDashboardPage() {
   return (
@@ -11,12 +22,11 @@ export default function ProductionDashboardPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Production Dashboard</h1>
           <p className="text-muted-foreground">
-            Overview of mill activity, machine status, and active batches.
+            Overview of mill activity, machine status, and active manufacturing batches.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {/* Date Range Placeholder */}
-          <Button variant="outline" size="sm">Today</Button>
+          <Button variant="outline" size="sm">Current Shift</Button>
           <Link href="/production/batches/new">
             <Button size="sm">
               <PlusCircle className="mr-2 h-4 w-4" />
@@ -79,19 +89,24 @@ export default function ProductionDashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        {/* Stage Distribution (Placeholder for Donut Chart) */}
+        {/* Stage Distribution Chart */}
         <Card className="col-span-1 lg:col-span-3">
           <CardHeader>
             <CardTitle>Stage Distribution</CardTitle>
             <CardDescription>
-              Active batches across production stages
+              Active batches currently in processing stages
             </CardDescription>
           </CardHeader>
-          <CardContent className="h-[300px] flex items-center justify-center bg-slate-50 rounded-md border border-dashed">
-            <div className="text-sm text-muted-foreground text-center">
-              [Donut Chart Placeholder]<br/>
-              Spinning: 5, Weaving: 8, Dyeing: 6, Finishing: 3, QC: 2
-            </div>
+          <CardContent className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={stageDistributionData} margin={{ top: 20, right: 20, left: -10, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="stage" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
+                <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
+                <Tooltip formatter={(val) => [`${val} Batches`, 'In Stage']} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                <Bar dataKey="count" fill="#6366f1" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
 
@@ -100,7 +115,7 @@ export default function ProductionDashboardPage() {
           <CardHeader>
             <CardTitle>Recent Downtime Alerts</CardTitle>
             <CardDescription>
-              Machine stops requiring attention
+              Machine stops requiring operator attention
             </CardDescription>
           </CardHeader>
           <CardContent>

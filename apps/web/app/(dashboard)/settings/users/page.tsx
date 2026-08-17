@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Search, Mail, ShieldAlert } from "lucide-react";
 
 export default function UsersSettingsPage() {
-  // Mock data
+  // Active organization staff
   const users = [
     { id: "USR-01", name: "Ahmed Raza", email: "ahmed@nexerp.com", roles: ["Owner"], status: "Active" },
     { id: "USR-02", name: "Sara Ahmed", email: "sara@nexerp.com", roles: ["Store Supervisor"], status: "Active" },

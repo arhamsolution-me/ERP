@@ -1,7 +1,20 @@
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DollarSign, CreditCard, TrendingUp, Users, ArrowUpRight } from "lucide-react";
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import Link from "next/link";
+
+const salesTrendData = [
+  { day: 'Mon', revenue: 4200 },
+  { day: 'Tue', revenue: 5800 },
+  { day: 'Wed', revenue: 7100 },
+  { day: 'Thu', revenue: 6400 },
+  { day: 'Fri', revenue: 9200 },
+  { day: 'Sat', revenue: 11500 },
+  { day: 'Sun', revenue: 9800 },
+];
 
 export default function SalesDashboardPage() {
   return (
@@ -10,7 +23,7 @@ export default function SalesDashboardPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Sales Dashboard</h1>
           <p className="text-muted-foreground">
-            Revenue and performance overview across all retail branches.
+            Revenue and performance overview across retail branches and wholesale.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -44,7 +57,7 @@ export default function SalesDashboardPage() {
             <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+2350</div>
+            <div className="text-2xl font-bold">+2,350</div>
             <p className="text-xs text-muted-foreground mt-1">
               +180 since yesterday
             </p>
@@ -86,11 +99,22 @@ export default function SalesDashboardPage() {
               Daily sales revenue over the selected period
             </CardDescription>
           </CardHeader>
-          <CardContent className="h-[300px] flex items-center justify-center bg-slate-50 rounded-md border border-dashed">
-            <div className="text-sm text-muted-foreground text-center">
-              [Line Chart Placeholder]<br/>
-              Trend line of daily sales
-            </div>
+          <CardContent className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={salesTrendData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="salesGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="day" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `$${v/1000}k`} />
+                <Tooltip formatter={(v) => [`$${v}`, 'Revenue']} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                <Area type="monotone" dataKey="revenue" stroke="#2563eb" strokeWidth={3} fillOpacity={1} fill="url(#salesGrad)" />
+              </AreaChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
 

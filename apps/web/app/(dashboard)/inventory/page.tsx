@@ -1,7 +1,16 @@
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Package, AlertTriangle, ArrowRightLeft, TrendingUp } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import Link from "next/link";
+
+const warehouseDistribution = [
+  { name: 'Main Warehouse', value: 800 },
+  { name: 'Retail Hub', value: 300 },
+  { name: 'Outlet Store', value: 100 },
+];
 
 export default function InventoryDashboardPage() {
   return (
@@ -33,7 +42,7 @@ export default function InventoryDashboardPage() {
           <CardContent>
             <div className="text-2xl font-bold">1,248</div>
             <p className="text-xs text-muted-foreground">
-              Across 4 categories
+              Across active categories
             </p>
           </CardContent>
         </Card>
@@ -57,7 +66,7 @@ export default function InventoryDashboardPage() {
           <CardContent>
             <div className="text-2xl font-bold text-orange-600">14</div>
             <p className="text-xs text-muted-foreground">
-              Items below reorder point
+              Items below reorder threshold
             </p>
           </CardContent>
         </Card>
@@ -80,14 +89,19 @@ export default function InventoryDashboardPage() {
           <CardHeader>
             <CardTitle>Warehouse Stock Value</CardTitle>
             <CardDescription>
-              Distribution of inventory value by location
+              Distribution of inventory value by location ($ in thousands)
             </CardDescription>
           </CardHeader>
-          <CardContent className="h-[300px] flex items-center justify-center bg-slate-50 rounded-md border border-dashed">
-            <div className="text-sm text-muted-foreground text-center">
-              [Bar Chart Placeholder]<br/>
-              Main Warehouse: $800k, Retail Hub: $300k, Outlet: $100k
-            </div>
+          <CardContent className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={warehouseDistribution} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="name" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `$${val}k`} />
+                <Tooltip formatter={(val) => [`$${val}k`, 'Stock Value']} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                <Bar dataKey="value" fill="#3b82f6" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
 
@@ -95,7 +109,7 @@ export default function InventoryDashboardPage() {
           <CardHeader>
             <CardTitle>Recent Movements</CardTitle>
             <CardDescription>
-              Latest inbound and outbound transactions
+              Latest inbound and outbound stock logs
             </CardDescription>
           </CardHeader>
           <CardContent>

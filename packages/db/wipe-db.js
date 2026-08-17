@@ -1,13 +1,18 @@
 const { Client } = require('pg');
 
 async function main() {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('FATAL: Database wipe utility is strictly prohibited in production environment.');
+  }
+
+  const connectionString = process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/nexerp?schema=public";
   const client = new Client({
-    connectionString: "postgresql://postgres:postgres@localhost:5432/nexerp?schema=public"
+    connectionString,
   });
 
   try {
     await client.connect();
-    console.log("Connected to PostgreSQL. Wiping tables...");
+    console.log("Connected to PostgreSQL (Dev/Test). Wiping tables...");
     
     // Get all table names
     const res = await client.query(`SELECT tablename FROM pg_tables WHERE schemaname='public'`);
@@ -19,7 +24,7 @@ async function main() {
 
     if (tables.length > 0) {
       await client.query(`TRUNCATE TABLE ${tables} CASCADE;`);
-      console.log("✅ Database successfully cleaned (truncated all tables).");
+      console.log("✅ Database successfully cleaned (truncated all tables in development).");
     } else {
       console.log("No tables found to wipe.");
     }

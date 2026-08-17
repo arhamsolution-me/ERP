@@ -427,9 +427,9 @@ export function MarketingHeader() {
 
           {/* Right: Contact Email & Phone */}
           <div className="flex items-center gap-6">
-            <a href="mailto:devnexes.support@gmail.com" className="flex items-center gap-2 hover:text-sky-200 transition-colors">
-              <Mail className="w-4 h-4 text-sky-200" />
-              <span>devnexes.support@gmail.com</span>
+            <a href="mailto:support@devnexes.com" className="flex items-center gap-2 hover:text-sky-200 transition-colors">
+              <Mail className="w-4 h-4 text-sky-400" />
+              <span>support@devnexes.com</span>
             </a>
 
             <a href="tel:+923030111550" className="flex items-center gap-2 hover:text-sky-200 transition-colors">
