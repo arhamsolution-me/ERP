@@ -1,0 +1,889 @@
+// packages/db/prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ------------------------------------------------------
+// 2. Platform-Level Tables (NOT tenant-scoped)
+// ------------------------------------------------------
+
+enum BusinessType {
+  textile
+  retail
+  hybrid
+}
+
+enum TenantStatus {
+  active
+  suspended
+  trial
+}
+
+model PlatformAdmin {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email         String   @unique
+  password_hash String
+  mfa_secret    String?
+  role          String
+  created_at    DateTime @default(now()) @db.Timestamptz
+}
+
+model Tenant {
+  id                   String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  business_name        String
+  business_type        BusinessType
+  subdomain            String?      @unique
+  custom_domain        String?      @unique
+  subscription_plan_id String?      @db.Uuid
+  status               TenantStatus
+  country              String
+  default_currency     String
+  default_timezone     String
+  created_at           DateTime     @default(now()) @db.Timestamptz
+  
+  accepted_tos_version String?
+  accepted_tos_at      DateTime?    @db.Timestamptz
+  
+  // Relations
+  users                User[]
+  roles                Role[]
+  sessions             Session[]
+  audit_logs           AuditLog[]
+  raw_materials        RawMaterial[]
+  material_lots        MaterialLot[]
+  production_batches   ProductionBatch[]
+  batch_stage_logs     BatchStageLog[]
+  dyeing_recipes       DyeingRecipe[]
+  machines             Machine[]
+  machine_downtimes    MachineDowntimeLog[]
+  quality_checks       QualityCheck[]
+  warehouses           Warehouse[]
+  products             Product[]
+  product_variants     ProductVariant[]
+  stock_levels         StockLevel[]
+  stock_movements      StockMovement[]
+  stock_transfers      StockTransfer[]
+  customers            Customer[]
+  pos_terminals        PosTerminal[]
+  pos_transactions     PosTransaction[]
+  pos_transaction_items PosTransactionItem[]
+  wholesale_orders     WholesaleOrder[]
+  wholesale_order_items WholesaleOrderItem[]
+  invoices             Invoice[]
+  payments             Payment[]
+  bank_accounts        BankAccount[]
+  bank_reconciliations BankReconciliation[]
+  export_documents     ExportDocument[]
+  employees            Employee[]
+  attendance_logs      AttendanceLog[]
+  payroll_runs         PayrollRun[]
+  payroll_line_items   PayrollLineItem[]
+  leave_requests       LeaveRequest[]
+  demand_forecasts     DemandForecast[]
+  ai_query_logs        AiQueryLog[]
+  
+  api_keys             ApiKey[]
+  webhook_endpoints    WebhookEndpoint[]
+}
+
+model SubscriptionPlan {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name           String
+  max_users      Int
+  max_branches   Int
+  price_monthly  BigInt
+  features_json  Json
+}
+
+// ------------------------------------------------------
+// 3. Identity & Access Tables
+// ------------------------------------------------------
+
+enum UserStatus {
+  active
+  suspended
+  invited
+}
+
+model User {
+  id                    String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id             String     @db.Uuid
+  clerk_id              String?    @unique
+  email                 String
+  phone                 String?
+  password_hash         String?
+  mfa_enabled           Boolean    @default(false)
+  mfa_secret            String?
+  status                UserStatus
+  invited_by            String?    @db.Uuid
+  last_login_at         DateTime?  @db.Timestamptz
+  failed_login_attempts Int        @default(0)
+  locked_until          DateTime?  @db.Timestamptz
+  
+  created_at            DateTime   @default(now()) @db.Timestamptz
+  updated_at            DateTime   @default(now()) @db.Timestamptz
+  deleted_at            DateTime?  @db.Timestamptz
+
+  tenant                Tenant     @relation(fields: [tenant_id], references: [id])
+  user_roles            UserRole[]
+  sessions              Session[]
+  
+  @@index([tenant_id, created_at(sort: Desc)])
+  @@unique([tenant_id, email])
+}
+
+model Role {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id      String   @db.Uuid
+  name           String
+  is_system_role Boolean  @default(false)
+  description    String?
+
+  created_at     DateTime @default(now()) @db.Timestamptz
+  updated_at     DateTime @default(now()) @db.Timestamptz
+  deleted_at     DateTime? @db.Timestamptz
+  
+  tenant         Tenant   @relation(fields: [tenant_id], references: [id])
+  role_perms     RolePermission[]
+  user_roles     UserRole[]
+
+  @@index([tenant_id, created_at(sort: Desc)])
+}
+
+model Permission {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code        String   @unique
+  module      String
+  description String?
+  
+  role_perms  RolePermission[]
+}
+
+model RolePermission {
+  role_id       String @db.Uuid
+  permission_id String @db.Uuid
+  
+  role          Role   @relation(fields: [role_id], references: [id])
+  permission    Permission @relation(fields: [permission_id], references: [id])
+
+  @@id([role_id, permission_id])
+}
+
+model UserRole {
+  user_id   String  @db.Uuid
+  role_id   String  @db.Uuid
+  branch_id String? @db.Uuid
+
+  user      User    @relation(fields: [user_id], references: [id])
+  role      Role    @relation(fields: [role_id], references: [id])
+
+  @@id([user_id, role_id])
+}
+
+model Session {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id            String    @db.Uuid
+  tenant_id          String    @db.Uuid
+  refresh_token_hash String
+  device_fingerprint String?
+  ip_address         String?
+  user_agent         String?
+  created_at         DateTime  @default(now()) @db.Timestamptz
+  expires_at         DateTime  @db.Timestamptz
+  revoked_at         DateTime? @db.Timestamptz
+
+  user               User      @relation(fields: [user_id], references: [id])
+  tenant             Tenant    @relation(fields: [tenant_id], references: [id])
+
+  @@index([tenant_id, created_at(sort: Desc)])
+  @@index([user_id])
+}
+
+model AuditLog {
+  id                 String   @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id          String   @db.Uuid
+  user_id            String?  @db.Uuid
+  action             String
+  entity_type        String
+  entity_id          String   @db.Uuid
+  before_json        Json?
+  after_json         Json?
+  ip_address         String?
+  device_fingerprint String?
+  created_at         DateTime @default(now()) @db.Timestamptz
+
+  tenant             Tenant   @relation(fields: [tenant_id], references: [id])
+
+  @@id([id, created_at])
+  @@index([tenant_id, created_at(sort: Desc)])
+}
+
+// ------------------------------------------------------
+// 4. Production Module (Textile)
+// ------------------------------------------------------
+enum MaterialCategory {
+  yarn
+  dye
+  chemical
+  other
+}
+
+enum MaterialUnit {
+  kg
+  meter
+  liter
+  piece
+}
+
+enum BatchStage {
+  spinning
+  weaving
+  dyeing
+  finishing
+  qc
+  completed
+}
+
+enum MachineStatus {
+  running
+  idle
+  maintenance
+  down
+}
+
+enum QcResult {
+  pass
+  fail
+  rework
+}
+
+model RawMaterial {
+  id                String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id         String @db.Uuid
+  name              String
+  category          MaterialCategory
+  unit              MaterialUnit
+  reorder_threshold Int
+
+  tenant            Tenant @relation(fields: [tenant_id], references: [id])
+  lots              MaterialLot[]
+  @@index([tenant_id])
+}
+
+model MaterialLot {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id          String   @db.Uuid
+  raw_material_id    String   @db.Uuid
+  supplier_id        String   @db.Uuid
+  lot_number         String
+  quantity_received  Int
+  quantity_remaining Int
+  unit_cost          BigInt
+  received_at        DateTime @db.Timestamptz
+
+  tenant             Tenant   @relation(fields: [tenant_id], references: [id])
+  raw_material       RawMaterial @relation(fields: [raw_material_id], references: [id])
+  @@index([tenant_id, received_at(sort: Desc)])
+}
+
+model ProductionBatch {
+  id               String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id        String     @db.Uuid
+  batch_number     String
+  product_type     String
+  mill_id          String     @db.Uuid
+  current_stage    BatchStage
+  planned_quantity Int
+  actual_quantity  Int?
+  started_at       DateTime   @db.Timestamptz
+  completed_at     DateTime?  @db.Timestamptz
+  status           String
+  
+  tenant           Tenant     @relation(fields: [tenant_id], references: [id])
+  logs             BatchStageLog[]
+  quality_checks   QualityCheck[]
+  @@index([tenant_id, started_at(sort: Desc)])
+}
+
+model BatchStageLog {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id     String   @db.Uuid
+  batch_id      String   @db.Uuid
+  stage         String
+  supervisor_id String   @db.Uuid
+  machine_id    String?  @db.Uuid
+  started_at    DateTime @db.Timestamptz
+  completed_at  DateTime? @db.Timestamptz
+  wastage_qty   Int?
+  notes         String?
+  
+  tenant        Tenant   @relation(fields: [tenant_id], references: [id])
+  batch         ProductionBatch @relation(fields: [batch_id], references: [id])
+  @@index([tenant_id])
+}
+
+model DyeingRecipe {
+  id                        String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id                 String @db.Uuid
+  name                      String
+  color_code                String
+  chemical_composition_json Json
+  
+  tenant                    Tenant @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id])
+}
+
+model Machine {
+  id        String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id String @db.Uuid
+  mill_id   String @db.Uuid
+  name      String
+  type      String
+  status    MachineStatus
+
+  tenant    Tenant @relation(fields: [tenant_id], references: [id])
+  downtime_logs MachineDowntimeLog[]
+  @@index([tenant_id])
+}
+
+model MachineDowntimeLog {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id   String   @db.Uuid
+  machine_id  String   @db.Uuid
+  reason      String
+  started_at  DateTime @db.Timestamptz
+  resolved_at DateTime? @db.Timestamptz
+
+  tenant      Tenant   @relation(fields: [tenant_id], references: [id])
+  machine     Machine  @relation(fields: [machine_id], references: [id])
+  @@index([tenant_id, started_at(sort: Desc)])
+}
+
+model QualityCheck {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id           String   @db.Uuid
+  batch_id            String   @db.Uuid
+  checkpoint_stage    String
+  inspector_id        String   @db.Uuid
+  result              QcResult
+  defect_type         String?
+  ai_confidence_score Float?
+  image_url           String?
+  checked_at          DateTime @db.Timestamptz
+
+  tenant              Tenant   @relation(fields: [tenant_id], references: [id])
+  batch               ProductionBatch @relation(fields: [batch_id], references: [id])
+  @@index([tenant_id])
+}
+
+// ------------------------------------------------------
+// 5. Inventory & Warehouse Module
+// ------------------------------------------------------
+enum WarehouseType {
+  mill_store
+  distribution_center
+  retail_branch
+}
+
+enum MovementType {
+  inbound
+  outbound
+  transfer
+  adjustment
+  sale
+  return
+}
+
+enum TransferStatus {
+  pending
+  in_transit
+  received
+  disputed
+}
+
+model Warehouse {
+  id        String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id String        @db.Uuid
+  name      String
+  type      WarehouseType
+  address   String?
+  geo_lat   Float?
+  geo_lng   Float?
+
+  tenant    Tenant @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id])
+}
+
+model Product {
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id String  @db.Uuid
+  sku       String
+  name      String
+  category  String?
+  unit      String
+  hsn_code  String?
+  is_active Boolean @default(true)
+
+  tenant    Tenant  @relation(fields: [tenant_id], references: [id])
+  variants  ProductVariant[]
+
+  @@unique([tenant_id, sku])
+}
+
+model ProductVariant {
+  id         String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id  String @db.Uuid
+  product_id String @db.Uuid
+  size       String?
+  color      String?
+  barcode    String?
+
+  tenant     Tenant  @relation(fields: [tenant_id], references: [id])
+  product    Product @relation(fields: [product_id], references: [id])
+
+  @@unique([tenant_id, barcode])
+}
+
+model StockLevel {
+  id                String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id         String @db.Uuid
+  warehouse_id      String @db.Uuid
+  variant_id        String @db.Uuid
+  quantity_on_hand  Int
+  quantity_reserved Int    @default(0)
+  reorder_point     Int?
+
+  tenant            Tenant @relation(fields: [tenant_id], references: [id])
+  @@unique([tenant_id, warehouse_id, variant_id])
+}
+
+model StockMovement {
+  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id      String       @db.Uuid
+  warehouse_id   String       @db.Uuid
+  variant_id     String       @db.Uuid
+  movement_type  MovementType
+  quantity       Int
+  reference_type String?
+  reference_id   String?      @db.Uuid
+  moved_by       String       @db.Uuid
+  created_at     DateTime     @default(now()) @db.Timestamptz
+
+  tenant         Tenant       @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id, created_at(sort: Desc)])
+}
+
+model StockTransfer {
+  id                String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id         String         @db.Uuid
+  from_warehouse_id String         @db.Uuid
+  to_warehouse_id   String         @db.Uuid
+  status            TransferStatus
+  initiated_by      String         @db.Uuid
+  received_by       String?        @db.Uuid
+
+  tenant            Tenant         @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id])
+}
+
+// ------------------------------------------------------
+// 6. Sales & POS Module
+// ------------------------------------------------------
+enum CustomerType {
+  retail
+  wholesale
+}
+
+enum PaymentMethod {
+  cash
+  card
+  jazzcash
+  easypaisa
+  credit
+}
+
+enum SyncStatus {
+  synced
+  pending
+  conflict
+}
+
+enum OrderStatus {
+  draft
+  confirmed
+  fulfilled
+  invoiced
+}
+
+model Customer {
+  id            String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id     String       @db.Uuid
+  name          String
+  phone         String?
+  email         String?
+  customer_type CustomerType
+  credit_limit  BigInt?
+
+  tenant        Tenant       @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id])
+}
+
+model PosTerminal {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id      String    @db.Uuid
+  branch_id      String    @db.Uuid
+  terminal_code  String
+  last_synced_at DateTime? @db.Timestamptz
+
+  tenant         Tenant    @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id])
+}
+
+model PosTransaction {
+  id                 String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id          String        @db.Uuid
+  branch_id          String        @db.Uuid
+  terminal_id        String        @db.Uuid
+  cashier_id         String        @db.Uuid
+  customer_id        String?       @db.Uuid
+  idempotency_key    String        @unique
+  subtotal           BigInt
+  tax_amount         BigInt
+  discount_amount    BigInt
+  total              BigInt
+  payment_method     PaymentMethod
+  sync_status        SyncStatus
+  offline_created_at DateTime?     @db.Timestamptz
+  created_at         DateTime      @default(now()) @db.Timestamptz
+
+  tenant             Tenant        @relation(fields: [tenant_id], references: [id])
+  items              PosTransactionItem[]
+  @@index([tenant_id, created_at(sort: Desc)])
+}
+
+model PosTransactionItem {
+  id             String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id      String         @db.Uuid
+  transaction_id String         @db.Uuid
+  variant_id     String         @db.Uuid
+  quantity       Int
+  unit_price     BigInt
+  line_total     BigInt
+
+  tenant         Tenant         @relation(fields: [tenant_id], references: [id])
+  transaction    PosTransaction @relation(fields: [transaction_id], references: [id])
+  @@index([tenant_id])
+}
+
+model WholesaleOrder {
+  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id    String      @db.Uuid
+  customer_id  String      @db.Uuid
+  branch_id    String      @db.Uuid
+  status       OrderStatus
+  total_amount BigInt
+  created_by   String      @db.Uuid
+  created_at   DateTime    @default(now()) @db.Timestamptz
+
+  tenant       Tenant      @relation(fields: [tenant_id], references: [id])
+  items        WholesaleOrderItem[]
+  @@index([tenant_id, created_at(sort: Desc)])
+}
+
+model WholesaleOrderItem {
+  id         String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id  String         @db.Uuid
+  order_id   String         @db.Uuid
+  variant_id String         @db.Uuid
+  quantity   Int
+  unit_price BigInt
+
+  tenant     Tenant         @relation(fields: [tenant_id], references: [id])
+  order      WholesaleOrder @relation(fields: [order_id], references: [id])
+  @@index([tenant_id])
+}
+
+// ------------------------------------------------------
+// 7. Finance Module
+// ------------------------------------------------------
+enum InvoiceType {
+  sale
+  purchase
+  export
+}
+
+enum InvoiceStatus {
+  draft
+  sent
+  paid
+  overdue
+}
+
+enum ExportDocType {
+  LC
+  invoice
+  packing_list
+}
+
+model Invoice {
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id      String        @db.Uuid
+  invoice_number String        @unique
+  entity_type    InvoiceType
+  reference_id   String?       @db.Uuid
+  amount         BigInt
+  tax_amount     BigInt
+  status         InvoiceStatus
+  due_date       DateTime?     @db.Date
+  created_at     DateTime      @default(now()) @db.Timestamptz
+
+  tenant         Tenant        @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id, created_at(sort: Desc)])
+}
+
+model Payment {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id       String    @db.Uuid
+  invoice_id      String?   @db.Uuid
+  amount          BigInt
+  method          String
+  transaction_ref String?
+  reconciled      Boolean   @default(false)
+  paid_at         DateTime  @db.Timestamptz
+  created_at      DateTime  @default(now()) @db.Timestamptz
+
+  tenant          Tenant    @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id, paid_at(sort: Desc)])
+}
+
+model BankAccount {
+  id                       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id                String @db.Uuid
+  bank_name                String
+  account_number_encrypted String
+  currency                 String
+
+  tenant                   Tenant @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id])
+}
+
+model BankReconciliation {
+  id                 String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id          String  @db.Uuid
+  bank_account_id    String  @db.Uuid
+  statement_line_ref String
+  matched_payment_id String? @db.Uuid
+  status             String
+
+  tenant             Tenant  @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id])
+}
+
+model ExportDocument {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id       String        @db.Uuid
+  batch_id        String?       @db.Uuid
+  document_type   ExportDocType
+  document_number String
+  file_url        String?
+  status          String
+
+  tenant          Tenant        @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id])
+}
+
+// ------------------------------------------------------
+// 8. HR & Payroll Module
+// ------------------------------------------------------
+enum EmployeeRoleType {
+  factory_worker
+  retail_staff
+  management
+}
+
+enum PayType {
+  piece_rate
+  fixed
+}
+
+enum AttendanceSource {
+  biometric
+  manual
+  mobile
+}
+
+enum PayrollStatus {
+  draft
+  approved
+  paid
+}
+
+model Employee {
+  id            String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id     String           @db.Uuid
+  user_id       String?          @db.Uuid
+  employee_code String
+  full_name     String
+  role_type     EmployeeRoleType
+  pay_type      PayType
+  base_rate     BigInt?
+  branch_id     String?          @db.Uuid
+  biometric_id  String?
+
+  tenant        Tenant           @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id])
+}
+
+model AttendanceLog {
+  id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id   String           @db.Uuid
+  employee_id String           @db.Uuid
+  check_in    DateTime         @db.Timestamptz
+  check_out   DateTime?        @db.Timestamptz
+  source      AttendanceSource
+
+  tenant      Tenant           @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id, check_in(sort: Desc)])
+}
+
+model PayrollRun {
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id    String        @db.Uuid
+  period_start DateTime      @db.Date
+  period_end   DateTime      @db.Date
+  status       PayrollStatus
+  approved_by  String?       @db.Uuid
+
+  tenant       Tenant        @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id])
+}
+
+model PayrollLineItem {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id      String @db.Uuid
+  payroll_run_id String @db.Uuid
+  employee_id    String @db.Uuid
+  gross_amount   BigInt
+  deductions     BigInt
+  net_amount     BigInt
+
+  tenant         Tenant @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id])
+}
+
+model LeaveRequest {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id   String   @db.Uuid
+  employee_id String   @db.Uuid
+  type        String
+  start_date  DateTime @db.Date
+  end_date    DateTime @db.Date
+  status      String
+  approved_by String?  @db.Uuid
+
+  tenant      Tenant   @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id])
+}
+
+// ------------------------------------------------------
+// 9. AI Layer Support Tables
+// ------------------------------------------------------
+
+model DemandForecast {
+  id                       String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id                String   @db.Uuid
+  product_id               String   @db.Uuid
+  branch_id                String?  @db.Uuid
+  forecast_period          String
+  predicted_quantity       Int
+  confidence_interval_json Json?
+  model_version            String?
+  generated_at             DateTime @default(now()) @db.Timestamptz
+
+  tenant                   Tenant   @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id])
+}
+
+model AiQueryLog {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id       String   @db.Uuid
+  user_id         String?  @db.Uuid
+  query_text      String
+  response_text   String
+  resolved_intent String?
+  created_at      DateTime @default(now()) @db.Timestamptz
+
+  tenant          Tenant   @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id, created_at(sort: Desc)])
+}
+
+// ------------------------------------------------------
+// 10. Compliance & Legal Tables
+// ------------------------------------------------------
+
+enum RetentionAction {
+  archive
+  delete
+}
+
+model DataRetentionPolicy {
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  category       String
+  retention_days Int
+  action         RetentionAction
+  created_at     DateTime        @default(now()) @db.Timestamptz
+}
+
+// ------------------------------------------------------
+// 11. Public API & Webhooks
+// ------------------------------------------------------
+
+model ApiKey {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id      String    @db.Uuid
+  label          String
+  key_prefix     String    // e.g. nex_live_sk_...
+  key_hash       String    // SHA-256 hash of the full token
+  scopes_json    Json      // Array of allowed scopes e.g. ["products:read", "inventory:write"]
+  ip_allowlist   Json?     // Optional array of allowed IPs
+  created_at     DateTime  @default(now()) @db.Timestamptz
+  last_used_at   DateTime? @db.Timestamptz
+  expires_at     DateTime? @db.Timestamptz
+  revoked_at     DateTime? @db.Timestamptz
+
+  tenant         Tenant    @relation(fields: [tenant_id], references: [id])
+  @@index([tenant_id, created_at(sort: Desc)])
+}
+
+model WebhookEndpoint {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id        String    @db.Uuid
+  url              String
+  events_json      Json      // Array of subscribed events e.g. ["product.created", "inventory.low_stock_triggered"]
+  signing_secret   String    // Used for HMAC SHA256 signature
+  is_active        Boolean   @default(true)
+  created_at       DateTime  @default(now()) @db.Timestamptz
+
+  tenant           Tenant    @relation(fields: [tenant_id], references: [id])
+  delivery_logs    WebhookDeliveryLog[]
+  @@index([tenant_id])
+}
+
+model WebhookDeliveryLog {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  endpoint_id      String    @db.Uuid
+  event_type       String
+  payload_json     Json
+  response_code    Int?
+  response_body    String?
+  attempt_count    Int       @default(1)
+  delivered_at     DateTime? @db.Timestamptz
+  created_at       DateTime  @default(now()) @db.Timestamptz
+
+  endpoint         WebhookEndpoint @relation(fields: [endpoint_id], references: [id])
+  @@index([endpoint_id, created_at(sort: Desc)])
+}
