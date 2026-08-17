@@ -45,7 +45,7 @@ export function MarketingHeader() {
         setIsScrolled(false);
       }
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -177,58 +177,69 @@ export function MarketingHeader() {
   ];
 
   return (
-    <>
-      {/* TOP MINI INFO BAR (Scrolls away naturally) */}
-      {!isScrolled && (
-        <div className="w-full bg-sky-600 text-white border-b border-sky-700/60 py-2.5 px-4 sm:px-6 text-xs sm:text-sm font-bold">
-          <div className="container mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2 bg-sky-700/60 px-3 py-1 rounded-full text-xs border border-sky-500/50 text-sky-100">
-                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                <span>NexERP v4.8 Released</span>
-              </div>
-              <a href="mailto:enterprise@nexerp.io" className="hidden sm:flex items-center gap-2 hover:text-sky-200 transition-colors">
-                <Mail className="w-4 h-4" />
-                <span>enterprise@nexerp.io</span>
-              </a>
-              <a href="tel:+18005927104" className="hidden md:flex items-center gap-2 hover:text-sky-200 transition-colors">
-                <Phone className="w-4 h-4" />
-                <span>+1 (800) 592-7104</span>
-              </a>
+    <header 
+      className={`fixed top-0 inset-x-0 z-50 w-full transition-all duration-300 ease-out ${
+        isScrolled 
+          ? "bg-[#0284c7] backdrop-blur-md border-b border-sky-500/80 text-white shadow-xl shadow-sky-950/20" 
+          : "bg-transparent border-b border-transparent text-slate-900"
+      }`}
+      onMouseLeave={() => setActiveMenu(null)}
+    >
+      {/* TOP MINI INFO BAR - Smooth GPU-accelerated CSS transition with zero DOM lag */}
+      <div 
+        className={`w-full bg-sky-600 text-white border-b border-sky-700/60 overflow-hidden transition-all duration-300 ease-out ${
+          isScrolled 
+            ? "max-h-0 opacity-0 py-0 border-none pointer-events-none" 
+            : "max-h-16 opacity-100 py-2.5 px-4 sm:px-6"
+        }`}
+      >
+        <div className="container mx-auto flex items-center justify-between text-xs sm:text-sm font-bold">
+          
+          {/* Left: Release Announcement & Enterprise Contact */}
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2 bg-sky-700/60 px-3 py-1 rounded-full text-xs border border-sky-500/50 text-sky-100">
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <span>NexERP v4.8 Released</span>
             </div>
 
-            <div className="flex items-center gap-5">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-xs">Cloud SLA: <strong className="text-emerald-300 font-extrabold">99.99% Uptime</strong></span>
-              </div>
-              <span className="hidden sm:inline border-r border-white/30 h-4" />
-              <div className="hidden sm:flex items-center gap-4">
-                <Link href="/features#security" className="flex items-center gap-1.5 hover:text-sky-200 transition-colors">
-                  <ShieldCheck className="w-4 h-4 text-emerald-300" />
-                  <span>ISO 27001 Security</span>
-                </Link>
-                <a href="#" className="hover:text-sky-200 transition-colors flex items-center gap-1">
-                  <Code2 className="w-4 h-4" />
-                  <span>API Docs</span>
-                </a>
-              </div>
+            <a href="mailto:enterprise@nexerp.io" className="hidden sm:flex items-center gap-2 hover:text-sky-200 transition-colors">
+              <Mail className="w-4 h-4" />
+              <span>enterprise@nexerp.io</span>
+            </a>
+
+            <a href="tel:+18005927104" className="hidden md:flex items-center gap-2 hover:text-sky-200 transition-colors">
+              <Phone className="w-4 h-4" />
+              <span>+1 (800) 592-7104</span>
+            </a>
+          </div>
+
+          {/* Right: Live SLA Status & Developer Links */}
+          <div className="flex items-center gap-5">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-xs">Cloud SLA: <strong className="text-emerald-300 font-extrabold">99.99% Uptime</strong></span>
+            </div>
+
+            <span className="hidden sm:inline border-r border-white/30 h-4" />
+
+            <div className="hidden sm:flex items-center gap-4">
+              <Link href="/features#security" className="flex items-center gap-1.5 hover:text-sky-200 transition-colors">
+                <ShieldCheck className="w-4 h-4 text-emerald-300" />
+                <span>ISO 27001 Security</span>
+              </Link>
+              <a href="#" className="hover:text-sky-200 transition-colors flex items-center gap-1">
+                <Code2 className="w-4 h-4" />
+                <span>API Docs</span>
+              </a>
             </div>
           </div>
-        </div>
-      )}
 
-      {/* STICKY MAIN HEADER (Stays stuck at top, turns Sky Blue on scroll) */}
-      <header 
-        className={`sticky top-0 inset-x-0 z-50 w-full transition-colors duration-300 ${
-          isScrolled 
-            ? "bg-[#0284c7] backdrop-blur-md border-b border-sky-500/80 text-white shadow-xl shadow-sky-950/20" 
-            : "bg-white/80 backdrop-blur-md border-b border-slate-200/80 text-slate-900"
-        }`}
-        onMouseLeave={() => setActiveMenu(null)}
-      >
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex h-20 sm:h-22 items-center justify-between">
+        </div>
+      </div>
+
+      {/* STICKY MAIN HEADER */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex h-20 sm:h-22 items-center justify-between">
           
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-3 group" onClick={() => setActiveMenu(null)}>
@@ -510,6 +521,5 @@ export function MarketingHeader() {
         )}
       </AnimatePresence>
     </header>
-  </>
   );
 }
