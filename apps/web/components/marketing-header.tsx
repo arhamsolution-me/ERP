@@ -303,13 +303,10 @@ export function MarketingHeader() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                   
                   {/* LEFT SIDEBAR NAVIGATION */}
-                  <div className="lg:col-span-4 space-y-0.5 border-r border-slate-100 pr-5">
-                    <div className="flex items-center gap-2 px-3 pb-3 mb-2 border-b border-slate-100">
-                      <div className="w-1 h-4 rounded-full bg-sky-600" />
-                      <span className="text-[11px] font-semibold tracking-[0.12em] text-slate-500 uppercase">
-                        Our Modules &amp; Capabilities
-                      </span>
-                    </div>
+                  <div className="lg:col-span-4 space-y-1">
+                    <span className="text-[12px] font-extrabold tracking-wider text-slate-400 uppercase mb-3 block px-3.5">
+                      OUR MODULES
+                    </span>
                     {moduleTabs.map((tab) => {
                       const IconComp = tab.icon;
                       const isActive = activeModuleTab === tab.id;
@@ -318,21 +315,17 @@ export function MarketingHeader() {
                           key={tab.id}
                           onMouseEnter={() => setActiveModuleTab(tab.id)}
                           onClick={() => setActiveModuleTab(tab.id)}
-                          className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-[13.5px] font-semibold transition-all ${
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${
                             isActive
                               ? "bg-sky-600 text-white shadow-md shadow-sky-600/25"
-                              : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                              : "text-slate-800 hover:text-sky-600 hover:bg-slate-50"
                           }`}
                         >
                           <div className="flex items-center gap-3">
-                            <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all ${
-                              isActive ? "bg-white/20" : "bg-sky-50"
-                            }`}>
-                              <IconComp className={`w-4 h-4 ${isActive ? "text-white" : "text-sky-600"}`} />
-                            </div>
+                            <IconComp className={`w-4.5 h-4.5 shrink-0 ${isActive ? "text-white" : "text-sky-600"}`} />
                             <span>{tab.title}</span>
                           </div>
-                          <ChevronRight className={`w-3.5 h-3.5 shrink-0 transition-transform ${isActive ? "text-white/80 translate-x-0.5" : "text-slate-300"}`} />
+                          <ChevronRight className={`w-4 h-4 shrink-0 transition-transform ${isActive ? "text-white" : "text-slate-400"}`} />
                         </button>
                       );
                     })}
