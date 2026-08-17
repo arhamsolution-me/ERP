@@ -445,22 +445,13 @@ export function MarketingHeader() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 sm:h-22 items-center justify-between">
           
-          {/* Brand Logo - Infinite Enterprise Image Logo with Background */}
-          <Link href="/" className="flex items-center gap-3 group" onClick={() => setActiveMenu(null)}>
-            <div className="w-11 h-11 rounded-xl overflow-hidden shadow-md shadow-sky-600/30 border border-sky-400/40 shrink-0 bg-slate-900 group-hover:scale-105 transition-transform">
-              <img 
-                src="/infinite-logo.png" 
-                alt="Infinite Enterprise Logo" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <span className={`text-2xl font-black tracking-tight transition-colors ${
-                isScrolled ? "text-white" : "text-slate-900"
-              }`}>
-                Infinite<span className={isScrolled ? "text-sky-200" : "text-sky-600"}>Enterprise</span>
-              </span>
-            </div>
+          {/* Brand Logo - Pure Typography Logo (Matched to User Screenshot) */}
+          <Link href="/" className="flex items-center group py-2" onClick={() => setActiveMenu(null)}>
+            <span className={`text-2xl sm:text-3xl font-black tracking-tighter transition-colors ${
+              isScrolled ? "text-white" : "text-[#0f172a]"
+            }`}>
+              Infinite<span className={isScrolled ? "text-sky-200" : "text-[#0284c7]"}>Enterprise</span>
+            </span>
           </Link>
 
           {/* Navigation Items with Mega Dropdown triggers */}
