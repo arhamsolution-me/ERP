@@ -590,6 +590,7 @@ export function MarketingHeader() {
                   <div className="lg:col-span-8 pl-5 space-y-5">
                     {(() => {
                       const currentTab = moduleTabs.find(t => t.id === activeModuleTab) || moduleTabs[0];
+                      if (!currentTab) return null;
                       const IconMain = currentTab.icon;
                       return (
                         <div className="space-y-6">
@@ -672,6 +673,7 @@ export function MarketingHeader() {
                   <div className="lg:col-span-8 pl-5 space-y-5">
                     {(() => {
                       const currentTab = industryTabs.find(t => t.id === activeIndustryTab) || industryTabs[0];
+                      if (!currentTab) return null;
                       const IconMain = currentTab.icon;
                       return (
                         <div className="space-y-6">
@@ -754,6 +756,7 @@ export function MarketingHeader() {
                   <div className="lg:col-span-8 pl-5 space-y-5">
                     {(() => {
                       const currentTab = platformTabs.find(t => t.id === activePlatformTab) || platformTabs[0];
+                      if (!currentTab) return null;
                       const IconMain = currentTab.icon;
                       return (
                         <div className="space-y-6">

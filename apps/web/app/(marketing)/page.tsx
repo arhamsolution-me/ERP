@@ -20,8 +20,7 @@ import {
   Layers,
   Lock,
   Globe2,
-  PackageCheck,
-  TrendingIsUp
+  PackageCheck
 } from "lucide-react";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -61,6 +60,7 @@ export default function Homepage() {
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
+  const activeSlide = slides[currentSlide] ?? slides[0]!;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -88,7 +88,7 @@ export default function Homepage() {
               exit={{ opacity: 0, scale: 1.02 }}
               transition={{ duration: 1 }}
               className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-              style={{ backgroundImage: `url('${slides[currentSlide].image}')` }}
+              style={{ backgroundImage: `url('${activeSlide.image}')` }}
             />
           </AnimatePresence>
           
@@ -111,9 +111,9 @@ export default function Homepage() {
                   transition={{ duration: 0.35, ease: "easeOut" }}
                   className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 leading-[1.1]"
                 >
-                  {slides[currentSlide].title.split('. ')[0]}. <br />
+                  {activeSlide.title.split('. ')[0]}. <br />
                   <span className="bg-gradient-to-r from-sky-600 via-cyan-600 to-blue-700 bg-clip-text text-transparent drop-shadow-xs">
-                    {slides[currentSlide].title.split('. ').slice(1).join('. ')}
+                    {activeSlide.title.split('. ').slice(1).join('. ')}
                   </span>
                 </motion.h1>
               </AnimatePresence>
@@ -130,7 +130,7 @@ export default function Homepage() {
                   transition={{ duration: 0.35, delay: 0.08, ease: "easeOut" }}
                   className="text-slate-600 text-lg sm:text-xl max-w-2xl leading-relaxed font-normal"
                 >
-                  {slides[currentSlide].desc}
+                  {activeSlide.desc}
                 </motion.p>
               </AnimatePresence>
             </div>
