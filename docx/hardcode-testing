@@ -1,0 +1,134 @@
+# MEGA PROMPT 23 — HARDCODED DATA DETECTION AUDIT
+## NexERP — Verify Zero Hardcoded Entities, Everything Flows Through the Database
+
+**Role for AI Agent:** You are a Principal Code Auditor performing a dedicated sweep for hardcoded/static data hiding inside application code instead of living in the database where it belongs. This is a real and common failure mode: a developer under deadline pressure hardcodes a list of "temporary" values (a role name, a price, a warehouse name, a tax rate) directly in a component or config file — it works for the demo, then breaks or causes wrong behavior the moment a real second tenant, a real price change, or a real new branch shows up. This audit exists specifically to catch that class of bug across the entire NexERP codebase.
+
+**Output format required:** produce a `HARDCODED_DATA_AUDIT.md` report. For every finding: file path + line number, the hardcoded value found, why it's a problem, and the required fix (move to database / config table / environment variable, as appropriate). Categorize every finding by severity (Section 6).
+
+---
+
+## 1. What Counts as "Hardcoded Data" (the actual violation, precisely defined)
+
+A value is hardcoded if it represents **tenant-specific, business, or environment data that should be able to change without a code deployment**, but is instead written directly into source code as a literal.
+
+**Genuinely hardcoded (violation):**
+```javascript
+// BAD — a real product/price baked into code
+const defaultProducts = [
+  { name: "Lawn Suit", price: 2500 },
+  { name: "Cotton Fabric", price: 800 }
+];
+
+// BAD — a specific tenant's branch name in a component
+if (branchName === "Lahore Main Branch") { ... }
+
+// BAD — a role permission list duplicated in frontend code instead of fetched
+const cashierPermissions = ["pos.sale.create", "pos.sale.read"];
+
+// BAD — a tax rate embedded in calculation logic
+const taxAmount = subtotal * 0.17; // Pakistan sales tax
+```
+
+**NOT a violation (legitimate constants):**
+```javascript
+// FINE — a true enum/system constant that genuinely never varies per tenant
+const BATCH_STAGES = ["spinning", "weaving", "dyeing", "finishing", "qc", "completed"];
+
+// FINE — a UI layout constant
+const SIDEBAR_WIDTH_PX = 240;
+
+// FINE — an environment-level infrastructure value (from env var, not hardcoded business data)
+const MAX_UPLOAD_SIZE_MB = process.env.MAX_UPLOAD_SIZE_MB || 10;
+```
+
+**The distinguishing test:** ask "if a different tenant, a different country, or the same tenant six months from now needed this value to be different — does the current code allow that without a redeploy?" If no, it's a violation.
+
+---
+
+## 2. Categories to Sweep (systematically, not spot-check)
+
+### 2a. Seed/Demo Data Leaking Into Production Code Paths
+- [ ] Search for any array/object literal containing what looks like real product names, customer names, employee names, or transaction amounts inside `/apps/web` or `/apps/api` source files (NOT inside a clearly-marked `/seed` or `/fixtures` directory used only for local dev/testing).
+- [ ] Confirm seed scripts (Prompt 02's role-seeding script, any demo-data generators) are isolated to a dedicated seed/migration path and NEVER imported into a production request-handling code path.
+- [ ] Search for hardcoded tenant names, subdomains, or tenant IDs anywhere outside of test files — a hardcoded tenant ID in application logic is a severe violation (it would literally only work correctly for one specific tenant).
+
+### 2b. Business Configuration Hardcoded Instead of Database/Settings-Driven
+- [ ] Tax rates, currency symbols, or currency formatting hardcoded instead of pulled from `tenant.default_currency`/`tenant.default_timezone` (Prompt 02, Prompt 05 Section 6) — grep for hardcoded `"Rs."`, `"%"`, `"PKR"`, hardcoded decimal tax multipliers.
+- [ ] Reorder thresholds, discount limits, approval spend-thresholds (Prompt 13's PO approval logic) hardcoded as a number in logic rather than read from a tenant settings table.
+- [ ] Warehouse/branch names, mill names hardcoded in any conditional logic — every reference to a specific location must be a database lookup by ID, never a string comparison against a hardcoded name.
+- [ ] Vendor names, customer names, or supplier-specific logic hardcoded (e.g., `if (vendor.name === "ABC Textiles") { applySpecialDiscount() }`) — business rules like this must be data-driven (a discount rule record), never a name-string branch in code.
+
+### 2c. Roles & Permissions Hardcoded Instead of Database-Driven
+- [ ] Cross-check every role/permission check in the codebase against Prompt 03's RBAC model — confirm permission checks query the `role_permissions` table (or its cached representation) at runtime, and are NOT a hardcoded `if (role === "owner" || role === "gm")` string-comparison chain scattered through business logic. A hardcoded role-name chain is fragile (breaks the moment a tenant creates a custom role per Prompt 10 page 83) and defeats the entire purpose of the configurable Roles & Permissions Manager.
+- [ ] Confirm the 11 system roles from Prompt 02/03 exist as actual DATABASE ROWS (seeded), not as a hardcoded array referenced directly by application logic in place of a database query.
+- [ ] Frontend: confirm role-based UI visibility (Prompt 12, Section 7) checks the user's actual fetched permission set from the API, not a hardcoded frontend role-to-feature mapping that could drift out of sync with the backend's real enforcement.
+
+### 2d. Product/Inventory/Pricing Data
+- [ ] Zero product names, SKUs, prices, or variant data (size/color options) hardcoded anywhere in application code — every single one must originate from the `products`/`product_variants`/`stock_levels` tables (Prompt 02).
+- [ ] Dropdown option lists in forms (Prompt 08-11's pages) — confirm category dropdowns, unit-of-measure dropdowns, etc. are populated from database-backed lookup tables or tenant-configurable settings, not a hardcoded frontend array, UNLESS the list is a genuine fixed system enum (Section 1's "not a violation" example — e.g., the 5 production stages, which are a true fixed workflow, not tenant-configurable business data).
+
+### 2e. User-Facing Text Masquerading as Data
+- [ ] Distinguish between legitimate i18n string constants (fine — UI labels like "Submit," "Cancel" belong in the i18n system per Prompt 05 Section 6, not the database) versus BUSINESS content hardcoded as if it were UI text — e.g., a hardcoded list of "leave types" or "defect categories" in a translation file is actually tenant-configurable business data mistakenly treated as static UI copy, and should be a database-backed lookup table instead.
+
+### 2f. API Keys, Credentials & Environment-Specific Values
+- [ ] Zero API keys, database connection strings, JWT signing secrets, or third-party credentials (payment gateway, SMS provider, FBR tax API — per Prompt 03 Section 5, Prompt 10 page 86) hardcoded anywhere in source code — confirm every one is loaded exclusively from the secrets manager/environment variables (this overlaps with Prompt 03's security audit but deserves its own explicit sweep here since it's the highest-severity hardcoding violation possible).
+- [ ] Confirm no `.env` file with real secrets is committed to the repository (check git history too, not just the current working tree — a secret once committed remains in history even after later removal, and must be rotated, not just deleted).
+
+### 2g. Mock/Placeholder Data Left in Production Paths
+- [ ] Search for common mock-data leftover patterns: `TODO: replace with real data`, `// temporary`, `// hardcoded for now`, `FIXME`, `mockData`, `dummyData`, `placeholderProducts` — these comments/names are exactly the trail a rushed implementation leaves behind, and are a fast, high-signal way to find real violations.
+- [ ] Confirm no frontend component has a fallback hardcoded array that silently renders when an API call fails or returns empty — this masks real bugs (a broken API call looks like it's "working" because fake data fills the gap) and must instead show the proper empty/error state from Prompt 12, never synthetic data standing in for real data.
+
+---
+
+## 3. Specific Verification Method (don't just grep — confirm behaviorally)
+
+For every category above, the audit must go beyond text search and behaviorally confirm data independence:
+
+1. **The "change it and see" test:** pick 5 random pieces of the data categories above (a product name, a tax rate, a role's permission, a branch name, a discount threshold) and CHANGE them directly in the database (or via the proper Settings UI). Reload the application. Confirm the change is reflected everywhere it should be, with zero code changes and zero redeploy. If any surface still shows the OLD value, that surface has a hardcoded copy somewhere.
+2. **The "new tenant" test:** spin up a genuinely fresh tenant with zero seeded demo data beyond the mandatory system roles (Prompt 02/03). Confirm every page loads correctly with proper empty states (Prompt 12) rather than accidentally displaying another tenant's or a demo tenant's leftover hardcoded-looking data.
+3. **The "different country" test:** create a test tenant with a different currency/timezone/locale than whatever was used during initial development. Confirm currency symbols, date formats, and tax calculations all correctly reflect THIS tenant's settings — if development was done exclusively against a Pakistan/PKR-configured tenant, this test often reveals hardcoded assumptions that a same-country test would never catch.
+
+---
+
+## 4. Automated Tooling to Support This Audit
+
+- [ ] Run a repository-wide grep for common hardcoded-value smells: currency symbols (`Rs\.`, `PKR`, `\$`), hardcoded percentage tax patterns (`0\.1[0-9]`, `\* 0\.17`), suspicious literal arrays of objects with `name`/`price`/`sku`-like keys outside of seed/test/fixture directories.
+- [ ] Run a static-analysis rule (ESLint custom rule, or equivalent for the backend language) that flags any string-literal comparison against role names (`=== "owner"`, `=== "cashier"`) outside of the designated auth/RBAC middleware module — legitimate role-checking code lives in ONE place (Prompt 03's shared auth package), everywhere else should be calling that shared permission-check function, never re-implementing a string comparison.
+- [ ] Secrets-scanning tool (gitleaks, per Prompt 03 Section 7) run against the FULL git history, not just the current commit, specifically hunting for any credential ever committed even if later removed.
+- [ ] Database-vs-code cross-reference: for every dropdown/select list found in the frontend (Prompts 08-11's page specs), confirm a corresponding database table or settings-driven source exists — flag any dropdown whose options can only be found in frontend source code with no backing table.
+
+---
+
+## 5. Legitimate Exceptions — Do NOT Flag These As Violations
+
+To avoid a noisy report full of false positives, explicitly exclude:
+- True system-level enums that represent the platform's own fixed workflow logic (production stage names, POS payment-method type identifiers, HTTP status codes) — these are code, not tenant business data, and are correctly hardcoded as enums (though even here, if a FUTURE requirement makes them tenant-configurable — e.g., a tenant wanting a custom 6th production stage — that's a scope decision to flag for product discussion, not an audit violation today).
+- UI microcopy/labels genuinely covered by the i18n system (Prompt 05, Section 6) — this is the correct home for those strings, not the database.
+- Local development seed/fixture data that is clearly isolated to a `/seed`, `/fixtures`, or `/dev` directory and demonstrably never imported into any production request-handling path — confirm this isolation explicitly rather than assuming it from folder naming alone.
+- Genuine infrastructure/environment configuration (port numbers, timeout values, retry counts) that are legitimately code-level operational constants, not business data — though even these are better served from environment variables/config than magic numbers scattered in logic, per general code-quality practice, just not the SAME severity as business-data hardcoding.
+
+---
+
+## 6. Severity Classification for Findings
+
+| Severity | Criteria | Example |
+|---|---|---|
+| **CRITICAL** | Hardcoded value would cause real cross-tenant incorrect behavior or a security issue | Hardcoded tenant ID, hardcoded API credential, hardcoded role-bypass logic |
+| **HIGH** | Hardcoded value would produce visibly wrong business behavior for any tenant other than the one it was written against | Hardcoded tax rate, hardcoded branch name in conditional logic, hardcoded pricing |
+| **MEDIUM** | Hardcoded value works today but will silently break under a specific future/edge scenario | A dropdown list that should be tenant-configurable but currently has only one tenant's values, hardcoded discount threshold |
+| **LOW** | Technically a violation of the "should be data-driven" principle but low real-world impact | A hardcoded fallback string that only shows in a rare edge case, not user-facing business data |
+
+---
+
+## 7. Report Requirements
+
+`HARDCODED_DATA_AUDIT.md` must include:
+1. Executive summary: total findings by severity.
+2. Full findings table: file path, line number, code snippet, severity, required fix.
+3. Results of the three behavioral tests in Section 3 (change-it-and-see, new-tenant, different-country) — pass/fail with specifics, not just a summary judgment.
+4. A prioritized remediation order: CRITICAL and HIGH findings block release readiness; MEDIUM/LOW are tracked as follow-up tickets.
+5. An explicit confirmation statement (or explicit list of exceptions) that the 11 system roles, all product/pricing data, all tax/currency logic, and all branch/warehouse references were verified to originate from the database — this is the specific claim the user needs confirmed, so it must be answered directly and explicitly, not left implied by the absence of findings.
+
+**Do not mark this audit "passed" based on absence of obvious violations alone — actually perform the behavioral tests in Section 3.** A codebase can look clean in a text search while still having subtle hardcoded assumptions that only the "change it and see" and "new tenant" tests will actually reveal.
+
+This prompt (`23`) extends the NexERP specification suite as a dedicated data-integrity verification pass, complementing Prompt 21's broader audit. Full suite is now `00`–`23`, 24 files total.
