@@ -20,7 +20,9 @@ import {
   Building2,
   FileCheck,
   Zap,
-  Lock
+  Lock,
+  ShoppingCart,
+  Truck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -48,8 +50,8 @@ export function MarketingHeader() {
     <header 
       className={`fixed top-0 inset-x-0 z-50 w-full transition-all duration-300 ${
         isScrolled 
-          ? "bg-white/95 backdrop-blur-md border-b border-slate-200/80" 
-          : "bg-transparent border-b border-transparent"
+          ? "bg-blue-600 border-b border-blue-700 text-white shadow-xl shadow-blue-900/20" 
+          : "bg-transparent border-b border-transparent text-slate-900"
       }`}
       onMouseLeave={() => setActiveMenu(null)}
     >
@@ -58,12 +60,16 @@ export function MarketingHeader() {
           
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-3 group" onClick={() => setActiveMenu(null)}>
-            <div className="w-10.5 h-10.5 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-600/25 group-hover:bg-blue-700 transition-all">
-              <Box className="w-6 h-6 text-white" />
+            <div className={`w-10.5 h-10.5 rounded-xl flex items-center justify-center shadow-md transition-all ${
+              isScrolled ? "bg-white text-blue-600" : "bg-blue-600 text-white shadow-blue-600/25 group-hover:bg-blue-700"
+            }`}>
+              <Box className="w-6 h-6" />
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-extrabold tracking-tight text-slate-900 font-sans">
-                Nex<span className="text-blue-600 font-black">ERP</span>
+              <span className={`text-2xl font-extrabold tracking-tight font-sans transition-colors ${
+                isScrolled ? "text-white" : "text-slate-900"
+              }`}>
+                Nex<span className={isScrolled ? "text-blue-200 font-black" : "text-blue-600 font-black"}>ERP</span>
               </span>
             </div>
           </Link>
@@ -77,12 +83,14 @@ export function MarketingHeader() {
               onMouseEnter={() => setActiveMenu("modules")}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-base font-bold rounded-lg transition-all ${
                 activeMenu === "modules"
-                  ? "bg-blue-50 text-blue-600"
-                  : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+                  ? isScrolled ? "bg-blue-700 text-white" : "bg-blue-50 text-blue-600"
+                  : isScrolled ? "text-blue-50 hover:bg-blue-700/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
               }`}
             >
               <span>Modules & Capabilities</span>
-              <ChevronDown className={`w-4.5 h-4.5 transition-transform duration-200 ${activeMenu === "modules" ? "rotate-180 text-blue-600" : "text-slate-400"}`} />
+              <ChevronDown className={`w-4.5 h-4.5 transition-transform duration-200 ${
+                activeMenu === "modules" ? "rotate-180" : ""
+              } ${isScrolled ? "text-blue-200" : "text-slate-400"}`} />
             </button>
 
             {/* Nav Item 2: Industries */}
@@ -91,19 +99,23 @@ export function MarketingHeader() {
               onMouseEnter={() => setActiveMenu("industries")}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-base font-bold rounded-lg transition-all ${
                 activeMenu === "industries"
-                  ? "bg-blue-50 text-blue-600"
-                  : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+                  ? isScrolled ? "bg-blue-700 text-white" : "bg-blue-50 text-blue-600"
+                  : isScrolled ? "text-blue-50 hover:bg-blue-700/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
               }`}
             >
               <span>Industries & Solutions</span>
-              <ChevronDown className={`w-4.5 h-4.5 transition-transform duration-200 ${activeMenu === "industries" ? "rotate-180 text-blue-600" : "text-slate-400"}`} />
+              <ChevronDown className={`w-4.5 h-4.5 transition-transform duration-200 ${
+                activeMenu === "industries" ? "rotate-180" : ""
+              } ${isScrolled ? "text-blue-200" : "text-slate-400"}`} />
             </button>
 
             {/* Nav Item 3: Pricing */}
             <Link 
               href="/pricing" 
               onClick={() => setActiveMenu(null)}
-              className="px-4 py-2.5 text-base font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100/80 rounded-lg transition-all"
+              className={`px-4 py-2.5 text-base font-bold rounded-lg transition-all ${
+                isScrolled ? "text-blue-50 hover:bg-blue-700/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+              }`}
             >
               Pricing Plans
             </Link>
@@ -114,12 +126,14 @@ export function MarketingHeader() {
               onMouseEnter={() => setActiveMenu("platform")}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-base font-bold rounded-lg transition-all ${
                 activeMenu === "platform"
-                  ? "bg-blue-50 text-blue-600"
-                  : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+                  ? isScrolled ? "bg-blue-700 text-white" : "bg-blue-50 text-blue-600"
+                  : isScrolled ? "text-blue-50 hover:bg-blue-700/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
               }`}
             >
               <span>Platform & Governance</span>
-              <ChevronDown className={`w-4.5 h-4.5 transition-transform duration-200 ${activeMenu === "platform" ? "rotate-180 text-blue-600" : "text-slate-400"}`} />
+              <ChevronDown className={`w-4.5 h-4.5 transition-transform duration-200 ${
+                activeMenu === "platform" ? "rotate-180" : ""
+              } ${isScrolled ? "text-blue-200" : "text-slate-400"}`} />
             </button>
 
           </nav>
@@ -127,12 +141,18 @@ export function MarketingHeader() {
           {/* Action CTAs */}
           <div className="flex items-center space-x-3">
             <Link href="/sign-in" onClick={() => setActiveMenu(null)}>
-              <Button variant="ghost" className="text-base font-bold text-slate-700 hover:text-slate-900 h-11 px-4 rounded-lg">
+              <Button variant="ghost" className={`text-base font-bold h-11 px-4 rounded-lg transition-colors ${
+                isScrolled ? "text-white hover:bg-blue-700" : "text-slate-700 hover:text-slate-900"
+              }`}>
                 Sign In
               </Button>
             </Link>
             <Link href="/contact" onClick={() => setActiveMenu(null)}>
-              <Button className="text-base font-bold bg-blue-600 hover:bg-blue-700 text-white h-11 px-5 rounded-lg shadow-md shadow-blue-600/25">
+              <Button className={`text-base font-bold h-11 px-5 rounded-lg transition-all ${
+                isScrolled 
+                  ? "bg-white text-blue-700 hover:bg-slate-100 shadow-md font-bold" 
+                  : "bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-600/25"
+              }`}>
                 Book a Demo
               </Button>
             </Link>
@@ -149,60 +169,116 @@ export function MarketingHeader() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.99 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute top-full inset-x-0 bg-white border-b border-slate-200 overflow-hidden z-50 pointer-events-auto"
+            className="absolute top-full inset-x-0 bg-white text-slate-900 border-b border-slate-200 overflow-hidden z-50 pointer-events-auto"
           >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-7">
               
-              {/* SUBHEADER MENU 1: MODULES & CAPABILITIES */}
+              {/* SUBHEADER MENU 1: MODULES & CAPABILITIES (ALL 8 CORE SYSTEM MODULES) */}
               {activeMenu === "modules" && (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   
+                  {/* Module 1: Production MES */}
                   <Link 
                     href="/features#production" 
                     onClick={() => setActiveMenu(null)}
                     className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-200"
                   >
                     <div className="flex items-center gap-2.5 mb-1.5">
-                      <Factory className="w-4.5 h-4.5 text-slate-900 group-hover:text-blue-600 transition-colors" />
-                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Textile Mill MES</h4>
+                      <Factory className="w-4.5 h-4.5 text-blue-600" />
+                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Production & Textile MES</h4>
                     </div>
                     <p className="text-xs text-slate-500 leading-relaxed">Raw yarn lot tracking, weaving looms, dyeing recipes, and quality control.</p>
                   </Link>
 
-                  <Link 
-                    href="/features#pos" 
-                    onClick={() => setActiveMenu(null)}
-                    className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-200"
-                  >
-                    <div className="flex items-center gap-2.5 mb-1.5">
-                      <Store className="w-4.5 h-4.5 text-slate-900 group-hover:text-blue-600 transition-colors" />
-                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Retail POS Terminals</h4>
-                    </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">Fast barcode scanning, offline register queue, and receipt printing.</p>
-                  </Link>
-
+                  {/* Module 2: Inventory WMS */}
                   <Link 
                     href="/features#warehouse" 
                     onClick={() => setActiveMenu(null)}
                     className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-200"
                   >
                     <div className="flex items-center gap-2.5 mb-1.5">
-                      <Package className="w-4.5 h-4.5 text-slate-900 group-hover:text-blue-600 transition-colors" />
-                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Inventory & WMS</h4>
+                      <Package className="w-4.5 h-4.5 text-blue-600" />
+                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Inventory & Smart WMS</h4>
                     </div>
                     <p className="text-xs text-slate-500 leading-relaxed">Multi-warehouse stock tracking, inter-store transfers, and reorder limits.</p>
                   </Link>
 
+                  {/* Module 3: Retail POS */}
+                  <Link 
+                    href="/features#pos" 
+                    onClick={() => setActiveMenu(null)}
+                    className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-200"
+                  >
+                    <div className="flex items-center gap-2.5 mb-1.5">
+                      <Store className="w-4.5 h-4.5 text-blue-600" />
+                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Retail POS Terminals</h4>
+                    </div>
+                    <p className="text-xs text-slate-500 leading-relaxed">1.2s fast barcode checkout, offline register queue, and receipt printing.</p>
+                  </Link>
+
+                  {/* Module 4: Sales B2B */}
+                  <Link 
+                    href="/features#sales" 
+                    onClick={() => setActiveMenu(null)}
+                    className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-200"
+                  >
+                    <div className="flex items-center gap-2.5 mb-1.5">
+                      <ShoppingCart className="w-4.5 h-4.5 text-blue-600" />
+                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Sales & B2B Wholesale</h4>
+                    </div>
+                    <p className="text-xs text-slate-500 leading-relaxed">Bulk B2B orders, tiered distributor pricing, and customer credit limits.</p>
+                  </Link>
+
+                  {/* Module 5: Finance GL */}
                   <Link 
                     href="/features#finance" 
                     onClick={() => setActiveMenu(null)}
                     className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-200"
                   >
                     <div className="flex items-center gap-2.5 mb-1.5">
-                      <Receipt className="w-4.5 h-4.5 text-slate-900 group-hover:text-blue-600 transition-colors" />
+                      <Receipt className="w-4.5 h-4.5 text-blue-600" />
                       <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Finance & General Ledger</h4>
                     </div>
                     <p className="text-xs text-slate-500 leading-relaxed">Double-entry accounting, customer invoicing, bank reconciliation, and P&L.</p>
+                  </Link>
+
+                  {/* Module 6: Procurement PO */}
+                  <Link 
+                    href="/features#procurement" 
+                    onClick={() => setActiveMenu(null)}
+                    className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-200"
+                  >
+                    <div className="flex items-center gap-2.5 mb-1.5">
+                      <Truck className="w-4.5 h-4.5 text-blue-600" />
+                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Procurement & Purchase PO</h4>
+                    </div>
+                    <p className="text-xs text-slate-500 leading-relaxed">Purchase orders PO, GRN physical verification, and AP vendor aging.</p>
+                  </Link>
+
+                  {/* Module 7: HR & Payroll */}
+                  <Link 
+                    href="/features#hr" 
+                    onClick={() => setActiveMenu(null)}
+                    className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-200"
+                  >
+                    <div className="flex items-center gap-2.5 mb-1.5">
+                      <Users2 className="w-4.5 h-4.5 text-blue-600" />
+                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">HR & Worker Payroll</h4>
+                    </div>
+                    <p className="text-xs text-slate-500 leading-relaxed">Staff attendance, piece-rate worker payroll slips, and loan tracking.</p>
+                  </Link>
+
+                  {/* Module 8: Platform Governance */}
+                  <Link 
+                    href="/features#security" 
+                    onClick={() => setActiveMenu(null)}
+                    className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-200"
+                  >
+                    <div className="flex items-center gap-2.5 mb-1.5">
+                      <ShieldCheck className="w-4.5 h-4.5 text-blue-600" />
+                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Platform & Governance</h4>
+                    </div>
+                    <p className="text-xs text-slate-500 leading-relaxed">Multi-Tenant Row-Level Security RLS, enterprise RBAC, and audit logs.</p>
                   </Link>
 
                 </div>
