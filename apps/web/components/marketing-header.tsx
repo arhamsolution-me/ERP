@@ -185,52 +185,50 @@ export function MarketingHeader() {
       }`}
       onMouseLeave={() => setActiveMenu(null)}
     >
-      {/* TOP MINI HEADER BAR (ENLARGED & BOLDER) */}
-      <div className={`w-full py-2.5 px-4 sm:px-6 text-xs sm:text-sm font-bold border-b transition-colors ${
-        isScrolled 
-          ? "bg-sky-800/90 text-white border-sky-600/50" 
-          : "bg-sky-600 text-white border-sky-700/60"
-      }`}>
-        <div className="container mx-auto flex items-center justify-between">
-          
-          {/* Left: Contact Info & System Status */}
-          <div className="flex items-center gap-6">
-            <a href="mailto:info@devnexes.com" className="flex items-center gap-2 hover:text-sky-200 transition-colors">
-              <Mail className="w-4 h-4" />
-              <span>info@devnexes.com</span>
-            </a>
-            <a href="tel:+923001234567" className="hidden sm:flex items-center gap-2 hover:text-sky-200 transition-colors">
-              <Phone className="w-4 h-4" />
-              <span>+92 300 1234567</span>
-            </a>
-            <div className="hidden md:flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs">System Status: <strong className="text-emerald-300 font-extrabold">Operational (99.99%)</strong></span>
+      {/* TOP MINI HEADER BAR (Hides automatically on scroll) */}
+      {!isScrolled && (
+        <div className="w-full py-2.5 px-4 sm:px-6 text-xs sm:text-sm font-bold border-b bg-sky-600 text-white border-sky-700/60 transition-all duration-300">
+          <div className="container mx-auto flex items-center justify-between">
+            
+            {/* Left: Contact Info & System Status */}
+            <div className="flex items-center gap-6">
+              <a href="mailto:info@devnexes.com" className="flex items-center gap-2 hover:text-sky-200 transition-colors">
+                <Mail className="w-4 h-4" />
+                <span>info@devnexes.com</span>
+              </a>
+              <a href="tel:+923001234567" className="hidden sm:flex items-center gap-2 hover:text-sky-200 transition-colors">
+                <Phone className="w-4 h-4" />
+                <span>+92 300 1234567</span>
+              </a>
+              <div className="hidden md:flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-xs">System Status: <strong className="text-emerald-300 font-extrabold">Operational (99.99%)</strong></span>
+              </div>
             </div>
-          </div>
 
-          {/* Right: Social & Compliance Badge */}
-          <div className="flex items-center gap-5">
-            <div className="flex items-center gap-3.5">
-              <a href="#" className="hover:text-sky-200 transition-colors p-1" title="Global Portal">
-                <Globe className="w-4 h-4" />
-              </a>
-              <a href="#" className="hover:text-sky-200 transition-colors p-1" title="Social Share">
-                <Share2 className="w-4 h-4" />
-              </a>
-              <a href="#" className="hover:text-sky-200 transition-colors p-1" title="Developer Code">
-                <Code2 className="w-4 h-4" />
-              </a>
+            {/* Right: Social & Compliance Badge */}
+            <div className="flex items-center gap-5">
+              <div className="flex items-center gap-3.5">
+                <a href="#" className="hover:text-sky-200 transition-colors p-1" title="Global Portal">
+                  <Globe className="w-4 h-4" />
+                </a>
+                <a href="#" className="hover:text-sky-200 transition-colors p-1" title="Social Share">
+                  <Share2 className="w-4 h-4" />
+                </a>
+                <a href="#" className="hover:text-sky-200 transition-colors p-1" title="Developer Code">
+                  <Code2 className="w-4 h-4" />
+                </a>
+              </div>
+              <span className="hidden sm:inline border-r border-white/30 h-4" />
+              <Link href="/features#security" className="hidden sm:flex items-center gap-2 hover:text-sky-200 transition-colors">
+                <ShieldCheck className="w-4 h-4 text-emerald-300" />
+                <span>SOC2 &amp; ISO 27001 Certified</span>
+              </Link>
             </div>
-            <span className="hidden sm:inline border-r border-white/30 h-4" />
-            <Link href="/features#security" className="hidden sm:flex items-center gap-2 hover:text-sky-200 transition-colors">
-              <ShieldCheck className="w-4 h-4 text-emerald-300" />
-              <span>SOC2 &amp; ISO 27001 Certified</span>
-            </Link>
-          </div>
 
+          </div>
         </div>
-      </div>
+      )}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 sm:h-22 items-center justify-between">
           
