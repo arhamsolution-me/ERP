@@ -472,7 +472,7 @@ export function MarketingHeader() {
                   
                   {/* LEFT SIDEBAR NAVIGATION */}
                   <div className="lg:col-span-4 space-y-1">
-                    <span className="text-[12px] font-extrabold tracking-wider text-slate-400 uppercase mb-3 block px-3.5">
+                    <span className="text-sm font-black tracking-widest text-slate-500 uppercase mb-3 block px-4 font-sans">
                       OUR MODULES
                     </span>
                     {moduleTabs.map((tab) => {
@@ -554,7 +554,7 @@ export function MarketingHeader() {
                   
                   {/* LEFT SIDEBAR NAVIGATION */}
                   <div className="lg:col-span-4 space-y-1">
-                    <span className="text-[12px] font-extrabold tracking-wider text-slate-400 uppercase mb-3 block px-3.5">
+                    <span className="text-sm font-black tracking-widest text-slate-500 uppercase mb-3 block px-4 font-sans">
                       OUR INDUSTRIES
                     </span>
                     {industryTabs.map((tab) => {
