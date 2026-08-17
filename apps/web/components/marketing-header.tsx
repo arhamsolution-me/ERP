@@ -50,7 +50,7 @@ export function MarketingHeader() {
     <header 
       className={`fixed top-0 inset-x-0 z-50 w-full transition-all duration-300 ${
         isScrolled 
-          ? "bg-blue-600 border-b border-blue-700 text-white shadow-xl shadow-blue-900/20" 
+          ? "bg-blue-700 border-b border-blue-800 text-white shadow-xl shadow-blue-950/30" 
           : "bg-transparent border-b border-transparent text-slate-900"
       }`}
       onMouseLeave={() => setActiveMenu(null)}
@@ -61,7 +61,7 @@ export function MarketingHeader() {
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-3 group" onClick={() => setActiveMenu(null)}>
             <div className={`w-10.5 h-10.5 rounded-xl flex items-center justify-center shadow-md transition-all ${
-              isScrolled ? "bg-white text-blue-600" : "bg-blue-600 text-white shadow-blue-600/25 group-hover:bg-blue-700"
+              isScrolled ? "bg-white text-blue-700 font-bold" : "bg-blue-600 text-white shadow-blue-600/25 group-hover:bg-blue-700"
             }`}>
               <Box className="w-6 h-6" />
             </div>
@@ -83,8 +83,8 @@ export function MarketingHeader() {
               onMouseEnter={() => setActiveMenu("modules")}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-base font-bold rounded-lg transition-all ${
                 activeMenu === "modules"
-                  ? isScrolled ? "bg-blue-700 text-white" : "bg-blue-50 text-blue-600"
-                  : isScrolled ? "text-blue-50 hover:bg-blue-700/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+                  ? isScrolled ? "bg-blue-800 text-white" : "bg-blue-50 text-blue-600"
+                  : isScrolled ? "text-blue-50 hover:bg-blue-800/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
               }`}
             >
               <span>Modules & Capabilities</span>
@@ -99,8 +99,8 @@ export function MarketingHeader() {
               onMouseEnter={() => setActiveMenu("industries")}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-base font-bold rounded-lg transition-all ${
                 activeMenu === "industries"
-                  ? isScrolled ? "bg-blue-700 text-white" : "bg-blue-50 text-blue-600"
-                  : isScrolled ? "text-blue-50 hover:bg-blue-700/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+                  ? isScrolled ? "bg-blue-800 text-white" : "bg-blue-50 text-blue-600"
+                  : isScrolled ? "text-blue-50 hover:bg-blue-800/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
               }`}
             >
               <span>Industries & Solutions</span>
@@ -114,7 +114,7 @@ export function MarketingHeader() {
               href="/pricing" 
               onClick={() => setActiveMenu(null)}
               className={`px-4 py-2.5 text-base font-bold rounded-lg transition-all ${
-                isScrolled ? "text-blue-50 hover:bg-blue-700/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+                isScrolled ? "text-blue-50 hover:bg-blue-800/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
               }`}
             >
               Pricing Plans
@@ -126,8 +126,8 @@ export function MarketingHeader() {
               onMouseEnter={() => setActiveMenu("platform")}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-base font-bold rounded-lg transition-all ${
                 activeMenu === "platform"
-                  ? isScrolled ? "bg-blue-700 text-white" : "bg-blue-50 text-blue-600"
-                  : isScrolled ? "text-blue-50 hover:bg-blue-700/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
+                  ? isScrolled ? "bg-blue-800 text-white" : "bg-blue-50 text-blue-600"
+                  : isScrolled ? "text-blue-50 hover:bg-blue-800/80" : "text-slate-700 hover:text-slate-900 hover:bg-slate-100/80"
               }`}
             >
               <span>Platform & Governance</span>
@@ -142,7 +142,7 @@ export function MarketingHeader() {
           <div className="flex items-center space-x-3">
             <Link href="/sign-in" onClick={() => setActiveMenu(null)}>
               <Button variant="ghost" className={`text-base font-bold h-11 px-4 rounded-lg transition-colors ${
-                isScrolled ? "text-white hover:bg-blue-700" : "text-slate-700 hover:text-slate-900"
+                isScrolled ? "text-white hover:bg-blue-800" : "text-slate-700 hover:text-slate-900"
               }`}>
                 Sign In
               </Button>
@@ -150,7 +150,7 @@ export function MarketingHeader() {
             <Link href="/contact" onClick={() => setActiveMenu(null)}>
               <Button className={`text-base font-bold h-11 px-5 rounded-lg transition-all ${
                 isScrolled 
-                  ? "bg-white text-blue-700 hover:bg-slate-100 shadow-md font-bold" 
+                  ? "bg-white text-blue-800 hover:bg-slate-100 shadow-md font-extrabold" 
                   : "bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-600/25"
               }`}>
                 Book a Demo
