@@ -175,7 +175,7 @@ export function MarketingHeader() {
     <header 
       className={`fixed top-0 inset-x-0 z-50 w-full transition-all duration-300 ${
         isScrolled 
-          ? "bg-blue-700 border-b border-blue-800 text-white shadow-xl shadow-blue-950/30" 
+          ? "bg-[#0a1628] border-b border-blue-950/80 text-white shadow-2xl shadow-black/40" 
           : "bg-transparent border-b border-transparent text-slate-900"
       }`}
       onMouseLeave={() => setActiveMenu(null)}
@@ -208,14 +208,14 @@ export function MarketingHeader() {
               onMouseEnter={() => setActiveMenu("modules")}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
                 activeMenu === "modules"
-                  ? isScrolled ? "bg-blue-800 text-white" : "bg-blue-50 text-blue-600"
-                  : isScrolled ? "text-white/90 hover:bg-blue-800/70 hover:text-white" : "text-slate-800 hover:text-blue-600 hover:bg-slate-100"
+                  ? isScrolled ? "bg-white/15 text-white" : "bg-blue-50 text-blue-600"
+                  : isScrolled ? "text-white/85 hover:bg-white/10 hover:text-white" : "text-slate-800 hover:text-blue-600 hover:bg-slate-100"
               }`}
             >
               <span>Modules &amp; Capabilities</span>
               <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                 activeMenu === "modules" ? "rotate-180" : ""
-              } ${isScrolled ? "text-blue-200" : "text-slate-400"}`} />
+              } ${isScrolled ? "text-blue-300" : "text-slate-400"}`} />
             </button>
 
             {/* Nav Item 2: Industries */}
@@ -224,14 +224,14 @@ export function MarketingHeader() {
               onMouseEnter={() => setActiveMenu("industries")}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
                 activeMenu === "industries"
-                  ? isScrolled ? "bg-blue-800 text-white" : "bg-blue-50 text-blue-600"
-                  : isScrolled ? "text-white/90 hover:bg-blue-800/70 hover:text-white" : "text-slate-800 hover:text-blue-600 hover:bg-slate-100"
+                  ? isScrolled ? "bg-white/15 text-white" : "bg-blue-50 text-blue-600"
+                  : isScrolled ? "text-white/85 hover:bg-white/10 hover:text-white" : "text-slate-800 hover:text-blue-600 hover:bg-slate-100"
               }`}
             >
               <span>Industries &amp; Solutions</span>
               <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                 activeMenu === "industries" ? "rotate-180" : ""
-              } ${isScrolled ? "text-blue-200" : "text-slate-400"}`} />
+              } ${isScrolled ? "text-blue-300" : "text-slate-400"}`} />
             </button>
 
             {/* Nav Item 3: Pricing */}
@@ -239,7 +239,7 @@ export function MarketingHeader() {
               href="/pricing" 
               onClick={() => setActiveMenu(null)}
               className={`px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
-                isScrolled ? "text-white/90 hover:bg-blue-800/70 hover:text-white" : "text-slate-800 hover:text-blue-600 hover:bg-slate-100"
+                isScrolled ? "text-white/85 hover:bg-white/10 hover:text-white" : "text-slate-800 hover:text-blue-600 hover:bg-slate-100"
               }`}
             >
               Pricing Plans
@@ -251,14 +251,14 @@ export function MarketingHeader() {
               onMouseEnter={() => setActiveMenu("platform")}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
                 activeMenu === "platform"
-                  ? isScrolled ? "bg-blue-800 text-white" : "bg-blue-50 text-blue-600"
-                  : isScrolled ? "text-white/90 hover:bg-blue-800/70 hover:text-white" : "text-slate-800 hover:text-blue-600 hover:bg-slate-100"
+                  ? isScrolled ? "bg-white/15 text-white" : "bg-blue-50 text-blue-600"
+                  : isScrolled ? "text-white/85 hover:bg-white/10 hover:text-white" : "text-slate-800 hover:text-blue-600 hover:bg-slate-100"
               }`}
             >
               <span>Platform &amp; Governance</span>
               <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                 activeMenu === "platform" ? "rotate-180" : ""
-              } ${isScrolled ? "text-blue-200" : "text-slate-400"}`} />
+              } ${isScrolled ? "text-blue-300" : "text-slate-400"}`} />
             </button>
 
           </nav>
@@ -294,7 +294,7 @@ export function MarketingHeader() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.99 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute top-full inset-x-0 bg-white text-slate-900 border-b border-slate-200 overflow-hidden z-50 pointer-events-auto"
+            className={`absolute top-full inset-x-0 bg-white text-slate-900 border-t-4 border-blue-600 border-b border-slate-200 shadow-2xl shadow-black/20 overflow-hidden z-50 pointer-events-auto`}
           >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-7">
               
