@@ -36,6 +36,7 @@ export function MarketingHeader() {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeModuleTab, setActiveModuleTab] = useState<string>("production");
+  const [activeIndustryTab, setActiveIndustryTab] = useState<string>("textile");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,6 +53,99 @@ export function MarketingHeader() {
   const toggleMenu = (menu: string) => {
     setActiveMenu(activeMenu === menu ? null : menu);
   };
+
+  const industryTabs = [
+    {
+      id: "textile",
+      title: "Spinning & Weaving Mills",
+      icon: Building2,
+      desc: "Raw cotton bale inventory, yarn count tracking, weaving loom shift efficiency, and chemical vat dyeing recipes.",
+      features: [
+        "Bale Lot Quality Control",
+        "Weaving Machine Downtime",
+        "Yarn Production Slips",
+        "Dyeing Batch Recipes",
+        "Shift Allocation",
+        "Looms Yield Analytics"
+      ],
+      link: "/industries#textile"
+    },
+    {
+      id: "apparel",
+      title: "Apparel & Garment Units",
+      icon: Layers,
+      desc: "Cut-to-pack garment tracking, piece-rate worker payroll, trim inventory, and order milestone tracking.",
+      features: [
+        "Cut-Piece Lot Bundles",
+        "Worker Piece-Rate Payroll",
+        "Trims & Buttons Stock",
+        "Stitching Quality Control",
+        "Export Packing Lists",
+        "Subcontractor POs"
+      ],
+      link: "/industries#apparel"
+    },
+    {
+      id: "retail",
+      title: "Fashion & Retail Chains",
+      icon: Store,
+      desc: "Fast barcode POS billing, multi-store stock transfers, cashier shift registers, and loyalty points.",
+      features: [
+        "1.2s Barcode Scanning",
+        "Inter-Store Stock Transfer",
+        "Cashier Shift Audit",
+        "Customer Loyalty Points",
+        "Discounts & Vouchers",
+        "Offline Billing Queue"
+      ],
+      link: "/industries#retail"
+    },
+    {
+      id: "wholesale",
+      title: "Wholesale B2B Supply",
+      icon: ShoppingCart,
+      desc: "Tiered distributor pricing, bulk customer credit limits, proforma invoices, and gate pass dispatches.",
+      features: [
+        "Tiered Wholesale Rates",
+        "Customer Credit Limits",
+        "Bulk PO Invoicing",
+        "Rep Sales Tracking",
+        "Dispatch Gate Passes",
+        "Accounts Receivable"
+      ],
+      link: "/industries#wholesale"
+    },
+    {
+      id: "logistics",
+      title: "Warehousing & Logistics Hubs",
+      icon: Package,
+      desc: "Multi-warehouse WMS, barcode SKU bin locations, automated reorder alerts, and stock valuation audits.",
+      features: [
+        "Multi-Bin Stock Locations",
+        "Automated Reorder Alerts",
+        "Stock Audit Adjustments",
+        "Batch Expiry Dates",
+        "Barcode Scanning WMS",
+        "Valuation (FIFO/AVG)"
+      ],
+      link: "/industries#logistics"
+    },
+    {
+      id: "finance_ent",
+      title: "Enterprise Group Holdings",
+      icon: Receipt,
+      desc: "Consolidated multi-company general ledger, inter-company billing, bank reconciliation, and P&L.",
+      features: [
+        "Multi-Company Ledger",
+        "Inter-Company Invoicing",
+        "Bank Direct Sync",
+        "Consolidated P&L",
+        "Balance Sheet Engine",
+        "Tax Audit Trail"
+      ],
+      link: "/industries#finance"
+    }
+  ];
 
   const moduleTabs = [
     {
@@ -438,40 +532,83 @@ export function MarketingHeader() {
                 </div>
               )}
 
-              {/* SUBHEADER MENU 2: INDUSTRIES & SOLUTIONS */}
+              {/* SUBHEADER MENU 2: INDUSTRIES & SOLUTIONS (SIDEBAR TABBED LAYOUT) */}
               {activeMenu === "industries" && (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                   
-                  <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group">
-                    <h5 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-1">
-                      <Building2 className="w-4 h-4 text-slate-900 group-hover:text-sky-600" />
-                      <span>Spinning &amp; Weaving Mills</span>
-                    </h5>
-                    <p className="text-xs text-slate-500 leading-relaxed">Cotton bale inventory, yarn counts, and loom shift tracking.</p>
+                  {/* LEFT SIDEBAR NAVIGATION */}
+                  <div className="lg:col-span-4 space-y-1">
+                    <span className="text-[12px] font-extrabold tracking-wider text-slate-400 uppercase mb-3 block px-3.5">
+                      OUR INDUSTRIES
+                    </span>
+                    {industryTabs.map((tab) => {
+                      const IconComp = tab.icon;
+                      const isActive = activeIndustryTab === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          onMouseEnter={() => setActiveIndustryTab(tab.id)}
+                          onClick={() => setActiveIndustryTab(tab.id)}
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                            isActive
+                              ? "bg-sky-600 text-white shadow-md shadow-sky-600/25"
+                              : "text-slate-800 hover:text-sky-600 hover:bg-slate-50"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <IconComp className={`w-4.5 h-4.5 shrink-0 ${isActive ? "text-white" : "text-sky-600"}`} />
+                            <span>{tab.title}</span>
+                          </div>
+                          <ChevronRight className={`w-4 h-4 shrink-0 transition-transform ${isActive ? "text-white" : "text-slate-400"}`} />
+                        </button>
+                      );
+                    })}
                   </div>
 
-                  <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group">
-                    <h5 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-1">
-                      <Store className="w-4 h-4 text-slate-900 group-hover:text-sky-600" />
-                      <span>Fashion &amp; Retail Chains</span>
-                    </h5>
-                    <p className="text-xs text-slate-500 leading-relaxed">Multi-outlet POS billing, barcode tags, and central warehouse sync.</p>
-                  </div>
+                  {/* RIGHT CONTENT DISPLAY PANEL */}
+                  <div className="lg:col-span-8 pl-5 space-y-5">
+                    {(() => {
+                      const currentTab = industryTabs.find(t => t.id === activeIndustryTab) || industryTabs[0];
+                      const IconMain = currentTab.icon;
+                      return (
+                        <div className="space-y-6">
+                          {/* Industry Header & Description */}
+                          <div className="flex items-start gap-4">
+                            <div className="w-11 h-11 rounded-xl bg-sky-600 text-white flex items-center justify-center shadow-md shadow-sky-600/25 shrink-0">
+                              <IconMain className="w-6 h-6" />
+                            </div>
+                            <div className="space-y-1">
+                              <h3 className="text-lg font-extrabold text-slate-900 leading-tight">
+                                {currentTab.title}
+                              </h3>
+                              <p className="text-xs text-slate-500 leading-relaxed max-w-xl">
+                                {currentTab.desc}
+                              </p>
+                            </div>
+                          </div>
 
-                  <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group">
-                    <h5 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-1">
-                      <Package className="w-4 h-4 text-slate-900 group-hover:text-sky-600" />
-                      <span>Wholesale B2B Supply</span>
-                    </h5>
-                    <p className="text-xs text-slate-500 leading-relaxed">Tiered customer pricing, credit limits, and bulk order dispatch.</p>
-                  </div>
+                          {/* 3-Column Bullet Features Grid */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-4 pb-4 border-t border-b border-slate-100">
+                            {currentTab.features.map((feat, idx) => (
+                              <div key={idx} className="flex items-center gap-2 text-xs font-semibold text-slate-700">
+                                <span className="w-1.5 h-1.5 rounded-full bg-sky-600 shrink-0" />
+                                <span>{feat}</span>
+                              </div>
+                            ))}
+                          </div>
 
-                  <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group">
-                    <h5 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-1">
-                      <Users2 className="w-4 h-4 text-slate-900 group-hover:text-sky-600" />
-                      <span>Apparel Stitching Units</span>
-                    </h5>
-                    <p className="text-xs text-slate-500 leading-relaxed">Cut-piece tracking, worker piece-rate payroll, and trim inventory.</p>
+                          {/* Bottom CTA Action Link */}
+                          <Link 
+                            href={currentTab.link}
+                            onClick={() => setActiveMenu(null)}
+                            className="inline-flex items-center gap-2 text-sm font-bold text-sky-600 hover:text-sky-700 group transition-colors"
+                          >
+                            <span>View all {currentTab.title} solutions</span>
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          </Link>
+                        </div>
+                      );
+                    })()}
                   </div>
 
                 </div>
