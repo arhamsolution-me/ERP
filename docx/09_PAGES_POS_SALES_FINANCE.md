@@ -190,4 +190,19 @@
 
 ---
 
+## 65. Offline-First POS Synchronization & Conflict Resolution Specification (Standard #8)
+
+### Sync Protocol & State Machine
+1. **Client-Side Queue (IndexedDB):**
+   - Transactions generated during network disconnection are stored locally with `sync_status: 'pending'`, a client-generated UUID `idempotency_key`, and `offline_created_at` timestamp.
+   - When network connectivity is restored, the client issues a `POST /api/v1/pos/transactions/sync-batch` payload containing up to 100 queued transactions.
+
+2. **Server-Side Reconciliation Rules:**
+   - **Idempotency Check:** If a transaction with the same `idempotency_key` already exists, the server returns status `duplicate` without re-executing inventory decrements or double-charging.
+   - **Stock Reconciliation:** Inventory is decremented authoritatively on the server. If stock is available, status transitions to `synced`. If two offline terminals sold the same remaining variant unit, the server records the sale under status `conflict` and flags an urgent restock notification in the branch manager's dashboard.
+   - **Financial Ledger Immutability:** Financial ledger entries retain the original `offline_created_at` timestamp for daily close and cash drawer reconciliation.
+
+---
+
 Proceed to `10_PAGES_HR_ADMIN_SETTINGS.md`.
+

@@ -1,159 +1,149 @@
-# Turborepo starter
+# NexERP — Global Multi-Tenant Textile-to-Retail ERP Platform
+> Built by **Devnexes Digital Solutions** — *"We Don't Just Build — We Solve"*
 
-This Turborepo starter is maintained by the Turborepo core team.
+NexERP is an enterprise SaaS platform engineered to unify **Textile Manufacturing (Yarn → Weaving → Dyeing → Finishing → QC)** with **Retail & Wholesale Distribution (B2B Wholesale + B2C Offline-First POS)** under a single, highly resilient multi-tenant architecture designed to scale to 1,000,000+ users.
 
-## Using this example
+---
 
-Run the following command:
+## 🏗 System Architecture
 
-```sh
-npx create-turbo@latest
+NexERP is designed as a **Modular Monolith** with service-oriented boundaries and an independent AI microservice tier:
+
+```
+                               ┌────────────────────────┐
+                               │   Cloudflare CDN / WAF  │
+                               └───────────┬────────────┘
+                                           │
+                    ┌──────────────────────┴──────────────────────┐
+                    │                                             │
+         ┌──────────▼──────────┐                       ┌──────────▼──────────┐
+         │   apps/web (Next.js)│                       │   apps/api (NestJS)  │
+         │   - Marketing (SSG) │                       │   - Multi-Tenant REST│
+         │   - ERP Dashboard   │                       │   - Idempotent APIs  │
+         │   - Offline PWA POS │                       │   - WebSocket Gateway│
+         └──────────┬──────────┘                       └──────────┬──────────┘
+                    │                                             │
+                    ├──────────────────────┬──────────────────────┤
+                    │                      │                      │
+         ┌──────────▼──────────┐┌──────────▼──────────┐┌──────────▼──────────┐
+         │ PostgreSQL Primary  ││    Redis Cluster    ││ Python AI Service   │
+         │ (Row-Level Security)││(Cache/PubSub/Queue) ││ (Defect/Forecasting)│
+         └─────────────────────┘└─────────────────────┘└─────────────────────┘
 ```
 
-## What's inside?
+### 10 Non-Negotiable Core Standards:
+1. **Absolute Multi-Tenant Isolation:** Database Row-Level Security (RLS) + ORM middleware + Redis key scoping (`tenant:{id}:*`).
+2. **Invite-Only Registration:** No public signup; strictly role-governed user invitation.
+3. **Zero-Downtime Deployments:** Rolling updates with backward-compatible migrations.
+4. **Immutable Audit Trails:** Every state mutation is logged with user, tenant, IP, device, and payload diffs.
+5. **Fail-Closed Security:** Strict RBAC with default-deny on authorization ambiguity.
+6. **Idempotency on Mutations:** All financial and inventory endpoints require an `Idempotency-Key` header.
+7. **Stateless App Servers:** Horizontal scaling via Kubernetes HPA; no in-process state.
+8. **Offline-First POS:** Client-side queue (IndexedDB) with server-authoritative conflict resolution.
+9. **Secrets Vault Management:** Environment variables managed via secure secrets manager.
+10. **Automated Test Quality Bar:** Minimum 70% automated test coverage across packages.
 
-This Turborepo includes the following packages/apps:
+---
 
-### Apps and Packages
+## 📁 Repository Structure
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+```
+nexerp/
+├── apps/
+│   ├── api/          # NestJS backend API & WebSocket gateway
+│   ├── web/          # Next.js 16 (Turbopack) frontend & offline POS PWA
+│   └── docs/         # Developer documentation portal (Next.js)
+├── packages/
+│   ├── db/           # Prisma client, PostgreSQL schema, RLS policies
+│   ├── ui/           # Shared React design system & tokens
+│   ├── eslint-config/# Shared ESLint rules
+│   └── typescript-config/ # Shared TS configurations
+├── docx/             # Master 22-document system architecture & page specs (00–21)
+├── deploy/           # Kubernetes manifests & deployment configurations
+├── docker-compose.yml       # Local development services (PostgreSQL, Redis)
+└── docker-compose.prod.yml  # Multi-container production deployment setup
 ```
 
-Without global `turbo`, use your package manager:
+---
 
-```sh
-cd my-turborepo
-npx turbo build
-pnpm dlx turbo build
-pnpm exec turbo build
+## 🚀 Quick Start Guide
+
+### Prerequisites
+- **Node.js**: `>= 18.0.0` (v20+ recommended)
+- **pnpm**: `^9.0.0`
+- **Docker & Docker Compose**
+
+### 1. Clone & Install Dependencies
+```bash
+git clone https://github.com/arhamsolution-me/ERP.git
+cd ERP
+pnpm install
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo build --filter=docs
+### 2. Configure Environment Variables
+Copy the example environment files:
+```bash
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env.local
 ```
 
-Without global `turbo`:
-
-```sh
-npx turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+### 3. Start Local Infrastructure
+```bash
+docker compose up -d
 ```
 
-### Develop
-
-To develop all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo dev
+### 4. Database Setup & Migrations
+```bash
+pnpm --filter @repo/db db:generate
+pnpm --filter @repo/db db:push
 ```
 
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo dev
-pnpm exec turbo dev
-pnpm exec turbo dev
+### 5. Run Development Servers
+```bash
+pnpm dev
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+- **Web Application & POS:** [http://localhost:3000](http://localhost:3000)
+- **REST API:** [http://localhost:3001/api/v1](http://localhost:3001/api/v1)
+- **Swagger Documentation:** [http://localhost:3001/api/docs](http://localhost:3001/api/docs)
+- **Developer Docs:** [http://localhost:3002](http://localhost:3002)
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+---
 
-```sh
-turbo dev --filter=web
+## 🧪 Testing & Quality Gates
+
+Run full test suite with coverage:
+```bash
+pnpm test
 ```
 
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+Run TypeScript verification across all workspaces:
+```bash
+pnpm check-types
 ```
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
+Run production build:
+```bash
+pnpm build
 ```
 
-Without global `turbo`, use your package manager:
+---
 
-```sh
-cd my-turborepo
-npx turbo login
-pnpm exec turbo login
-pnpm exec turbo login
-```
+## 📚 Specification Suite Index (`docx/`)
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+The system architecture and element-level page designs are documented across 22 prompts in [`docx/`](file:///c:/Users/Huzaifa%20Ali/Desktop/coding/projects/devnexes.project/erp/docx/):
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+- `00_MASTER_OVERVIEW.md` — Global standards & build roadmap
+- `01_ARCHITECTURE_PROMPT.md` — Monolith modular design & scalability
+- `02_DATABASE_SCHEMA_PROMPT.md` — Complete PostgreSQL schema & RLS
+- `03_SECURITY_AUTH_SESSION_PROMPT.md` — Clerk auth, RBAC & security
+- `04_API_ROUTES_PROMPT.md` — REST API route map
+- `05_FRONTEND_SEO_PERFORMANCE_PROMPT.md` — Next.js architecture & PWA POS
+- `06_DEVOPS_SCALABILITY_PROMPT.md` — Kubernetes, CI/CD, and Observability
+- `07–11_PAGES_*.md` — Element-level UI specifications for all 97 pages
+- `12–21_*.md` — UX states, Procurement, Legal, Branding, Public API, DR & Audits
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+---
 
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-pnpm exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+## 📄 License & Ownership
+Copyright © 2026 Devnexes Digital Solutions. All rights reserved.

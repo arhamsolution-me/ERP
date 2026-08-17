@@ -100,3 +100,11 @@
 4. Rate-limiting middleware configuration per endpoint class.
 
 Proceed to `04_API_ROUTES_PROMPT.md`.
+
+---
+
+## 10. Secrets Management & Vault Implementation Notes (Standard #9)
+
+- **Managed Production Environments (AWS / GCP / K8s):** Secrets (`CLERK_SECRET_KEY`, `DATABASE_URL`, `REDIS_URL`, etc.) are injected dynamically at runtime via AWS Secrets Manager or HashiCorp Vault using Kubernetes External Secrets Operator (`ExternalSecret`).
+- **Interim / Development Environments:** Strict environment isolation is maintained via `.env.local` / `.env` loaded into container memory, guarded by gitleaks CI scanning to prevent any credential check-in. No secrets are stored in plaintext within source code or build artifacts.
+

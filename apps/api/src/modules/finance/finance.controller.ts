@@ -29,11 +29,16 @@ export class FinanceController {
 
   @Post('invoices')
   @Permissions('finance.invoice.create')
-  @ApiOperation({ summary: 'Create an invoice' })
+  @ApiOperation({ summary: 'Create an invoice (idempotent)' })
   async createInvoice(
     @Body() body: { invoice_number: string; entity_type: string; reference_id?: string; amount: number; tax_amount: number; due_date?: string },
     @Req() req: AuthenticatedRequest,
   ) {
+    const existing = await prisma.invoice.findUnique({
+      where: { invoice_number: body.invoice_number },
+    });
+    if (existing) return existing;
+
     return prisma.invoice.create({
       data: {
         tenant_id: req.tenantId!,
@@ -54,10 +59,18 @@ export class FinanceController {
   @Permissions('finance.payment.record')
   @ApiOperation({ summary: 'Record a payment (idempotent)' })
   async recordPayment(
-    @Body() body: { invoice_id?: string; amount: number; method: string; transaction_ref?: string },
+    @Body() body: { invoice_id?: string; amount: number; method: string; transaction_ref?: string; idempotency_key?: string },
     @Req() req: AuthenticatedRequest,
-    @Headers('idempotency-key') _idempotencyKey?: string,
+    @Headers('idempotency-key') headerKey?: string,
   ) {
+    const key = headerKey || body.idempotency_key;
+    if (key) {
+      const existing = await prisma.payment.findUnique({
+        where: { idempotency_key: key },
+      });
+      if (existing) return existing;
+    }
+
     return prisma.payment.create({
       data: {
         tenant_id: req.tenantId!,
@@ -65,6 +78,7 @@ export class FinanceController {
         amount: BigInt(body.amount),
         method: body.method,
         transaction_ref: body.transaction_ref,
+        idempotency_key: key,
         paid_at: new Date(),
       },
     });

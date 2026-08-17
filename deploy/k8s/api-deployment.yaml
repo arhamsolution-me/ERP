@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexerp-api
+  namespace: nexerp
+  labels:
+    app: nexerp-api
+    tier: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nexerp-api
+  template:
+    metadata:
+      labels:
+        app: nexerp-api
+        tier: backend
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/arhamsolution-me/nexerp-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3001
+              name: http
+          envFrom:
+            - configMapRef:
+                name: nexerp-config
+            - secretRef:
+                name: nexerp-secrets
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1024Mi"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 3001
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nexerp-api-svc
+  namespace: nexerp
+spec:
+  type: ClusterIP
+  selector:
+    app: nexerp-api
+  ports:
+    - port: 3001
+      targetPort: 3001
+      name: http

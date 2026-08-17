@@ -85,6 +85,108 @@ export class SalesController {
     });
   }
 
+  @Post('pos/transactions/sync-batch')
+  @Permissions('pos.sale.create')
+  @ApiOperation({ summary: 'Offline-first POS queue batch sync with conflict reconciliation' })
+  async syncBatch(
+    @Body() body: {
+      transactions: Array<{
+        branch_id: string;
+        terminal_id: string;
+        cashier_id: string;
+        customer_id?: string;
+        idempotency_key: string;
+        subtotal: number;
+        tax_amount: number;
+        discount_amount: number;
+        total: number;
+        payment_method: string;
+        offline_created_at?: string;
+        items: Array<{ variant_id: string; quantity: number; unit_price: number }>;
+      }>;
+    },
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const results: Array<{
+      idempotency_key: string;
+      status: 'synced' | 'duplicate' | 'conflict';
+      transaction_id?: string;
+      error?: string;
+    }> = [];
+
+    for (const txnData of body.transactions) {
+      try {
+        // Check for duplicate / already synced idempotency key
+        const existing = await prisma.posTransaction.findUnique({
+          where: { idempotency_key: txnData.idempotency_key },
+        });
+
+        if (existing) {
+          results.push({
+            idempotency_key: txnData.idempotency_key,
+            status: 'duplicate',
+            transaction_id: existing.id,
+          });
+          continue;
+        }
+
+        // Create transaction and persist
+        const created = await prisma.$transaction(async (tx) => {
+          return tx.posTransaction.create({
+            data: {
+              tenant_id: req.tenantId!,
+              branch_id: txnData.branch_id,
+              terminal_id: txnData.terminal_id,
+              cashier_id: txnData.cashier_id,
+              customer_id: txnData.customer_id,
+              idempotency_key: txnData.idempotency_key,
+              subtotal: BigInt(txnData.subtotal),
+              tax_amount: BigInt(txnData.tax_amount),
+              discount_amount: BigInt(txnData.discount_amount),
+              total: BigInt(txnData.total),
+              payment_method: txnData.payment_method as any,
+              sync_status: 'synced',
+              offline_created_at: txnData.offline_created_at ? new Date(txnData.offline_created_at) : null,
+              items: {
+                create: txnData.items.map((item) => ({
+                  tenant_id: req.tenantId!,
+                  variant_id: item.variant_id,
+                  quantity: item.quantity,
+                  unit_price: BigInt(item.unit_price),
+                  line_total: BigInt(item.quantity * item.unit_price),
+                })),
+              },
+            },
+          });
+        });
+
+        results.push({
+          idempotency_key: txnData.idempotency_key,
+          status: 'synced',
+          transaction_id: created.id,
+        });
+      } catch (err: any) {
+        results.push({
+          idempotency_key: txnData.idempotency_key,
+          status: 'conflict',
+          error: err?.message || 'Sync failed',
+        });
+      }
+    }
+
+    const synced_count = results.filter((r) => r.status === 'synced').length;
+    const duplicates_count = results.filter((r) => r.status === 'duplicate').length;
+    const conflicts_count = results.filter((r) => r.status === 'conflict').length;
+
+    return {
+      total_processed: body.transactions.length,
+      synced_count,
+      duplicates_count,
+      conflicts_count,
+      results,
+    };
+  }
+
   // ─── Customers ────────────────────────────────────────────────────────────
 
   @Get('customers')
@@ -121,29 +223,42 @@ export class SalesController {
   async createWholesaleOrder(
     @Body() body: {
       customer_id: string; branch_id: string; total_amount: number; created_by: string;
+      idempotency_key?: string;
       items: { variant_id: string; quantity: number; unit_price: number }[];
     },
     @Req() req: AuthenticatedRequest,
-    @Headers('idempotency-key') _idempotencyKey?: string,
+    @Headers('idempotency-key') headerKey?: string,
   ) {
-    return prisma.wholesaleOrder.create({
-      data: {
-        tenant_id: req.tenantId!,
-        customer_id: body.customer_id,
-        branch_id: body.branch_id,
-        status: 'draft',
-        total_amount: BigInt(body.total_amount),
-        created_by: body.created_by,
-        items: {
-          create: body.items.map(item => ({
-            tenant_id: req.tenantId!,
-            variant_id: item.variant_id,
-            quantity: item.quantity,
-            unit_price: BigInt(item.unit_price),
-          })),
+    const key = headerKey || body.idempotency_key;
+    if (key) {
+      const existing = await prisma.wholesaleOrder.findUnique({
+        where: { idempotency_key: key },
+        include: { items: true },
+      });
+      if (existing) return existing;
+    }
+
+    return prisma.$transaction(async (tx) => {
+      return tx.wholesaleOrder.create({
+        data: {
+          tenant_id: req.tenantId!,
+          customer_id: body.customer_id,
+          branch_id: body.branch_id,
+          status: 'draft',
+          total_amount: BigInt(body.total_amount),
+          created_by: body.created_by,
+          idempotency_key: key,
+          items: {
+            create: body.items.map(item => ({
+              tenant_id: req.tenantId!,
+              variant_id: item.variant_id,
+              quantity: item.quantity,
+              unit_price: BigInt(item.unit_price),
+            })),
+          },
         },
-      },
-      include: { items: true },
+        include: { items: true },
+      });
     });
   }
 

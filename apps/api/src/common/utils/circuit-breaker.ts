@@ -1,35 +1,48 @@
 export enum CircuitBreakerState {
-  CLOSED,
-  OPEN,
-  HALF_OPEN,
+  CLOSED = 'CLOSED',
+  OPEN = 'OPEN',
+  HALF_OPEN = 'HALF_OPEN',
 }
 
 export interface CircuitBreakerOptions {
-  failureThreshold: number; // Number of failures before opening
-  cooldownPeriodMs: number; // Time to wait before attempting half-open
+  failureThreshold: number;
+  cooldownPeriodMs: number;
 }
 
 export class CircuitBreaker {
   private state = CircuitBreakerState.CLOSED;
   private failureCount = 0;
   private nextAttemptTime = 0;
+  private options: CircuitBreakerOptions;
 
-  constructor(private options: CircuitBreakerOptions) {}
+  constructor(optionsOrThreshold: number | CircuitBreakerOptions, cooldownMs?: number) {
+    if (typeof optionsOrThreshold === 'number') {
+      this.options = {
+        failureThreshold: optionsOrThreshold,
+        cooldownPeriodMs: cooldownMs || 5000,
+      };
+    } else {
+      this.options = optionsOrThreshold;
+    }
+  }
+
+  public getState(): CircuitBreakerState {
+    if (this.state === CircuitBreakerState.OPEN && Date.now() >= this.nextAttemptTime) {
+      this.state = CircuitBreakerState.HALF_OPEN;
+    }
+    return this.state;
+  }
 
   public async fire<T>(action: () => Promise<T>): Promise<T> {
-    if (this.state === CircuitBreakerState.OPEN) {
-      if (Date.now() >= this.nextAttemptTime) {
-        // Transition to HALF_OPEN to probe
-        this.state = CircuitBreakerState.HALF_OPEN;
-      } else {
-        throw new Error('CircuitBreaker is OPEN. Fast-failing request.');
-      }
+    const currentState = this.getState();
+
+    if (currentState === CircuitBreakerState.OPEN) {
+      throw new Error('CircuitBreaker is OPEN. Fast-failing request.');
     }
 
     try {
       const result = await action();
-      // On success, reset the breaker
-      this.reset();
+      this.recordSuccess();
       return result;
     } catch (error) {
       this.recordFailure();
@@ -37,18 +50,21 @@ export class CircuitBreaker {
     }
   }
 
-  private recordFailure() {
+  public recordFailure() {
     this.failureCount++;
     if (this.failureCount >= this.options.failureThreshold) {
       this.state = CircuitBreakerState.OPEN;
       this.nextAttemptTime = Date.now() + this.options.cooldownPeriodMs;
-      // In a real app, emit an event or log to Datadog/Sentry here
-      console.warn(`[CircuitBreaker] Circuit opened! Cooldown: ${this.options.cooldownPeriodMs}ms`);
     }
   }
 
-  private reset() {
+  public recordSuccess() {
+    this.reset();
+  }
+
+  public reset() {
     this.state = CircuitBreakerState.CLOSED;
     this.failureCount = 0;
+    this.nextAttemptTime = 0;
   }
 }

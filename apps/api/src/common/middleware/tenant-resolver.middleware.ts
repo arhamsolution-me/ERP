@@ -3,6 +3,15 @@ import type { Response, NextFunction } from 'express';
 import { prisma } from '@repo/db';
 import type { TenantRequest } from '../types/request.types';
 
+/**
+ * TenantResolverMiddleware extracts tenant context from headers or subdomain.
+ *
+ * SECURITY NOTE (Non-Negotiable Standard #1):
+ * No route relies on this middleware alone for security/authorization.
+ * Even if an attacker supplies a spoofed `x-tenant-id` header for another tenant,
+ * `RolesGuard` mandatory cross-check (`user.tenant_id !== request.tenantId`)
+ * rejects the request with HTTP 403 Forbidden.
+ */
 @Injectable()
 export class TenantResolverMiddleware implements NestMiddleware {
   async use(req: TenantRequest, res: Response, next: NextFunction) {

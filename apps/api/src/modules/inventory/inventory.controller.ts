@@ -151,10 +151,18 @@ export class InventoryController {
   @Permissions('inventory.transfer.create')
   @ApiOperation({ summary: 'Initiate a stock transfer between warehouses (idempotent)' })
   async createTransfer(
-    @Body() body: { from_warehouse_id: string; to_warehouse_id: string; initiated_by: string },
+    @Body() body: { from_warehouse_id: string; to_warehouse_id: string; initiated_by: string; idempotency_key?: string },
     @Req() req: AuthenticatedRequest,
-    @Headers('idempotency-key') idempotencyKey?: string,
+    @Headers('idempotency-key') headerKey?: string,
   ) {
+    const key = headerKey || body.idempotency_key;
+    if (key) {
+      const existing = await prisma.stockTransfer.findUnique({
+        where: { idempotency_key: key },
+      });
+      if (existing) return existing;
+    }
+
     return prisma.stockTransfer.create({
       data: {
         tenant_id: req.tenantId!,
@@ -162,6 +170,7 @@ export class InventoryController {
         to_warehouse_id: body.to_warehouse_id,
         status: 'pending',
         initiated_by: body.initiated_by,
+        idempotency_key: key,
       },
     });
   }

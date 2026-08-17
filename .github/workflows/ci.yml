@@ -2,53 +2,51 @@ name: NexERP CI Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main, develop]
   pull_request:
-    branches: [ "main" ]
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build-and-test:
+  validate:
+    name: Lint, Typecheck, Test & Build
     runs-on: ubuntu-latest
-    
+    timeout-minutes: 15
+
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js 20
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
-        
-    - name: Install pnpm
-      uses: pnpm/action-setup@v3
-      with:
-        version: 9
-        
-    - name: Get pnpm store directory
-      id: pnpm-cache
-      shell: bash
-      run: |
-        echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-        
-    - name: Setup pnpm cache
-      uses: actions/cache@v4
-      with:
-        path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-pnpm-store-
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9.0.0
 
-    - name: Install Dependencies
-      run: pnpm install --frozen-lockfile
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
 
-    - name: Generate Prisma Client
-      run: pnpm --filter db generate
-      
-    - name: Run Linting
-      run: pnpm run lint
-      
-    - name: Run Tests
-      run: pnpm run test
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
 
-    - name: Build Projects
-      run: pnpm run build
+      - name: Generate Prisma Client
+        run: pnpm --filter @repo/db db:generate
+
+      - name: TypeScript Typecheck
+        run: pnpm check-types
+
+      - name: Run Test Suite with Coverage
+        run: pnpm test
+        env:
+          NODE_ENV: test
+          CLERK_SECRET_KEY: sk_test_mock_ci_secret_key_12345
+          CLERK_PUBLISHABLE_KEY: pk_test_mock_ci_publishable_key_12345
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/nexerp_test
+
+      - name: Production Build Verification
+        run: pnpm build

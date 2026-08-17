@@ -126,17 +126,27 @@ export class HrController {
 
   @Post('payroll/run')
   @Permissions('hr.payroll.run')
-  @ApiOperation({ summary: 'Initialize a payroll run' })
+  @ApiOperation({ summary: 'Initialize a payroll run (idempotent)' })
   async runPayroll(
-    @Body() body: { period_start: string; period_end: string },
+    @Body() body: { period_start: string; period_end: string; idempotency_key?: string },
     @Req() req: AuthenticatedRequest,
+    @Headers('idempotency-key') headerKey?: string,
   ) {
+    const key = headerKey || body.idempotency_key;
+    if (key) {
+      const existing = await prisma.payrollRun.findUnique({
+        where: { idempotency_key: key },
+      });
+      if (existing) return existing;
+    }
+
     return prisma.payrollRun.create({
       data: {
         tenant_id: req.tenantId!,
         period_start: new Date(body.period_start),
         period_end: new Date(body.period_end),
         status: 'draft' as any,
+        idempotency_key: key,
       },
     });
   }

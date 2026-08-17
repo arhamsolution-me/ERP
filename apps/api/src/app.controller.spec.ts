@@ -14,9 +14,13 @@ describe('AppController', () => {
     appController = app.get<AppController>(AppController);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+  describe('Health Probes', () => {
+    it('should return "OK" for health probe', () => {
+      expect(appController.getHealth()).toBe('OK');
+    });
+
+    it('should return "READY" for readiness probe', () => {
+      expect(appController.getReady()).toBe('READY');
     });
   });
 });

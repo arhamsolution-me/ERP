@@ -1,5 +1,6 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
@@ -7,6 +8,8 @@ import { UsersModule } from './modules/users/users.module';
 import { RolesModule } from './modules/roles/roles.module';
 import { TenantResolverMiddleware } from './common/middleware/tenant-resolver.middleware';
 import { RolesGuard } from './common/guards/roles.guard';
+import { AuditInterceptor } from './common/interceptors/audit.interceptor';
+import { HealthModule } from './modules/health/health.module';
 import { ProductionModule } from './modules/production/production.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
 import { SalesModule } from './modules/sales/sales.module';
@@ -14,14 +17,40 @@ import { FinanceModule } from './modules/finance/finance.module';
 import { HrModule } from './modules/hr/hr.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, RolesModule, ProductionModule, InventoryModule, SalesModule, FinanceModule, HrModule],
+  imports: [
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 100,
+      },
+    ]),
+    HealthModule,
+    AuthModule,
+    UsersModule,
+    RolesModule,
+    ProductionModule,
+    InventoryModule,
+    SalesModule,
+    FinanceModule,
+    HrModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,
-    // Register RolesGuard globally — it reads permissions metadata per route.
+    // Global ThrottlerGuard for rate limiting
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+    // Global RolesGuard — checks explicit permissions & tenant match per route
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    // Global AuditInterceptor — automatically logs mutating operations
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: AuditInterceptor,
     },
   ],
 })
