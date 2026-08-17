@@ -215,48 +215,155 @@ export default function Homepage() {
 
       </section>
 
-      {/* FEATURE HIGHLIGHTS SECTION */}
-      <section className="py-24 bg-white border-b border-slate-200">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      {/* ULTRA-PREMIUM FEATURE HIGHLIGHTS SECTION */}
+      <section className="py-24 sm:py-32 bg-slate-50/60 border-b border-slate-200 relative overflow-hidden">
+        {/* Subtle Background Pattern */}
+        <div className="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:32px_32px] opacity-40 pointer-events-none" />
+
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          
+          {/* Section Header */}
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-sky-600">Built for Modern Operations</h2>
-            <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900">One Integrated Platform. Every Key Workflow.</h3>
-            <p className="text-slate-600 text-base">Eliminate data silos between your factory floor, warehouses, retail stores, and finance team.</p>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-100/80 border border-sky-200/80 text-sky-700 text-xs font-extrabold uppercase tracking-widest shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-sky-600 animate-pulse" />
+              <span>Built for Modern Operations</span>
+            </div>
+            
+            <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 leading-[1.15]">
+              One Integrated Platform. <br className="hidden sm:inline" />
+              <span className="bg-gradient-to-r from-sky-600 via-cyan-600 to-blue-700 bg-clip-text text-transparent">
+                Every Key Workflow.
+              </span>
+            </h2>
+            
+            <p className="text-slate-600 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
+              Eliminate data silos between your factory floor, multi-bin warehouses, retail store POS, and financial accounting team.
+            </p>
           </div>
 
+          {/* 3-Column Premium Enterprise Cards */}
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <div className="bg-slate-50/80 p-8 rounded-3xl border border-slate-200 hover:border-sky-500/50 hover:shadow-xl transition-all group">
-              <div className="bg-sky-100 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-sky-600 group-hover:text-white transition-all">
-                <Factory className="h-7 w-7 text-sky-600 group-hover:text-white transition-colors" />
+            
+            {/* Card 1: Textile Production (MES) */}
+            <div className="bg-white p-8 sm:p-9 rounded-3xl border border-slate-200/90 shadow-md shadow-slate-200/50 hover:shadow-2xl hover:shadow-sky-500/10 hover:border-sky-500/50 hover:-translate-y-1.5 transition-all duration-300 relative group overflow-hidden flex flex-col justify-between">
+              <div className="h-1.5 w-full bg-gradient-to-r from-sky-500 to-blue-600 absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+              
+              <div>
+                <div className="w-14 h-14 rounded-2xl bg-sky-600 text-white flex items-center justify-center mb-6 shadow-lg shadow-sky-600/30 group-hover:scale-110 transition-transform">
+                  <Factory className="h-7 w-7 text-white" />
+                </div>
+                
+                <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">Textile Production (MES)</h3>
+                <p className="text-slate-600 text-sm leading-relaxed mb-6 font-medium">
+                  Track cotton batches, spinning looms, dyeing recipes, and machine downtime with live production scorecards.
+                </p>
+
+                {/* Feature Bullet Points */}
+                <div className="space-y-2.5 pt-4 border-t border-slate-100 mb-8">
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-600 shrink-0" />
+                    <span>Yarn Lot &amp; Weaving Loom Efficiency</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-600 shrink-0" />
+                    <span>Chemical Vat Dyeing Recipes</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-600 shrink-0" />
+                    <span>Shift Worker Yield &amp; Downtime Logs</span>
+                  </div>
+                </div>
               </div>
-              <h4 className="text-xl font-bold text-slate-900 mb-3">Textile Production (MES)</h4>
-              <p className="text-slate-600 text-sm leading-relaxed mb-6">Track batches, raw materials, weaving metrics, dyeing recipes, and machine downtime in real-time.</p>
-              <Link href="/features#production" className="text-sky-600 font-bold text-sm hover:underline flex items-center gap-1 group-hover:gap-2 transition-all">
-                Explore Production MES <ArrowRight className="h-4 w-4" />
+
+              <Link 
+                href="/features#production" 
+                className="inline-flex items-center gap-2 text-sm font-bold text-sky-600 hover:text-sky-700 group/link transition-colors pt-2"
+              >
+                <span>Explore Production MES</span>
+                <ArrowRight className="h-4 w-4 group-hover/link:translate-x-1 transition-transform" />
               </Link>
             </div>
 
-            <div className="bg-slate-50/80 p-8 rounded-3xl border border-slate-200 hover:border-emerald-500/50 hover:shadow-xl transition-all group">
-              <div className="bg-emerald-100 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-emerald-600 group-hover:text-white transition-all">
-                <Store className="h-7 w-7 text-emerald-600 group-hover:text-white transition-colors" />
+            {/* Card 2: Retail POS & Inventory */}
+            <div className="bg-white p-8 sm:p-9 rounded-3xl border border-slate-200/90 shadow-md shadow-slate-200/50 hover:shadow-2xl hover:shadow-sky-500/10 hover:border-sky-500/50 hover:-translate-y-1.5 transition-all duration-300 relative group overflow-hidden flex flex-col justify-between">
+              <div className="h-1.5 w-full bg-gradient-to-r from-sky-500 to-blue-600 absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+              
+              <div>
+                <div className="w-14 h-14 rounded-2xl bg-sky-600 text-white flex items-center justify-center mb-6 shadow-lg shadow-sky-600/30 group-hover:scale-110 transition-transform">
+                  <Store className="h-7 w-7 text-white" />
+                </div>
+                
+                <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">Retail POS &amp; Inventory</h3>
+                <p className="text-slate-600 text-sm leading-relaxed mb-6 font-medium">
+                  High-speed barcode checkout counters, offline billing mode, inter-branch stock transfers, and customer loyalty.
+                </p>
+
+                {/* Feature Bullet Points */}
+                <div className="space-y-2.5 pt-4 border-t border-slate-100 mb-8">
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-600 shrink-0" />
+                    <span>1.2s High-Speed Barcode Checkout</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-600 shrink-0" />
+                    <span>Offline Transaction Queue &amp; Sync</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-600 shrink-0" />
+                    <span>Multi-Branch Inter-Store Transfers</span>
+                  </div>
+                </div>
               </div>
-              <h4 className="text-xl font-bold text-slate-900 mb-3">Retail POS &amp; Inventory</h4>
-              <p className="text-slate-600 text-sm leading-relaxed mb-6">High-speed barcode checkout counters, offline operation mode, inter-branch stock transfers, and customer loyalty.</p>
-              <Link href="/features#inventory" className="text-emerald-600 font-bold text-sm hover:underline flex items-center gap-1 group-hover:gap-2 transition-all">
-                Explore Retail &amp; Stock <ArrowRight className="h-4 w-4" />
+
+              <Link 
+                href="/features#inventory" 
+                className="inline-flex items-center gap-2 text-sm font-bold text-sky-600 hover:text-sky-700 group/link transition-colors pt-2"
+              >
+                <span>Explore Retail &amp; Stock</span>
+                <ArrowRight className="h-4 w-4 group-hover/link:translate-x-1 transition-transform" />
               </Link>
             </div>
 
-            <div className="bg-slate-50/80 p-8 rounded-3xl border border-slate-200 hover:border-purple-500/50 hover:shadow-xl transition-all group">
-              <div className="bg-purple-100 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-purple-600 group-hover:text-white transition-all">
-                <TrendingUp className="h-7 w-7 text-purple-600 group-hover:text-white transition-colors" />
+            {/* Card 3: Finance & AI Forecasting */}
+            <div className="bg-white p-8 sm:p-9 rounded-3xl border border-slate-200/90 shadow-md shadow-slate-200/50 hover:shadow-2xl hover:shadow-sky-500/10 hover:border-sky-500/50 hover:-translate-y-1.5 transition-all duration-300 relative group overflow-hidden flex flex-col justify-between">
+              <div className="h-1.5 w-full bg-gradient-to-r from-sky-500 to-blue-600 absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+              
+              <div>
+                <div className="w-14 h-14 rounded-2xl bg-sky-600 text-white flex items-center justify-center mb-6 shadow-lg shadow-sky-600/30 group-hover:scale-110 transition-transform">
+                  <TrendingUp className="h-7 w-7 text-white" />
+                </div>
+                
+                <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">Finance &amp; AI Forecasting</h3>
+                <p className="text-slate-600 text-sm leading-relaxed mb-6 font-medium">
+                  Automated double-entry general ledger, instant bank reconciliation, and machine-learning demand forecasting models.
+                </p>
+
+                {/* Feature Bullet Points */}
+                <div className="space-y-2.5 pt-4 border-t border-slate-100 mb-8">
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-600 shrink-0" />
+                    <span>Automated Double-Entry Ledger</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-600 shrink-0" />
+                    <span>Direct Bank Statement Reconciliation</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-600 shrink-0" />
+                    <span>ML Demand &amp; Cash Flow Predictions</span>
+                  </div>
+                </div>
               </div>
-              <h4 className="text-xl font-bold text-slate-900 mb-3">Finance &amp; AI Forecasting</h4>
-              <p className="text-slate-600 text-sm leading-relaxed mb-6">Automated general ledger, automated bank reconciliation, and machine-learning demand forecasting models.</p>
-              <Link href="/features#finance" className="text-purple-600 font-bold text-sm hover:underline flex items-center gap-1 group-hover:gap-2 transition-all">
-                Explore Finance &amp; AI <ArrowRight className="h-4 w-4" />
+
+              <Link 
+                href="/features#finance" 
+                className="inline-flex items-center gap-2 text-sm font-bold text-sky-600 hover:text-sky-700 group/link transition-colors pt-2"
+              >
+                <span>Explore Finance &amp; AI</span>
+                <ArrowRight className="h-4 w-4 group-hover/link:translate-x-1 transition-transform" />
               </Link>
             </div>
+
           </div>
         </div>
       </section>
