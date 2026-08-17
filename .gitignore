@@ -5,12 +5,16 @@ node_modules
 .pnp
 .pnp.js
 
-# Local env files
+# Local env and secret files
 .env
+.env.*
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*.local
+*.env
+*.pem
+*.key
+*.cert
+*.crt
 
 # Testing
 coverage

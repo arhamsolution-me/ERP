@@ -1,5 +1,6 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
+import { SecurityExceptionFilter } from './common/filters/security-exception.filter';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -51,6 +52,11 @@ import { HrModule } from './modules/hr/hr.module';
     {
       provide: APP_INTERCEPTOR,
       useClass: AuditInterceptor,
+    },
+    // Global SecurityExceptionFilter — masks internal error leakage
+    {
+      provide: APP_FILTER,
+      useClass: SecurityExceptionFilter,
     },
   ],
 })
