@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from "next/link";
 import { MarketingHeader } from "@/components/marketing-header";
 import { MarketingFooter } from "@/components/marketing-footer";
+import { CookieBanner } from "@/components/cookie-banner";
 
 export const metadata: Metadata = {
   title: {
@@ -28,6 +29,9 @@ export default function MarketingLayout({
 
       {/* Ultra-Professional Enterprise Marketing Footer */}
       <MarketingFooter />
+
+      {/* GDPR/PDPB Cookie Consent Banner */}
+      <CookieBanner />
     </div>
   );
 }
