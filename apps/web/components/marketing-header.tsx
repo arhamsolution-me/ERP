@@ -177,68 +177,71 @@ export function MarketingHeader() {
   ];
 
   return (
-    <header 
-      className="fixed top-0 inset-x-0 z-50 w-full bg-[#0284c7] text-white border-b border-sky-500/80 shadow-lg shadow-sky-950/15"
-      onMouseLeave={() => setActiveMenu(null)}
-    >
-      {/* TOP MINI HEADER BAR */}
-      <div className="w-full border-b bg-sky-700/60 text-white border-sky-500/50">
-        <div className="container mx-auto py-2 px-4 sm:px-6 text-xs sm:text-sm font-bold flex items-center justify-between">
-          
-          {/* Left: Announcement & Support */}
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 bg-white/15 px-3 py-0.5 rounded-full text-xs text-white">
-              <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-spin" />
-              <span>NexERP v4.8 Released</span>
-            </div>
-
-            <a href="mailto:enterprise@nexerp.io" className="hidden sm:flex items-center gap-2 hover:text-sky-200 transition-colors">
-              <Mail className="w-4 h-4" />
-              <span>enterprise@nexerp.io</span>
-            </a>
-
-            <a href="tel:+18005927104" className="hidden md:flex items-center gap-2 hover:text-sky-200 transition-colors">
-              <Phone className="w-4 h-4" />
-              <span>+1 (800) 592-7104</span>
-            </a>
-          </div>
-
-          {/* Right: Live SLA Status & Links */}
-          <div className="flex items-center gap-5">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs">Cloud SLA: <strong className="text-emerald-300 font-extrabold">99.99% Uptime</strong></span>
-            </div>
-
-            <span className="hidden sm:inline border-r border-white/30 h-4" />
-
-            <div className="hidden sm:flex items-center gap-4">
-              <Link href="/features#security" className="flex items-center gap-1.5 hover:text-sky-200 transition-colors">
-                <ShieldCheck className="w-4 h-4 text-emerald-300" />
-                <span>ISO 27001 Security</span>
-              </Link>
-              <a href="#" className="hover:text-sky-200 transition-colors flex items-center gap-1">
-                <Code2 className="w-4 h-4" />
-                <span>API Docs</span>
+    <>
+      {/* TOP MINI INFO BAR (Scrolls away naturally) */}
+      {!isScrolled && (
+        <div className="w-full bg-sky-600 text-white border-b border-sky-700/60 py-2.5 px-4 sm:px-6 text-xs sm:text-sm font-bold">
+          <div className="container mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2 bg-sky-700/60 px-3 py-1 rounded-full text-xs border border-sky-500/50 text-sky-100">
+                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                <span>NexERP v4.8 Released</span>
+              </div>
+              <a href="mailto:enterprise@nexerp.io" className="hidden sm:flex items-center gap-2 hover:text-sky-200 transition-colors">
+                <Mail className="w-4 h-4" />
+                <span>enterprise@nexerp.io</span>
+              </a>
+              <a href="tel:+18005927104" className="hidden md:flex items-center gap-2 hover:text-sky-200 transition-colors">
+                <Phone className="w-4 h-4" />
+                <span>+1 (800) 592-7104</span>
               </a>
             </div>
+
+            <div className="flex items-center gap-5">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-xs">Cloud SLA: <strong className="text-emerald-300 font-extrabold">99.99% Uptime</strong></span>
+              </div>
+              <span className="hidden sm:inline border-r border-white/30 h-4" />
+              <div className="hidden sm:flex items-center gap-4">
+                <Link href="/features#security" className="flex items-center gap-1.5 hover:text-sky-200 transition-colors">
+                  <ShieldCheck className="w-4 h-4 text-emerald-300" />
+                  <span>ISO 27001 Security</span>
+                </Link>
+                <a href="#" className="hover:text-sky-200 transition-colors flex items-center gap-1">
+                  <Code2 className="w-4 h-4" />
+                  <span>API Docs</span>
+                </a>
+              </div>
+            </div>
           </div>
-
         </div>
-      </div>
+      )}
 
-      {/* MAIN HEADER */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-18 sm:h-20 items-center justify-between">
+      {/* STICKY MAIN HEADER (Stays stuck at top, turns Sky Blue on scroll) */}
+      <header 
+        className={`sticky top-0 inset-x-0 z-50 w-full transition-colors duration-300 ${
+          isScrolled 
+            ? "bg-[#0284c7] backdrop-blur-md border-b border-sky-500/80 text-white shadow-xl shadow-sky-950/20" 
+            : "bg-white/80 backdrop-blur-md border-b border-slate-200/80 text-slate-900"
+        }`}
+        onMouseLeave={() => setActiveMenu(null)}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex h-20 sm:h-22 items-center justify-between">
           
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-3 group" onClick={() => setActiveMenu(null)}>
-            <div className="w-10.5 h-10.5 rounded-xl bg-white text-sky-600 font-bold flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+            <div className={`w-10.5 h-10.5 rounded-xl flex items-center justify-center shadow-md transition-all ${
+              isScrolled ? "bg-white text-sky-600 font-bold" : "bg-sky-600 text-white shadow-sky-600/25 group-hover:bg-sky-700"
+            }`}>
               <Box className="w-6 h-6" />
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-black tracking-tight text-white font-sans">
-                Nex<span className="text-sky-200">ERP</span>
+              <span className={`text-2xl font-black tracking-tight transition-colors ${
+                isScrolled ? "text-white" : "text-slate-900"
+              }`}>
+                Nex<span className={isScrolled ? "text-sky-200" : "text-sky-600"}>ERP</span>
               </span>
             </div>
           </Link>
@@ -252,14 +255,14 @@ export function MarketingHeader() {
               onMouseEnter={() => setActiveMenu("modules")}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
                 activeMenu === "modules"
-                  ? "bg-white/20 text-white"
-                  : "text-white/95 hover:bg-white/10 hover:text-white"
+                  ? isScrolled ? "bg-sky-700/60 text-white" : "bg-sky-50 text-sky-600"
+                  : isScrolled ? "text-white/95 hover:bg-sky-700/40 hover:text-white" : "text-slate-800 hover:text-sky-600 hover:bg-slate-100"
               }`}
             >
               <span>Modules &amp; Capabilities</span>
               <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                 activeMenu === "modules" ? "rotate-180" : ""
-              } text-sky-200`} />
+              } ${isScrolled ? "text-sky-200" : "text-slate-400"}`} />
             </button>
 
             {/* Nav Item 2: Industries */}
@@ -268,21 +271,23 @@ export function MarketingHeader() {
               onMouseEnter={() => setActiveMenu("industries")}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
                 activeMenu === "industries"
-                  ? "bg-white/20 text-white"
-                  : "text-white/95 hover:bg-white/10 hover:text-white"
+                  ? isScrolled ? "bg-sky-700/60 text-white" : "bg-sky-50 text-sky-600"
+                  : isScrolled ? "text-white/95 hover:bg-sky-700/40 hover:text-white" : "text-slate-800 hover:text-sky-600 hover:bg-slate-100"
               }`}
             >
               <span>Industries &amp; Solutions</span>
               <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                 activeMenu === "industries" ? "rotate-180" : ""
-              } text-sky-200`} />
+              } ${isScrolled ? "text-sky-200" : "text-slate-400"}`} />
             </button>
 
             {/* Nav Item 3: Pricing */}
             <Link 
               href="/pricing" 
               onClick={() => setActiveMenu(null)}
-              className="px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all text-white/95 hover:bg-white/10 hover:text-white"
+              className={`px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
+                isScrolled ? "text-white/95 hover:bg-sky-700/40 hover:text-white" : "text-slate-800 hover:text-sky-600 hover:bg-slate-100"
+              }`}
             >
               Pricing Plans
             </Link>
@@ -293,14 +298,14 @@ export function MarketingHeader() {
               onMouseEnter={() => setActiveMenu("platform")}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
                 activeMenu === "platform"
-                  ? "bg-white/20 text-white"
-                  : "text-white/95 hover:bg-white/10 hover:text-white"
+                  ? isScrolled ? "bg-sky-700/60 text-white" : "bg-sky-50 text-sky-600"
+                  : isScrolled ? "text-white/95 hover:bg-sky-700/40 hover:text-white" : "text-slate-800 hover:text-sky-600 hover:bg-slate-100"
               }`}
             >
               <span>Platform &amp; Governance</span>
               <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
                 activeMenu === "platform" ? "rotate-180" : ""
-              } text-sky-200`} />
+              } ${isScrolled ? "text-sky-200" : "text-slate-400"}`} />
             </button>
 
           </nav>
@@ -308,12 +313,18 @@ export function MarketingHeader() {
           {/* Action CTAs */}
           <div className="flex items-center space-x-3">
             <Link href="/sign-in" onClick={() => setActiveMenu(null)}>
-              <Button variant="ghost" className="text-base font-bold h-11 px-4 rounded-lg text-white hover:bg-white/10 transition-colors">
+              <Button variant="ghost" className={`text-base font-bold h-11 px-4 rounded-lg transition-colors ${
+                isScrolled ? "text-white hover:bg-sky-700/50" : "text-slate-700 hover:text-slate-900"
+              }`}>
                 Sign In
               </Button>
             </Link>
             <Link href="/contact" onClick={() => setActiveMenu(null)}>
-              <Button className="text-base font-bold h-11 px-5 rounded-lg bg-white text-sky-700 hover:bg-sky-50 shadow-md font-extrabold transition-all">
+              <Button className={`text-base font-bold h-11 px-5 rounded-lg transition-all ${
+                isScrolled 
+                  ? "bg-white text-sky-700 hover:bg-sky-50 shadow-md font-extrabold" 
+                  : "bg-sky-600 hover:bg-sky-700 text-white shadow-md shadow-sky-600/25"
+              }`}>
                 Book a Demo
               </Button>
             </Link>
@@ -499,5 +510,6 @@ export function MarketingHeader() {
         )}
       </AnimatePresence>
     </header>
+  </>
   );
 }
