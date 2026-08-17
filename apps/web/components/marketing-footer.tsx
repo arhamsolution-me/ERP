@@ -19,15 +19,15 @@ export function MarketingFooter() {
     <footer className="bg-slate-950 text-slate-300 pt-20 pb-12 border-t border-slate-800 relative overflow-hidden font-sans">
       
       {/* Background Decorative Accent Gradients */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-sky-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* PRE-FOOTER CTA CARD */}
-        <div className="bg-gradient-to-r from-blue-900/40 via-slate-900 to-indigo-900/40 border border-slate-800 rounded-3xl p-8 sm:p-12 mb-16 shadow-2xl backdrop-blur-xl flex flex-col lg:flex-row items-center justify-between gap-8">
+        <div className="bg-gradient-to-r from-sky-950/60 via-slate-900 to-cyan-950/60 border border-slate-800 rounded-3xl p-8 sm:p-12 mb-16 shadow-2xl backdrop-blur-xl flex flex-col lg:flex-row items-center justify-between gap-8">
           <div className="space-y-2 text-center lg:text-left max-w-xl">
-            <span className="text-xs font-bold uppercase tracking-widest text-blue-400">
+            <span className="text-xs font-bold uppercase tracking-widest text-sky-400">
               Devnexes Digital Solutions
             </span>
             <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
@@ -42,9 +42,9 @@ export function MarketingFooter() {
             <input 
               type="email" 
               placeholder="Enter your corporate email..." 
-              className="w-full sm:w-80 h-12 px-4 rounded-xl bg-slate-900/90 border border-slate-700 text-white placeholder:text-slate-500 text-sm focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full sm:w-80 h-12 px-4 rounded-xl bg-slate-900/90 border border-slate-700 text-white placeholder:text-slate-500 text-sm focus:outline-none focus:border-sky-500 transition-colors"
             />
-            <Button className="w-full sm:w-auto h-12 px-6 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 group transition-all shrink-0">
+            <Button className="w-full sm:w-auto h-12 px-6 bg-sky-600 hover:bg-sky-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-sky-600/30 flex items-center justify-center gap-2 group transition-all shrink-0">
               <span>Get Started</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Button>
@@ -57,7 +57,7 @@ export function MarketingFooter() {
           {/* Brand Column */}
           <div className="lg:col-span-2 space-y-6">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-cyan-500 p-2 text-white shadow-md shadow-blue-600/30 group-hover:scale-105 transition-transform flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 via-sky-600 to-cyan-500 p-2 text-white shadow-md shadow-sky-600/30 group-hover:scale-105 transition-transform flex items-center justify-center">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
                   <polygon points="12 2 2 7 12 12 22 7 12 2" />
                   <polyline points="2 17 12 22 22 17" />
@@ -67,9 +67,9 @@ export function MarketingFooter() {
               <div className="flex flex-col">
                 <div className="flex items-center gap-1.5">
                   <span className="text-2xl font-black tracking-tight text-white font-sans">
-                    Nex<span className="text-blue-500">ERP</span>
+                    Nex<span className="text-sky-400">ERP</span>
                   </span>
-                  <span className="px-1.5 py-0.5 rounded bg-blue-950 text-[10px] font-extrabold text-blue-400 border border-blue-800">
+                  <span className="px-1.5 py-0.5 rounded bg-sky-950 text-[10px] font-extrabold text-sky-400 border border-sky-800">
                     PRO
                   </span>
                 </div>
@@ -86,7 +86,7 @@ export function MarketingFooter() {
             {/* Compliance & Security Tags */}
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 text-xs font-semibold">
-                <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
+                <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
                 <span>SOC2 Type II</span>
               </div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 text-xs font-semibold">
@@ -106,12 +106,12 @@ export function MarketingFooter() {
               Capabilities
             </h4>
             <ul className="space-y-2.5 text-sm text-slate-400">
-              <li><Link href="/features" className="hover:text-blue-400 transition-colors">Textile Factory MES</Link></li>
-              <li><Link href="/features" className="hover:text-blue-400 transition-colors">Smart Inventory & WMS</Link></li>
-              <li><Link href="/features" className="hover:text-blue-400 transition-colors">AI Financial GL</Link></li>
-              <li><Link href="/features" className="hover:text-blue-400 transition-colors">Retail POS Network</Link></li>
-              <li><Link href="/features" className="hover:text-blue-400 transition-colors">Multi-Store Transfers</Link></li>
-              <li><Link href="/features" className="hover:text-blue-400 transition-colors">Yield Optimization</Link></li>
+              <li><Link href="/features" className="hover:text-sky-400 transition-colors">Textile Factory MES</Link></li>
+              <li><Link href="/features" className="hover:text-sky-400 transition-colors">Smart Inventory &amp; WMS</Link></li>
+              <li><Link href="/features" className="hover:text-sky-400 transition-colors">AI Financial GL</Link></li>
+              <li><Link href="/features" className="hover:text-sky-400 transition-colors">Retail POS Network</Link></li>
+              <li><Link href="/features" className="hover:text-sky-400 transition-colors">Multi-Store Transfers</Link></li>
+              <li><Link href="/features" className="hover:text-sky-400 transition-colors">Yield Optimization</Link></li>
             </ul>
           </div>
 
@@ -121,12 +121,12 @@ export function MarketingFooter() {
               Enterprise Solutions
             </h4>
             <ul className="space-y-2.5 text-sm text-slate-400">
-              <li><Link href="/contact" className="hover:text-blue-400 transition-colors">Chenab Textiles</Link></li>
-              <li><Link href="/contact" className="hover:text-blue-400 transition-colors">Gul Ahmed Mills</Link></li>
-              <li><Link href="/contact" className="hover:text-blue-400 transition-colors">Alkaram Mills</Link></li>
-              <li><Link href="/contact" className="hover:text-blue-400 transition-colors">Nishat Linen</Link></li>
-              <li><Link href="/contact" className="hover:text-blue-400 transition-colors">Sapphire Solutions</Link></li>
-              <li><Link href="/pricing" className="hover:text-blue-400 transition-colors">Custom Deployment</Link></li>
+              <li><Link href="/contact" className="hover:text-sky-400 transition-colors">Chenab Textiles</Link></li>
+              <li><Link href="/contact" className="hover:text-sky-400 transition-colors">Gul Ahmed Mills</Link></li>
+              <li><Link href="/contact" className="hover:text-sky-400 transition-colors">Alkaram Mills</Link></li>
+              <li><Link href="/contact" className="hover:text-sky-400 transition-colors">Nishat Linen</Link></li>
+              <li><Link href="/contact" className="hover:text-sky-400 transition-colors">Sapphire Solutions</Link></li>
+              <li><Link href="/pricing" className="hover:text-sky-400 transition-colors">Custom Deployment</Link></li>
             </ul>
           </div>
 
@@ -136,12 +136,12 @@ export function MarketingFooter() {
               Company
             </h4>
             <ul className="space-y-2.5 text-sm text-slate-400">
-              <li><Link href="/about" className="hover:text-blue-400 transition-colors">About Devnexes</Link></li>
-              <li><Link href="/pricing" className="hover:text-blue-400 transition-colors">Pricing Plans</Link></li>
-              <li><Link href="/contact" className="hover:text-blue-400 transition-colors">Book a Demo</Link></li>
-              <li><Link href="/contact" className="hover:text-blue-400 transition-colors">Support Portal</Link></li>
-              <li><Link href="/privacy" className="hover:text-blue-400 transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-blue-400 transition-colors">Terms of Service</Link></li>
+              <li><Link href="/about" className="hover:text-sky-400 transition-colors">About Devnexes</Link></li>
+              <li><Link href="/pricing" className="hover:text-sky-400 transition-colors">Pricing Plans</Link></li>
+              <li><Link href="/contact" className="hover:text-sky-400 transition-colors">Book a Demo</Link></li>
+              <li><Link href="/contact" className="hover:text-sky-400 transition-colors">Support Portal</Link></li>
+              <li><Link href="/privacy" className="hover:text-sky-400 transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-sky-400 transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
 

@@ -186,7 +186,7 @@ export function MarketingHeader() {
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-3 group" onClick={() => setActiveMenu(null)}>
             <div className={`w-10.5 h-10.5 rounded-xl flex items-center justify-center shadow-md transition-all ${
-              isScrolled ? "bg-white text-sky-600 font-bold" : "bg-blue-600 text-white shadow-blue-600/25 group-hover:bg-blue-700"
+              isScrolled ? "bg-white text-sky-600 font-bold" : "bg-sky-600 text-white shadow-sky-600/25 group-hover:bg-sky-700"
             }`}>
               <Box className="w-6 h-6" />
             </div>
@@ -194,7 +194,7 @@ export function MarketingHeader() {
               <span className={`text-2xl font-black tracking-tight transition-colors ${
                 isScrolled ? "text-white" : "text-slate-900"
               }`}>
-                Nex<span className={isScrolled ? "text-sky-200" : "text-blue-600"}>ERP</span>
+                Nex<span className={isScrolled ? "text-sky-200" : "text-sky-600"}>ERP</span>
               </span>
             </div>
           </Link>
@@ -208,8 +208,8 @@ export function MarketingHeader() {
               onMouseEnter={() => setActiveMenu("modules")}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
                 activeMenu === "modules"
-                  ? isScrolled ? "bg-sky-700/60 text-white" : "bg-blue-50 text-blue-600"
-                  : isScrolled ? "text-white/95 hover:bg-sky-700/40 hover:text-white" : "text-slate-800 hover:text-blue-600 hover:bg-slate-100"
+                  ? isScrolled ? "bg-sky-700/60 text-white" : "bg-sky-50 text-sky-600"
+                  : isScrolled ? "text-white/95 hover:bg-sky-700/40 hover:text-white" : "text-slate-800 hover:text-sky-600 hover:bg-slate-100"
               }`}
             >
               <span>Modules &amp; Capabilities</span>
@@ -224,8 +224,8 @@ export function MarketingHeader() {
               onMouseEnter={() => setActiveMenu("industries")}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
                 activeMenu === "industries"
-                  ? isScrolled ? "bg-sky-700/60 text-white" : "bg-blue-50 text-blue-600"
-                  : isScrolled ? "text-white/95 hover:bg-sky-700/40 hover:text-white" : "text-slate-800 hover:text-blue-600 hover:bg-slate-100"
+                  ? isScrolled ? "bg-sky-700/60 text-white" : "bg-sky-50 text-sky-600"
+                  : isScrolled ? "text-white/95 hover:bg-sky-700/40 hover:text-white" : "text-slate-800 hover:text-sky-600 hover:bg-slate-100"
               }`}
             >
               <span>Industries &amp; Solutions</span>
@@ -239,7 +239,7 @@ export function MarketingHeader() {
               href="/pricing" 
               onClick={() => setActiveMenu(null)}
               className={`px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
-                isScrolled ? "text-white/95 hover:bg-sky-700/40 hover:text-white" : "text-slate-800 hover:text-blue-600 hover:bg-slate-100"
+                isScrolled ? "text-white/95 hover:bg-sky-700/40 hover:text-white" : "text-slate-800 hover:text-sky-600 hover:bg-slate-100"
               }`}
             >
               Pricing Plans
@@ -251,8 +251,8 @@ export function MarketingHeader() {
               onMouseEnter={() => setActiveMenu("platform")}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-[15px] font-bold rounded-lg transition-all ${
                 activeMenu === "platform"
-                  ? isScrolled ? "bg-sky-700/60 text-white" : "bg-blue-50 text-blue-600"
-                  : isScrolled ? "text-white/95 hover:bg-sky-700/40 hover:text-white" : "text-slate-800 hover:text-blue-600 hover:bg-slate-100"
+                  ? isScrolled ? "bg-sky-700/60 text-white" : "bg-sky-50 text-sky-600"
+                  : isScrolled ? "text-white/95 hover:bg-sky-700/40 hover:text-white" : "text-slate-800 hover:text-sky-600 hover:bg-slate-100"
               }`}
             >
               <span>Platform &amp; Governance</span>
@@ -276,7 +276,7 @@ export function MarketingHeader() {
               <Button className={`text-base font-bold h-11 px-5 rounded-lg transition-all ${
                 isScrolled 
                   ? "bg-white text-sky-700 hover:bg-sky-50 shadow-md font-extrabold" 
-                  : "bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-600/25"
+                  : "bg-sky-600 hover:bg-sky-700 text-white shadow-md shadow-sky-600/25"
               }`}>
                 Book a Demo
               </Button>
@@ -294,7 +294,7 @@ export function MarketingHeader() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.99 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className={`absolute top-full inset-x-0 bg-white text-slate-900 border-t-4 border-blue-600 border-b border-slate-200 shadow-2xl shadow-black/20 overflow-hidden z-50 pointer-events-auto`}
+            className={`absolute top-full inset-x-0 bg-white text-slate-900 border-t-4 border-sky-600 border-b border-slate-200 shadow-2xl shadow-black/20 overflow-hidden z-50 pointer-events-auto`}
           >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-7">
               
@@ -305,7 +305,7 @@ export function MarketingHeader() {
                   {/* LEFT SIDEBAR NAVIGATION */}
                   <div className="lg:col-span-4 space-y-0.5 border-r border-slate-100 pr-5">
                     <div className="flex items-center gap-2 px-3 pb-3 mb-2 border-b border-slate-100">
-                      <div className="w-1 h-4 rounded-full bg-blue-600" />
+                      <div className="w-1 h-4 rounded-full bg-sky-600" />
                       <span className="text-[11px] font-semibold tracking-[0.12em] text-slate-500 uppercase">
                         Our Modules &amp; Capabilities
                       </span>
@@ -320,15 +320,15 @@ export function MarketingHeader() {
                           onClick={() => setActiveModuleTab(tab.id)}
                           className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-[13.5px] font-semibold transition-all ${
                             isActive
-                              ? "bg-blue-600 text-white shadow-md shadow-blue-600/25"
+                              ? "bg-sky-600 text-white shadow-md shadow-sky-600/25"
                               : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                           }`}
                         >
                           <div className="flex items-center gap-3">
                             <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all ${
-                              isActive ? "bg-white/20" : "bg-blue-50"
+                              isActive ? "bg-white/20" : "bg-sky-50"
                             }`}>
-                              <IconComp className={`w-4 h-4 ${isActive ? "text-white" : "text-blue-600"}`} />
+                              <IconComp className={`w-4 h-4 ${isActive ? "text-white" : "text-sky-600"}`} />
                             </div>
                             <span>{tab.title}</span>
                           </div>
@@ -347,7 +347,7 @@ export function MarketingHeader() {
                         <div className="space-y-6">
                           {/* Module Header & Description */}
                           <div className="flex items-start gap-4">
-                            <div className="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-600/25 shrink-0">
+                            <div className="w-11 h-11 rounded-xl bg-sky-600 text-white flex items-center justify-center shadow-md shadow-sky-600/25 shrink-0">
                               <IconMain className="w-6 h-6" />
                             </div>
                             <div className="space-y-1">
@@ -364,7 +364,7 @@ export function MarketingHeader() {
                           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-4 pb-4 border-t border-b border-slate-100">
                             {currentTab.features.map((feat, idx) => (
                               <div key={idx} className="flex items-center gap-2 text-xs font-semibold text-slate-700">
-                                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-sky-600 shrink-0" />
                                 <span>{feat}</span>
                               </div>
                             ))}
@@ -374,7 +374,7 @@ export function MarketingHeader() {
                           <Link 
                             href={currentTab.link}
                             onClick={() => setActiveMenu(null)}
-                            className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 group transition-colors"
+                            className="inline-flex items-center gap-2 text-sm font-bold text-sky-600 hover:text-sky-700 group transition-colors"
                           >
                             <span>View all {currentTab.title} capabilities</span>
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -393,23 +393,23 @@ export function MarketingHeader() {
                   
                   <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group">
                     <h5 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-1">
-                      <Building2 className="w-4 h-4 text-slate-900 group-hover:text-blue-600" />
-                      <span>Spinning & Weaving Mills</span>
+                      <Building2 className="w-4 h-4 text-slate-900 group-hover:text-sky-600" />
+                      <span>Spinning &amp; Weaving Mills</span>
                     </h5>
                     <p className="text-xs text-slate-500 leading-relaxed">Cotton bale inventory, yarn counts, and loom shift tracking.</p>
                   </div>
 
                   <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group">
                     <h5 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-1">
-                      <Store className="w-4 h-4 text-slate-900 group-hover:text-blue-600" />
-                      <span>Fashion & Retail Chains</span>
+                      <Store className="w-4 h-4 text-slate-900 group-hover:text-sky-600" />
+                      <span>Fashion &amp; Retail Chains</span>
                     </h5>
                     <p className="text-xs text-slate-500 leading-relaxed">Multi-outlet POS billing, barcode tags, and central warehouse sync.</p>
                   </div>
 
                   <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group">
                     <h5 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-1">
-                      <Package className="w-4 h-4 text-slate-900 group-hover:text-blue-600" />
+                      <Package className="w-4 h-4 text-slate-900 group-hover:text-sky-600" />
                       <span>Wholesale B2B Supply</span>
                     </h5>
                     <p className="text-xs text-slate-500 leading-relaxed">Tiered customer pricing, credit limits, and bulk order dispatch.</p>
@@ -417,7 +417,7 @@ export function MarketingHeader() {
 
                   <div className="p-3.5 rounded-xl hover:bg-slate-50 transition-all group">
                     <h5 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-1">
-                      <Users2 className="w-4 h-4 text-slate-900 group-hover:text-blue-600" />
+                      <Users2 className="w-4 h-4 text-slate-900 group-hover:text-sky-600" />
                       <span>Apparel Stitching Units</span>
                     </h5>
                     <p className="text-xs text-slate-500 leading-relaxed">Cut-piece tracking, worker piece-rate payroll, and trim inventory.</p>
