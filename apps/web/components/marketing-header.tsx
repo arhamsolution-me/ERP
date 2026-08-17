@@ -281,7 +281,7 @@ export function MarketingHeader() {
     >
       {/* TOP MINI INFO BAR - Smooth GPU-accelerated CSS transition with zero DOM lag */}
       <div 
-        className={`w-full bg-sky-600 text-white border-b border-sky-700/60 overflow-hidden transition-all duration-300 ease-out ${
+        className={`w-full bg-sky-700 text-white border-b border-sky-800/80 overflow-hidden transition-all duration-300 ease-out ${
           isScrolled 
             ? "max-h-0 opacity-0 py-0 border-none pointer-events-none" 
             : "max-h-16 opacity-100 py-2.5 px-4 sm:px-6"
