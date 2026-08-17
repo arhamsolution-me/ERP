@@ -180,57 +180,72 @@ export function MarketingHeader() {
     <header 
       className={`fixed top-0 inset-x-0 z-50 w-full transition-all duration-300 ${
         isScrolled 
-          ? "bg-[#0284c7] backdrop-blur-md border-b border-sky-500/80 text-white shadow-xl shadow-sky-950/15" 
+          ? "bg-[#0284c7] backdrop-blur-md border-b border-sky-500/80 text-white shadow-xl shadow-sky-950/20" 
           : "bg-transparent border-b border-transparent text-slate-900"
       }`}
       onMouseLeave={() => setActiveMenu(null)}
     >
-      {/* TOP MINI HEADER BAR (Hides automatically on scroll) */}
-      {!isScrolled && (
-        <div className="w-full py-2.5 px-4 sm:px-6 text-xs sm:text-sm font-bold border-b bg-sky-600 text-white border-sky-700/60 transition-all duration-300">
-          <div className="container mx-auto flex items-center justify-between">
-            
-            {/* Left: Contact Info & System Status */}
-            <div className="flex items-center gap-6">
-              <a href="mailto:info@devnexes.com" className="flex items-center gap-2 hover:text-sky-200 transition-colors">
-                <Mail className="w-4 h-4" />
-                <span>info@devnexes.com</span>
-              </a>
-              <a href="tel:+923001234567" className="hidden sm:flex items-center gap-2 hover:text-sky-200 transition-colors">
-                <Phone className="w-4 h-4" />
-                <span>+92 300 1234567</span>
-              </a>
-              <div className="hidden md:flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-xs">System Status: <strong className="text-emerald-300 font-extrabold">Operational (99.99%)</strong></span>
-              </div>
-            </div>
+      {/* ANIMATED TOP MINI HEADER BAR (Framer Motion Slide & Fade on Scroll) */}
+      <AnimatePresence>
+        {!isScrolled && (
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.35, ease: "easeInOut" }}
+            className="w-full overflow-hidden border-b bg-sky-600 text-white border-sky-700/60"
+          >
+            <div className="container mx-auto py-2.5 px-4 sm:px-6 text-xs sm:text-sm font-bold flex items-center justify-between">
+              
+              {/* Left: Release Announcement & Enterprise Contact */}
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2 bg-sky-700/60 px-3 py-1 rounded-full text-xs border border-sky-500/50 text-sky-100">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-spin" />
+                  <span>NexERP v4.8 Released</span>
+                </div>
 
-            {/* Right: Social & Compliance Badge */}
-            <div className="flex items-center gap-5">
-              <div className="flex items-center gap-3.5">
-                <a href="#" className="hover:text-sky-200 transition-colors p-1" title="Global Portal">
-                  <Globe className="w-4 h-4" />
+                <a href="mailto:enterprise@nexerp.io" className="hidden sm:flex items-center gap-2 hover:text-sky-200 transition-colors">
+                  <Mail className="w-4 h-4" />
+                  <span>enterprise@nexerp.io</span>
                 </a>
-                <a href="#" className="hover:text-sky-200 transition-colors p-1" title="Social Share">
-                  <Share2 className="w-4 h-4" />
-                </a>
-                <a href="#" className="hover:text-sky-200 transition-colors p-1" title="Developer Code">
-                  <Code2 className="w-4 h-4" />
+
+                <a href="tel:+18005927104" className="hidden md:flex items-center gap-2 hover:text-sky-200 transition-colors">
+                  <Phone className="w-4 h-4" />
+                  <span>+1 (800) 592-7104</span>
                 </a>
               </div>
-              <span className="hidden sm:inline border-r border-white/30 h-4" />
-              <Link href="/features#security" className="hidden sm:flex items-center gap-2 hover:text-sky-200 transition-colors">
-                <ShieldCheck className="w-4 h-4 text-emerald-300" />
-                <span>SOC2 &amp; ISO 27001 Certified</span>
-              </Link>
-            </div>
 
-          </div>
-        </div>
-      )}
+              {/* Right: Live SLA Status & Developer Links */}
+              <div className="flex items-center gap-5">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-xs">Cloud SLA: <strong className="text-emerald-300 font-extrabold">99.99% Uptime</strong></span>
+                </div>
+
+                <span className="hidden sm:inline border-r border-white/30 h-4" />
+
+                <div className="hidden sm:flex items-center gap-4">
+                  <Link href="/features#security" className="flex items-center gap-1.5 hover:text-sky-200 transition-colors">
+                    <ShieldCheck className="w-4 h-4 text-emerald-300" />
+                    <span>ISO 27001 Security</span>
+                  </Link>
+                  <a href="#" className="hover:text-sky-200 transition-colors flex items-center gap-1">
+                    <Code2 className="w-4 h-4" />
+                    <span>API Docs</span>
+                  </a>
+                </div>
+              </div>
+
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* MAIN HEADER WITH ANIMATED HEIGHT SHRINK ON SCROLL */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-20 sm:h-22 items-center justify-between">
+        <div className={`flex items-center justify-between transition-all duration-300 ${
+          isScrolled ? "h-16 sm:h-18" : "h-20 sm:h-22"
+        }`}>
           
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-3 group" onClick={() => setActiveMenu(null)}>
