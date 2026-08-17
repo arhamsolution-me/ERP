@@ -47,14 +47,14 @@ export default function Homepage() {
     {
       id: 3,
       image: "/slide3.png",
-      title: "Predictive Intelligence. Accelerated Corporate Growth.",
+      title: "Predictive Intelligence. Automated Finance. Accelerated Growth.",
       desc: "Continuous double-entry general ledger, instant bank reconciliation, and machine-learning demand forecasting.",
       tag: "Enterprise Analytics"
     },
     {
       id: 4,
       image: "/slide4.png",
-      title: "Data-Driven Decisions. Unlimited Enterprise Scale.",
+      title: "Data-Driven Decisions. Real-Time Insights. Unlimited Scale.",
       desc: "Accelerate your bottom line with automated financial reporting, real-time POS insights, and predictive demand analytics.",
       tag: "Business Growth"
     }
@@ -98,38 +98,42 @@ export default function Homepage() {
         </div>
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-20 text-left">
-          <div className="max-w-3xl space-y-8 pt-10 sm:pt-12">
+          <div className="max-w-3xl space-y-6 pt-4 sm:pt-6">
 
-            {/* Dynamic Animated Title */}
-            <AnimatePresence mode="wait">
-              <motion.h1 
-                key={currentSlide}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                transition={{ duration: 0.4, delay: 0.1 }}
-                className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 leading-[1.1]"
-              >
-                {slides[currentSlide].title.split('. ')[0]}. <br />
-                <span className="bg-gradient-to-r from-sky-600 via-cyan-600 to-blue-700 bg-clip-text text-transparent drop-shadow-xs">
-                  {slides[currentSlide].title.split('. ').slice(1).join('. ')}
-                </span>
-              </motion.h1>
-            </AnimatePresence>
+            {/* Dynamic Animated Title in Fixed Height Container (Zero Layout Jump) */}
+            <div className="min-h-[160px] sm:min-h-[200px] lg:min-h-[220px] flex items-center">
+              <AnimatePresence mode="wait">
+                <motion.h1 
+                  key={currentSlide}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.35, ease: "easeOut" }}
+                  className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 leading-[1.1]"
+                >
+                  {slides[currentSlide].title.split('. ')[0]}. <br />
+                  <span className="bg-gradient-to-r from-sky-600 via-cyan-600 to-blue-700 bg-clip-text text-transparent drop-shadow-xs">
+                    {slides[currentSlide].title.split('. ').slice(1).join('. ')}
+                  </span>
+                </motion.h1>
+              </AnimatePresence>
+            </div>
 
-            {/* Description */}
-            <AnimatePresence mode="wait">
-              <motion.p 
-                key={currentSlide}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                transition={{ duration: 0.4, delay: 0.2 }}
-                className="text-slate-600 text-lg sm:text-xl max-w-2xl leading-relaxed font-normal"
-              >
-                {slides[currentSlide].desc}
-              </motion.p>
-            </AnimatePresence>
+            {/* Description in Fixed Height Container */}
+            <div className="min-h-[56px] sm:min-h-[64px] flex items-center">
+              <AnimatePresence mode="wait">
+                <motion.p 
+                  key={currentSlide}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.35, delay: 0.08, ease: "easeOut" }}
+                  className="text-slate-600 text-lg sm:text-xl max-w-2xl leading-relaxed font-normal"
+                >
+                  {slides[currentSlide].desc}
+                </motion.p>
+              </AnimatePresence>
+            </div>
 
             {/* CTA Action Buttons */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-4 pt-6">
