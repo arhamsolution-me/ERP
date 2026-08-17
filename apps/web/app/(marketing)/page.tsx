@@ -33,7 +33,6 @@ export default function Homepage() {
     {
       id: 1,
       image: "/slide1.png",
-      badge: "All-in-One Inventory & Warehouse Management",
       title: "Smarter Inventory. Stronger Business. Better Growth.",
       desc: "Real-time tracking, multi-warehouse transfers, and powerful analytics — all in one intelligent platform built to scale with your business.",
       tag: "Smart Warehousing"
@@ -41,7 +40,6 @@ export default function Homepage() {
     {
       id: 2,
       image: "/slide2.png",
-      badge: "Textile Manufacturing Execution System (MES)",
       title: "Batch Lot Precision. Zero Wastage. Maximum Yield.",
       desc: "Track raw yarn lots, spinning looms, dyeing recipes, and machine downtime with live quality control scorecards.",
       tag: "Mill Production MES"
@@ -49,7 +47,6 @@ export default function Homepage() {
     {
       id: 3,
       image: "/slide3.png",
-      badge: "AI Analytics & Financial Automation",
       title: "Predictive Intelligence. Accelerated Corporate Growth.",
       desc: "Continuous double-entry general ledger, instant bank reconciliation, and machine-learning demand forecasting.",
       tag: "Enterprise Analytics"
@@ -57,7 +54,6 @@ export default function Homepage() {
     {
       id: 4,
       image: "/slide4.png",
-      badge: "Exponential Corporate Revenue Growth",
       title: "Data-Driven Decisions. Unlimited Enterprise Scale.",
       desc: "Accelerate your bottom line with automated financial reporting, real-time POS insights, and predictive demand analytics.",
       tag: "Business Growth"
