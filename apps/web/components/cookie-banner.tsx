@@ -17,7 +17,7 @@ const CONSENT_VERSION = "1.0";
 function getCookie(name: string): string | null {
   if (typeof document === "undefined") return null;
   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-  return match ? decodeURIComponent(match[2]) : null;
+  return (match && match[2]) ? decodeURIComponent(match[2]) : null;
 }
 
 function setConsentCookie(value: string, days = 365) {
