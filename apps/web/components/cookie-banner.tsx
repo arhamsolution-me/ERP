@@ -11,6 +11,7 @@ type CookiePreferences = {
 };
 
 const COOKIE_NAME = "nex_cookie_consent";
+const STORAGE_KEY = "nexerp_cookie_consent";
 const CONSENT_VERSION = "1.0";
 
 function getCookie(name: string): string | null {
