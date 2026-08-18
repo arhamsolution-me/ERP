@@ -1,186 +1,155 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { Activity, Package, TrendingUp, Users, AlertCircle, CheckCircle2 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ShoppingBag, Boxes, Clock, Sparkles, Layers, ShieldCheck } from 'lucide-react';
 
-const salesData = [
-  { name: 'Mon', total: 4000 },
-  { name: 'Tue', total: 3000 },
-  { name: 'Wed', total: 5000 },
-  { name: 'Thu', total: 2780 },
-  { name: 'Fri', total: 6890 },
-  { name: 'Sat', total: 8390 },
-  { name: 'Sun', total: 7490 },
-];
-
-const productionData = [
-  { name: 'Week 1', completed: 40, target: 50 },
-  { name: 'Week 2', completed: 60, target: 55 },
-  { name: 'Week 3', completed: 45, target: 60 },
-  { name: 'Week 4', completed: 80, target: 70 },
-];
-
-const activities = [
-  { id: 1, text: 'Batch #B-1042 advanced to Dyeing', time: '10 mins ago', type: 'production' },
-  { id: 2, text: 'Wholesale Order #WO-992 confirmed', time: '45 mins ago', type: 'sales' },
-  { id: 3, text: 'Low stock alert: Cotton Yarn (Red)', time: '2 hours ago', type: 'alert' },
-  { id: 4, text: 'POS Terminal Main-Branch synced', time: '4 hours ago', type: 'system' },
-];
-
-import type { Variants } from 'framer-motion';
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
-
-const itemVariants: Variants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: { type: 'spring', stiffness: 300, damping: 24 }
-  }
+const MODULE_MAP: Record<string, { name: string; category: string; icon: any }> = {
+  'sales-management': {
+    name: 'Sales Management',
+    category: 'Sales & Revenue',
+    icon: ShoppingBag,
+  },
+  'inventory-management': {
+    name: 'Inventory Management',
+    category: 'Stock & Operations',
+    icon: Boxes,
+  },
 };
 
 export default function DashboardClient() {
+  const [activeModules, setActiveModules] = useState<string[]>([]);
+  const [tenantName, setTenantName] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    // Fetch real DB tenant details & active modules
+    async function loadTenantDataFromDB() {
+      try {
+        const res = await fetch('/api/onboarding');
+        if (res.status === 401) {
+          // AUTO LOGOUT: User or tenant missing in DB!
+          if (typeof window !== 'undefined') {
+            localStorage.clear();
+            window.location.href = '/sign-in';
+          }
+          return;
+        }
+        const data = await res.json();
+        if (data.success) {
+          if (data.businessName) setTenantName(data.businessName);
+          if (data.activeModules && Array.isArray(data.activeModules)) {
+            setActiveModules(data.activeModules);
+          }
+        }
+      } catch (e) {
+        console.error('Error fetching tenant data from DB:', e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadTenantDataFromDB();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="max-w-5xl mx-auto py-16 text-center text-slate-400 font-medium">
+        Loading workspace from database...
+      </div>
+    );
+  }
+
   return (
-    <motion.div 
-      className="space-y-8"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
-      {/* Header */}
-      <motion.div variants={itemVariants} className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900">Dashboard Overview</h1>
-        <p className="text-slate-500">Welcome back. Here's what's happening across the enterprise today.</p>
-      </motion.div>
-
-      {/* KPI Cards */}
-      <motion.div variants={itemVariants} className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-none shadow-md bg-white/50 backdrop-blur-xl">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium text-slate-500">Total Revenue</CardTitle>
-            <div className="p-2 bg-blue-50 rounded-full">
-              <TrendingUp className="w-4 h-4 text-blue-600" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-slate-900 tabular-nums">Rs. 4,250,000</div>
-            <p className="text-xs text-emerald-600 flex items-center mt-1 font-medium">
-              <TrendingUp className="w-3 h-3 mr-1" /> +20.1% from last month
+    <div className="max-w-5xl mx-auto space-y-8 py-4 font-sans">
+      {/* Header Banner */}
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-8 shadow-sm space-y-2 relative overflow-hidden"
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-sky-700 bg-sky-50 border border-sky-200 px-3 py-1 rounded-full inline-block mb-2">
+              Enterprise Workspace
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              {tenantName || 'Workspace'}
+            </h1>
+            <p className="text-sm text-slate-500 font-medium mt-1">
+              Your active enterprise services are provisioned and isolated for your workspace.
             </p>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-none shadow-md bg-white/50 backdrop-blur-xl">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium text-slate-500">Active Batches</CardTitle>
-            <div className="p-2 bg-indigo-50 rounded-full">
-              <Activity className="w-4 h-4 text-indigo-600" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-slate-900 tabular-nums">34</div>
-            <p className="text-xs text-slate-500 mt-1">12 in Dyeing, 8 in QC</p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-none shadow-md bg-white/50 backdrop-blur-xl">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium text-slate-500">Low Stock Alerts</CardTitle>
-            <div className="p-2 bg-red-50 rounded-full">
-              <AlertCircle className="w-4 h-4 text-red-600" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-slate-900 tabular-nums">7</div>
-            <p className="text-xs text-red-600 mt-1 font-medium">Requires immediate PO</p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-none shadow-md bg-white/50 backdrop-blur-xl">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium text-slate-500">Active Staff</CardTitle>
-            <div className="p-2 bg-emerald-50 rounded-full">
-              <Users className="w-4 h-4 text-emerald-600" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-slate-900 tabular-nums">142</div>
-            <p className="text-xs text-slate-500 mt-1">Clocked in today</p>
-          </CardContent>
-        </Card>
+          </div>
+          <div className="hidden sm:flex p-3.5 bg-sky-50 border border-sky-100 rounded-2xl text-sky-700">
+            <Sparkles className="w-7 h-7" />
+          </div>
+        </div>
       </motion.div>
 
-      {/* Charts Grid */}
-      <motion.div variants={itemVariants} className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
-        
-        {/* Main Sales Chart */}
-        <Card className="col-span-4 border-none shadow-md bg-white/50 backdrop-blur-xl">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold text-slate-800">Weekly Revenue (Retail + Wholesale)</CardTitle>
-          </CardHeader>
-          <CardContent className="pl-0">
-            <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={salesData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                  <XAxis dataKey="name" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `Rs${value/1000}k`} />
-                  <Tooltip 
-                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                  />
-                  <Area type="monotone" dataKey="total" stroke="#2563eb" strokeWidth={3} fillOpacity={1} fill="url(#colorTotal)" />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Subscribed Active Services Grid with Coming Soon Status */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+          <h2 className="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+            <Layers className="w-4 h-4 text-sky-700" />
+            Active Subscribed Services ({activeModules.length})
+          </h2>
+          <span className="text-xs font-semibold text-slate-500">
+            Modules Selected During Onboarding
+          </span>
+        </div>
 
-        {/* Activity Feed */}
-        <Card className="col-span-3 border-none shadow-md bg-white/50 backdrop-blur-xl">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold text-slate-800">Live Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {activities.map((activity) => (
-                <div key={activity.id} className="flex items-start gap-4">
-                  <div className={`p-2 rounded-full mt-0.5 ${
-                    activity.type === 'production' ? 'bg-indigo-50 text-indigo-600' :
-                    activity.type === 'sales' ? 'bg-emerald-50 text-emerald-600' :
-                    activity.type === 'alert' ? 'bg-red-50 text-red-600' : 'bg-slate-100 text-slate-600'
-                  }`}>
-                    {activity.type === 'alert' ? <AlertCircle className="w-4 h-4" /> :
-                     activity.type === 'sales' ? <TrendingUp className="w-4 h-4" /> :
-                     activity.type === 'production' ? <Package className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
+        {activeModules.length === 0 ? (
+          <div className="p-8 bg-white border border-slate-200 rounded-2xl text-center text-slate-500 text-sm">
+            No active services found in database.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {activeModules.map((modId) => {
+              const info = MODULE_MAP[modId] || {
+                name: modId,
+                category: 'Enterprise Service',
+                icon: Layers,
+              };
+              const IconComp = info.icon;
+              return (
+                <motion.div
+                  key={modId}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all space-y-4 relative"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3.5">
+                      <div className="p-3 bg-sky-700 text-white rounded-xl shadow-sm">
+                        <IconComp className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-bold text-slate-900 tracking-tight">
+                          {info.name}
+                        </h3>
+                        <span className="text-xs font-semibold text-slate-400">
+                          {info.category}
+                        </span>
+                      </div>
+                    </div>
+
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200/80 px-3 py-1 rounded-full shadow-2xs">
+                      <Clock className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
+                      Coming Soon
+                    </span>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-slate-800">{activity.text}</p>
-                    <p className="text-xs text-slate-500 mt-1">{activity.time}</p>
+
+                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-medium">
+                    <span className="flex items-center gap-1.5">
+                      <ShieldCheck className="w-4 h-4 text-emerald-600" /> Isolated Service Cluster
+                    </span>
+                    <span className="font-mono text-slate-400">STATUS: PROVISIONING</span>
                   </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-    </motion.div>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

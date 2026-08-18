@@ -1,42 +1,32 @@
 "use client";
 
 import axios from 'axios';
-import { useAuth } from '@clerk/nextjs';
 import { useMemo } from 'react';
 
-// Create a base axios instance without auth headers
+// Create a base axios instance
 export const baseApiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || '/api',
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
 /**
- * A React hook that returns an authenticated Axios instance.
- * It automatically attaches the Clerk Bearer token to every request.
+ * A React hook that returns an Axios instance for custom DB session auth.
  */
 export function useApiClient() {
-  const { getToken } = useAuth();
-
   const apiClient = useMemo(() => {
     const instance = axios.create({
-      baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api',
+      baseURL: process.env.NEXT_PUBLIC_API_URL || '/api',
       headers: {
         'Content-Type': 'application/json',
       },
-    });
-
-    instance.interceptors.request.use(async (config) => {
-      const token = await getToken();
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
+      withCredentials: true,
     });
 
     return instance;
-  }, [getToken]);
+  }, []);
 
   return apiClient;
 }

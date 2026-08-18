@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
-import { ClerkProvider } from '@clerk/nextjs'
 import "./globals.css";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 
 import Providers from "./providers";
 
-const jakarta = Plus_Jakarta_Sans({
+const inter = Inter({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', '800'],
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
   variable: '--font-sans',
   display: 'swap',
 });
@@ -24,14 +23,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en" className={`${jakarta.variable} font-sans antialiased`} style={{ fontFamily: "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif" }}>
-        <body className={`${jakarta.className} antialiased bg-gray-50 text-slate-900`} style={{ fontFamily: "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif" }}>
-          <Providers>
-            {children}
-          </Providers>
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en" className={`${inter.variable} font-sans antialiased`} style={{ fontFamily: "'Inter', 'Work Sans', sans-serif" }}>
+      <body className={`${inter.className} antialiased bg-gray-50 text-slate-900`} style={{ fontFamily: "'Inter', 'Work Sans', sans-serif" }}>
+        <Providers>
+          {children}
+        </Providers>
+      </body>
+    </html>
   );
 }

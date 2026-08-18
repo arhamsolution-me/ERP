@@ -83,11 +83,11 @@ export default function Homepage() {
           <AnimatePresence mode="wait">
             <motion.div
               key={currentSlide}
-              initial={{ opacity: 0, scale: 1.05 }}
+              initial={{ opacity: 1, scale: 1.02 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.02 }}
-              transition={{ duration: 1 }}
-              className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+              exit={{ opacity: 0.8 }}
+              transition={{ duration: 0.5 }}
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700"
               style={{ backgroundImage: `url('${activeSlide.image}')` }}
             />
           </AnimatePresence>
@@ -105,9 +105,9 @@ export default function Homepage() {
               <AnimatePresence mode="wait">
                 <motion.h1 
                   key={currentSlide}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
+                  initial={{ opacity: 1 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0.8 }}
                   transition={{ duration: 0.35, ease: "easeOut" }}
                   className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 leading-[1.1]"
                 >
@@ -124,10 +124,10 @@ export default function Homepage() {
               <AnimatePresence mode="wait">
                 <motion.p 
                   key={currentSlide}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.35, delay: 0.08, ease: "easeOut" }}
+                  initial={{ opacity: 1 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0.8 }}
+                  transition={{ duration: 0.35, ease: "easeOut" }}
                   className="text-slate-600 text-lg sm:text-xl max-w-2xl leading-relaxed font-normal"
                 >
                   {activeSlide.desc}

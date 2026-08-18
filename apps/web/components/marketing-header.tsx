@@ -445,12 +445,12 @@ export function MarketingHeader() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 sm:h-22 items-center justify-between">
           
-          {/* Brand Logo - Pure Typography Logo (Exact Replica of Screenshot) */}
+          {/* Brand Logo - Pure Typography Logo */}
           <Link href="/" className="flex items-center group py-2" onClick={() => setActiveMenu(null)}>
-            <span className={`text-3xl sm:text-4xl font-extrabold tracking-[-0.03em] transition-colors ${
+            <span className={`text-xl sm:text-2xl font-black tracking-tight transition-colors ${
               isScrolled ? "text-white" : "text-[#0B192C]"
             }`}>
-              Infinite<span className={isScrolled ? "text-sky-200" : "text-[#0084FF]"}>Enterprise</span>
+              Personal<span className={isScrolled ? "text-sky-200" : "text-[#0084FF]"}>Enterprise</span>
             </span>
           </Link>
 
