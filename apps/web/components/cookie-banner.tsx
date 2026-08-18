@@ -10,12 +10,24 @@ type CookiePreferences = {
   marketing: boolean;
 };
 
-const STORAGE_KEY = "nexerp_cookie_consent";
+const COOKIE_NAME = "nex_cookie_consent";
 const CONSENT_VERSION = "1.0";
+
+function getCookie(name: string): string | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+  return match ? decodeURIComponent(match[2]) : null;
+}
+
+function setConsentCookie(value: string, days = 365) {
+  if (typeof document === "undefined") return;
+  const expires = new Date(Date.now() + days * 864e5).toUTCString();
+  document.cookie = `${COOKIE_NAME}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax; Secure`;
+}
 
 function loadPreferences(): { version: string; preferences: CookiePreferences } | null {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = getCookie(COOKIE_NAME) || (typeof localStorage !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null);
     if (!raw) return null;
     return JSON.parse(raw);
   } catch {
@@ -24,7 +36,11 @@ function loadPreferences(): { version: string; preferences: CookiePreferences } 
 }
 
 function savePreferences(preferences: CookiePreferences) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: CONSENT_VERSION, preferences }));
+  const payload = JSON.stringify({ version: CONSENT_VERSION, preferences });
+  if (typeof localStorage !== "undefined") {
+    localStorage.setItem(STORAGE_KEY, payload);
+  }
+  setConsentCookie(payload, 365);
 }
 
 export function CookieBanner() {
@@ -37,6 +53,15 @@ export function CookieBanner() {
   });
 
   useEffect(() => {
+    // Check Global Privacy Control (GPC) signal
+    if (typeof navigator !== "undefined" && (navigator as unknown as { globalPrivacyControl?: boolean }).globalPrivacyControl) {
+      // Auto-reject optional cookies per Docx 22 Step 5
+      const minimal: CookiePreferences = { necessary: true, analytics: false, marketing: false };
+      savePreferences(minimal);
+      setVisible(false);
+      return;
+    }
+
     const saved = loadPreferences();
     if (!saved || saved.version !== CONSENT_VERSION) {
       // Show banner if no saved consent or version mismatch

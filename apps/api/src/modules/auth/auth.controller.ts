@@ -1,4 +1,4 @@
-import { Controller, Post, Get, UseGuards, Req, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Get, UseGuards, Req, Res, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { ClerkAuthGuard } from '../../common/guards/clerk-auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/request.types';
@@ -10,10 +10,18 @@ export class AuthController {
   @Post('logout')
   @UseGuards(ClerkAuthGuard)
   @ApiBearerAuth('ClerkAuth')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Logout current session' })
-  @ApiResponse({ status: 204, description: 'Session revoked successfully' })
-  async logout(@Req() req: AuthenticatedRequest) {
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Logout current session and clear auth cookies' })
+  @ApiResponse({ status: 200, description: 'Session revoked successfully' })
+  async logout(@Req() req: AuthenticatedRequest, @Res({ passthrough: true }) res: any) {
+    // Clear auth cookies per Docx 22 Step 5
+    if (res && res.setHeader) {
+      res.setHeader('Set-Cookie', [
+        'nex_access_token=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0',
+        'nex_refresh_token=; HttpOnly; Secure; SameSite=Strict; Path=/auth/refresh; Max-Age=0',
+        'nex_csrf_token=; Secure; SameSite=Strict; Path=/; Max-Age=0'
+      ]);
+    }
     return { success: true, sessionId: req.auth?.sessionId };
   }
 
