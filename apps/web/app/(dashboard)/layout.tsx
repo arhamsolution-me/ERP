@@ -7,6 +7,8 @@ import {
   Settings,
   LayoutDashboard,
   Layers,
+  ShoppingBag,
+  Boxes,
 } from "lucide-react";
 
 export interface DynamicNavItem {
@@ -58,8 +60,21 @@ export default async function DashboardLayout({
     console.error('[Dashboard Session Warning]:', err);
   }
 
-  // Dynamic Navigation Registry — User will build services step-by-step from scratch!
-  const registeredServices: DynamicNavItem[] = [];
+  // Dynamic Navigation Registry — Displays active module links
+  const registeredServices: DynamicNavItem[] = [
+    {
+      id: 'sales-management',
+      name: 'Sales Management',
+      href: '/sales',
+      icon: ShoppingBag,
+    },
+    {
+      id: 'inventory-management',
+      name: 'Inventory Management',
+      href: '/inventory',
+      icon: Boxes,
+    },
+  ];
 
   // Filter navigation items dynamically based on tenant's activated modules
   const filteredNavItems = registeredServices.filter((item) => activeModules.includes(item.id));
