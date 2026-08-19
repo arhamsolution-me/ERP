@@ -2,28 +2,20 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  Clock,
-  DollarSign,
   AlertTriangle,
   CheckCircle2,
   Lock,
   Unlock,
-  TrendingUp,
   ShoppingBag,
   Loader2,
-  FileText,
 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function PosShiftPage() {
   const [loading, setLoading] = useState(true);
   const [shiftData, setShiftData] = useState<any>(null);
-  const [openingCash, setOpeningCash] = useState('0');
-  const [closingCash, setClosingCash] = useState('');
-  const [supervisorNote, setSupervisorNote] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [closedSummary, setClosedSummary] = useState<any>(null);
 
   async function fetchShiftStatus() {
     try {
@@ -32,9 +24,6 @@ export default function PosShiftPage() {
       const data = await res.json();
       if (data.success) {
         setShiftData(data);
-        if (data.hasActiveShift && data.activeShift) {
-          setClosingCash(data.activeShift.runningMetrics?.currentExpectedCash || '');
-        }
       }
     } catch (err) {
       console.error(err);
@@ -56,13 +45,12 @@ export default function PosShiftPage() {
       const res = await fetch('/api/sales/shifts/open', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ openingCash: Number(openingCash) }),
+        body: JSON.stringify({ openingCash: 0 }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to open shift');
 
-      setStatusMsg({ type: 'success', text: 'Shift opened successfully! Cash drawer initialized.' });
-      setClosedSummary(null);
+      setStatusMsg({ type: 'success', text: 'Register shift opened successfully.' });
       await fetchShiftStatus();
     } catch (err: any) {
       setStatusMsg({ type: 'error', text: err.message });
@@ -82,15 +70,13 @@ export default function PosShiftPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           shiftId: shiftData?.activeShift?.id,
-          closingCash: Number(closingCash),
-          supervisorNote,
+          closingCash: 0,
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to close shift');
 
-      setStatusMsg({ type: 'success', text: 'Shift closed and reconciled successfully.' });
-      setClosedSummary(data.shiftSummary);
+      setStatusMsg({ type: 'success', text: 'Register shift closed successfully.' });
       await fetchShiftStatus();
     } catch (err: any) {
       setStatusMsg({ type: 'error', text: err.message });
@@ -111,10 +97,6 @@ export default function PosShiftPage() {
   const hasActive = shiftData?.hasActiveShift && shiftData.activeShift;
   const activeShift = shiftData?.activeShift;
 
-  const expectedCash = activeShift ? Number(activeShift.runningMetrics?.currentExpectedCash || 0) : 0;
-  const actualCount = Number(closingCash || 0);
-  const variance = actualCount - expectedCash;
-
   return (
     <div className="max-w-5xl mx-auto space-y-6 py-4 font-sans">
       {/* Header */}
@@ -133,7 +115,7 @@ export default function PosShiftPage() {
           </div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight">POS Shift Management</h1>
           <p className="text-xs text-slate-500 font-medium mt-1">
-            Open cash drawers, track live register volume, and reconcile end-of-shift variances.
+            Manage cashier register sessions and unlock point-of-sale terminals.
           </p>
         </div>
 
@@ -165,60 +147,6 @@ export default function PosShiftPage() {
         </div>
       )}
 
-      {/* Reconciled Summary Card if just closed */}
-      {closedSummary && (
-        <div className="bg-slate-900 text-white p-6 rounded-2xl border border-slate-800 space-y-4 shadow-md">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-            <h3 className="text-base font-extrabold text-white flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-              <span>Shift Reconciliation Report</span>
-            </h3>
-            <span className="text-xs font-mono text-slate-400">
-              Closed: {new Date(closedSummary.closedAt).toLocaleTimeString()}
-            </span>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div>
-              <span className="text-xs text-slate-400 block">Opening Cash</span>
-              <span className="text-base font-mono font-bold">PKR {closedSummary.openingCash}</span>
-            </div>
-            <div>
-              <span className="text-xs text-slate-400 block">Cash Sales</span>
-              <span className="text-base font-mono font-bold text-emerald-400">
-                +PKR {closedSummary.totalCashSales}
-              </span>
-            </div>
-            <div>
-              <span className="text-xs text-slate-400 block">Expected in Drawer</span>
-              <span className="text-base font-mono font-bold text-sky-400">
-                PKR {closedSummary.expectedCash}
-              </span>
-            </div>
-            <div>
-              <span className="text-xs text-slate-400 block">Actual Counted</span>
-              <span className="text-base font-mono font-bold">PKR {closedSummary.closingCash}</span>
-            </div>
-          </div>
-
-          <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
-            <span className="text-xs text-slate-400">Drawer Variance:</span>
-            <span
-              className={`text-sm font-mono font-black ${
-                Number(closedSummary.variance) === 0
-                  ? 'text-emerald-400'
-                  : Number(closedSummary.variance) > 0
-                  ? 'text-sky-400'
-                  : 'text-rose-400'
-              }`}
-            >
-              {Number(closedSummary.variance) >= 0 ? '+' : ''}PKR {closedSummary.variance}
-              {Number(closedSummary.variance) === 0 ? ' (Perfect Match)' : ' (Discrepancy Logged)'}
-            </span>
-          </div>
-        </div>
-      )}
-
       {!hasActive ? (
         /* Form to Open Shift */
         <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-6">
@@ -246,133 +174,35 @@ export default function PosShiftPage() {
           </form>
         </div>
       ) : (
-        /* Active Shift Monitor & Close Drawer Form */
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Column: Live Shift Running Meters */}
-          <div className="lg:col-span-6 bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-5">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        /* Active Shift Status & Simple Close Button */
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-6">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-emerald-50 text-emerald-700 rounded-xl">
+                <CheckCircle2 className="w-6 h-6" />
+              </div>
               <div>
-                <h3 className="text-base font-extrabold text-slate-900">Active Shift Metrics</h3>
-                <span className="text-xs text-slate-500 font-mono">
-                  Started: {new Date(activeShift.openedAt).toLocaleTimeString()}
-                </span>
-              </div>
-              <span className="text-xs font-mono font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg">
-                Terminal: {activeShift.terminalCode}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                <span className="text-xs text-slate-500 block mb-1">Opening Float</span>
-                <span className="text-lg font-mono font-bold text-slate-900">
-                  PKR {activeShift.openingCash}
-                </span>
-              </div>
-
-              <div className="bg-emerald-50/60 p-4 rounded-xl border border-emerald-100">
-                <span className="text-xs text-emerald-700 block mb-1">Cash Inflow</span>
-                <span className="text-lg font-mono font-bold text-emerald-800">
-                  +PKR {activeShift.runningMetrics?.cashSales || 0}
-                </span>
-              </div>
-
-              <div className="bg-sky-50/60 p-4 rounded-xl border border-sky-100">
-                <span className="text-xs text-sky-700 block mb-1">Card & Digital</span>
-                <span className="text-lg font-mono font-bold text-sky-800">
-                  PKR{' '}
-                  {Number(activeShift.runningMetrics?.cardSales || 0) +
-                    Number(activeShift.runningMetrics?.digitalSales || 0)}
-                </span>
-              </div>
-
-              <div className="bg-slate-900 text-white p-4 rounded-xl">
-                <span className="text-xs text-slate-400 block mb-1">Expected Till Cash</span>
-                <span className="text-lg font-mono font-bold text-emerald-400">
-                  PKR {expectedCash}
-                </span>
+                <h2 className="text-lg font-bold text-slate-900">Register Session Active</h2>
+                <p className="text-xs text-slate-500">
+                  Terminal is ready and actively processing sales transactions.
+                </p>
               </div>
             </div>
-
-            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 flex items-center justify-between text-xs text-slate-600">
-              <span>Orders Processed This Shift:</span>
-              <span className="font-mono font-bold text-slate-900 text-sm">
-                {activeShift.runningMetrics?.transactionCount || 0} transactions
-              </span>
-            </div>
+            <span className="text-xs font-mono font-bold bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg">
+              Terminal: {activeShift?.terminalCode || 'POS-01'}
+            </span>
           </div>
 
-          {/* Right Column: Close Shift & Count Form */}
-          <div className="lg:col-span-6 bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-5">
-            <div className="border-b border-slate-100 pb-3">
-              <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                <Lock className="w-4 h-4 text-slate-700" />
-                <span>Close Shift & Reconcile Cash</span>
-              </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Count all cash notes in drawer and submit final count for variance check.
-              </p>
-            </div>
-
-            <form onSubmit={handleCloseShift} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Actual Closing Cash Count (PKR)
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">
-                    PKR
-                  </span>
-                  <input
-                    type="number"
-                    min="0"
-                    required
-                    value={closingCash}
-                    onChange={(e) => setClosingCash(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-14 pr-4 text-base font-mono font-bold text-slate-900 focus:outline-none focus:border-sky-600"
-                  />
-                </div>
-              </div>
-
-              {/* Live Variance Calculation Alert */}
-              <div
-                className={`p-3.5 rounded-xl border flex items-center justify-between text-xs ${
-                  variance === 0
-                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                    : variance > 0
-                    ? 'bg-sky-50 text-sky-800 border-sky-200'
-                    : 'bg-rose-50 text-rose-800 border-rose-200'
-                }`}
-              >
-                <span className="font-semibold">Drawer Balance Discrepancy:</span>
-                <span className="font-mono font-bold text-sm">
-                  {variance >= 0 ? '+' : ''}PKR {variance}
-                </span>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Supervisor Notes / Discrepancy Reason (Optional)
-                </label>
-                <textarea
-                  rows={2}
-                  value={supervisorNote}
-                  onChange={(e) => setSupervisorNote(e.target.value)}
-                  placeholder="Note any petty cash deductions or change shortages..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:border-sky-600"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={actionLoading}
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm py-3.5 rounded-xl shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2"
-              >
-                {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
-                <span>Confirm Count & Lock Shift</span>
-              </button>
-            </form>
-          </div>
+          <form onSubmit={handleCloseShift} className="pt-2">
+            <button
+              type="submit"
+              disabled={actionLoading}
+              className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm px-6 py-3 rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50"
+            >
+              {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
+              <span>Close Register Shift</span>
+            </button>
+          </form>
         </div>
       )}
     </div>
