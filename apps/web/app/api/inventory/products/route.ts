@@ -45,6 +45,8 @@ export async function GET(req: Request) {
         .filter((sl) => variantIds.includes(sl.variant_id))
         .reduce((sum, sl) => sum + sl.quantity_on_hand, 0);
 
+      const defaultPriceNum = prod.default_price ? Number(prod.default_price) : 250;
+
       return {
         id: prod.id,
         sku: prod.sku,
@@ -52,8 +54,14 @@ export async function GET(req: Request) {
         category: prod.category || 'General',
         unit: prod.unit,
         hsnCode: prod.hsn_code,
+        defaultPrice: defaultPriceNum,
+        unitPrice: defaultPriceNum,
         totalQuantity: totalQty,
-        variants: prod.variants,
+        variants: prod.variants.map((v) => ({
+          ...v,
+          sellingPrice: v.selling_price ? Number(v.selling_price) : defaultPriceNum,
+          unitPrice: v.selling_price ? Number(v.selling_price) : defaultPriceNum,
+        })),
       };
     });
 

@@ -49,7 +49,8 @@ export async function POST(req: Request) {
       if (!v) {
         return NextResponse.json({ error: `Product variant not found for ID ${item.productId}` }, { status: 400 });
       }
-      const unitPrice = BigInt(item.unitPrice || 100);
+      // Server-side authoritative price resolution: variant price -> product default price -> fallback
+      const unitPrice = v.selling_price ?? v.product?.default_price ?? BigInt(item.unitPrice || 250);
       const lineTotal = unitPrice * BigInt(item.quantity);
       subtotal += lineTotal;
 
@@ -63,8 +64,8 @@ export async function POST(req: Request) {
 
     const discount = BigInt(discountAmount || 0);
     const tax = (subtotal * 17n) / 100n; // 17% standard tax
-    const total = subtotal + tax - discount;
-    const idempotencyKey = `POS-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+    const total = subtotal + tax - discount > 0n ? subtotal + tax - discount : 0n;
+    const idempotencyKey = req.headers.get('x-idempotency-key') || `POS-${Date.now()}-${Math.random().toString(36).substring(7)}`;
 
     // Create POS Transaction inside Prisma Transaction
     const transaction = await prisma.$transaction(async (tx) => {

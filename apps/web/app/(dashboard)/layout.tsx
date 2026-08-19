@@ -27,32 +27,44 @@ export default async function DashboardLayout({
   let userEmail = "admin@nexerp.com";
   let activeModules: string[] = [];
 
+  const isUUID = (str?: string) =>
+    Boolean(str && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str));
+
   try {
     const session = await getSession();
     if (session) {
-      userEmail = session.email;
-      const dbUser = await prisma.user.findUnique({
-        where: { id: session.userId },
-        include: { tenant: true },
-      });
+      userEmail = session.email || userEmail;
 
-      if (dbUser?.tenant?.business_name) {
-        tenantName = dbUser.tenant.business_name;
+      if (isUUID(session.userId)) {
+        const dbUser = await prisma.user
+          .findUnique({
+            where: { id: session.userId },
+            include: { tenant: true },
+          })
+          .catch(() => null);
+
+        if (dbUser?.tenant?.business_name) {
+          tenantName = dbUser.tenant.business_name;
+        }
       }
 
-      // Read active modules from Onboarding Audit Log
-      const onboardingLog = await prisma.auditLog.findFirst({
-        where: {
-          tenant_id: session.tenantId,
-          action: 'ONBOARDING_COMPLETED',
-        },
-        orderBy: { created_at: 'desc' },
-      });
+      if (isUUID(session.tenantId)) {
+        // Read active modules from Onboarding Audit Log
+        const onboardingLog = await prisma.auditLog
+          .findFirst({
+            where: {
+              tenant_id: session.tenantId,
+              action: 'ONBOARDING_COMPLETED',
+            },
+            orderBy: { created_at: 'desc' },
+          })
+          .catch(() => null);
 
-      if (onboardingLog?.after_json) {
-        const payload = onboardingLog.after_json as any;
-        if (Array.isArray(payload?.activeModules)) {
-          activeModules = payload.activeModules;
+        if (onboardingLog?.after_json) {
+          const payload = onboardingLog.after_json as any;
+          if (Array.isArray(payload?.activeModules)) {
+            activeModules = payload.activeModules;
+          }
         }
       }
     }
@@ -77,7 +89,10 @@ export default async function DashboardLayout({
   ];
 
   // Filter navigation items dynamically based on tenant's activated modules
-  const filteredNavItems = registeredServices.filter((item) => activeModules.includes(item.id));
+  const filteredNavItems =
+    activeModules.length > 0
+      ? registeredServices.filter((item) => activeModules.includes(item.id))
+      : registeredServices;
 
   return (
     <div className="flex h-screen bg-slate-50 font-sans">

@@ -88,6 +88,9 @@ model Tenant {
   
   api_keys             ApiKey[]
   webhook_endpoints    WebhookEndpoint[]
+  shifts               Shift[]
+  refunds              Refund[]
+  refund_items         RefundItem[]
 }
 
 model SubscriptionPlan {
@@ -419,14 +422,15 @@ model Warehouse {
 }
 
 model Product {
-  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id String  @db.Uuid
-  sku       String
-  name      String
-  category  String?
-  unit      String
-  hsn_code  String?
-  is_active Boolean @default(true)
+  id            String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id     String  @db.Uuid
+  sku           String
+  name          String
+  category      String?
+  unit          String
+  hsn_code      String?
+  default_price BigInt?
+  is_active     Boolean @default(true)
 
   tenant    Tenant  @relation(fields: [tenant_id], references: [id])
   variants  ProductVariant[]
@@ -435,15 +439,19 @@ model Product {
 }
 
 model ProductVariant {
-  id         String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tenant_id  String @db.Uuid
-  product_id String @db.Uuid
-  size       String?
-  color      String?
-  barcode    String?
+  id            String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id     String  @db.Uuid
+  product_id    String  @db.Uuid
+  size          String?
+  color         String?
+  barcode       String?
+  selling_price BigInt?
 
-  tenant     Tenant  @relation(fields: [tenant_id], references: [id])
-  product    Product @relation(fields: [product_id], references: [id])
+  tenant                Tenant               @relation(fields: [tenant_id], references: [id])
+  product               Product              @relation(fields: [product_id], references: [id])
+  pos_transaction_items PosTransactionItem[]
+  refund_items          RefundItem[]
+  wholesale_order_items WholesaleOrderItem[]
 
   @@unique([tenant_id, barcode])
 }
@@ -541,7 +549,38 @@ model PosTerminal {
   last_synced_at DateTime? @db.Timestamptz
 
   tenant         Tenant    @relation(fields: [tenant_id], references: [id])
+  shifts         Shift[]
   @@index([tenant_id])
+}
+
+enum ShiftStatus {
+  open
+  closed
+}
+
+enum RefundReason {
+  defective
+  wrong_item
+  changed_mind
+  other
+}
+
+model Shift {
+  id            String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id     String      @db.Uuid
+  terminal_id   String      @db.Uuid
+  cashier_id    String      @db.Uuid
+  opening_cash  BigInt
+  closing_cash  BigInt?
+  expected_cash BigInt?
+  variance      BigInt?
+  status        ShiftStatus @default(open)
+  opened_at     DateTime    @default(now()) @db.Timestamptz
+  closed_at     DateTime?   @db.Timestamptz
+
+  tenant        Tenant      @relation(fields: [tenant_id], references: [id])
+  terminal      PosTerminal @relation(fields: [terminal_id], references: [id])
+  @@index([tenant_id, opened_at(sort: Desc)])
 }
 
 model PosTransaction {
@@ -563,6 +602,7 @@ model PosTransaction {
 
   tenant             Tenant        @relation(fields: [tenant_id], references: [id])
   items              PosTransactionItem[]
+  refunds            Refund[]
   @@index([tenant_id, created_at(sort: Desc)])
 }
 
@@ -577,6 +617,39 @@ model PosTransactionItem {
 
   tenant         Tenant         @relation(fields: [tenant_id], references: [id])
   transaction    PosTransaction @relation(fields: [transaction_id], references: [id])
+  variant        ProductVariant @relation(fields: [variant_id], references: [id])
+  @@index([tenant_id])
+}
+
+model Refund {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id       String        @db.Uuid
+  transaction_id  String        @db.Uuid
+  reason          RefundReason
+  refund_method   PaymentMethod
+  amount          BigInt
+  approved_by     String?       @db.Uuid
+  idempotency_key String?       @unique
+  created_at      DateTime      @default(now()) @db.Timestamptz
+
+  tenant          Tenant         @relation(fields: [tenant_id], references: [id])
+  transaction     PosTransaction @relation(fields: [transaction_id], references: [id])
+  items           RefundItem[]
+  @@index([tenant_id, created_at(sort: Desc)])
+}
+
+model RefundItem {
+  id         String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenant_id  String         @db.Uuid
+  refund_id  String         @db.Uuid
+  variant_id String         @db.Uuid
+  quantity   Int
+  unit_price BigInt
+  line_total BigInt
+
+  tenant     Tenant         @relation(fields: [tenant_id], references: [id])
+  refund     Refund         @relation(fields: [refund_id], references: [id])
+  variant    ProductVariant @relation(fields: [variant_id], references: [id])
   @@index([tenant_id])
 }
 
@@ -606,6 +679,7 @@ model WholesaleOrderItem {
 
   tenant     Tenant         @relation(fields: [tenant_id], references: [id])
   order      WholesaleOrder @relation(fields: [order_id], references: [id])
+  variant    ProductVariant @relation(fields: [variant_id], references: [id])
   @@index([tenant_id])
 }
 
