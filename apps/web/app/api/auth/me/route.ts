@@ -9,10 +9,26 @@ export async function GET() {
       return NextResponse.json({ authenticated: false, user: null }, { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: session.userId },
-      include: { tenant: true },
-    });
+    let user = null;
+    try {
+      user = await prisma.user.findUnique({
+        where: { id: session.userId },
+        include: { tenant: true },
+      });
+    } catch (dbErr: any) {
+      if (process.env.NODE_ENV === 'development' || !process.env.DATABASE_URL) {
+        return NextResponse.json({
+          authenticated: true,
+          user: {
+            id: session.userId,
+            email: session.email,
+            tenantId: session.tenantId,
+            tenantName: 'My Enterprise Workspace',
+          },
+        });
+      }
+      throw dbErr;
+    }
 
     if (!user || !user.tenant) {
       await clearAllAuthCookies();
