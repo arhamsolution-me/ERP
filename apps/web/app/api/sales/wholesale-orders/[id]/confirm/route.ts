@@ -3,6 +3,7 @@ import { getSession } from '@/lib/auth-session';
 import { prisma } from '@repo/db';
 import { createAuditLog } from '@/lib/audit';
 import { devStore } from '@/lib/dev-store';
+import { isDevStoreFallbackAllowed } from '@/lib/dev-store-guard';
 
 export async function PATCH(
   req: Request,
@@ -84,7 +85,14 @@ export async function PATCH(
         },
       });
     } catch (dbErr: any) {
-      console.warn('[Wholesale Confirm] Database offline, updating devStore order:', dbErr.message);
+      if (!isDevStoreFallbackAllowed()) {
+        console.error('[Wholesale Confirm] Database error, no fallback in this environment:', dbErr);
+        return NextResponse.json(
+          { error: 'A server error occurred. Please try again.' },
+          { status: 500 }
+        );
+      }
+      console.warn('[Wholesale Confirm] Database offline, using devStore fallback (non-production only):', dbErr.message);
       const matched = devStore.wholesaleOrders.find((o) => o.id === id);
       if (!matched) {
         return NextResponse.json({ error: 'Order not found in dev store' }, { status: 404 });

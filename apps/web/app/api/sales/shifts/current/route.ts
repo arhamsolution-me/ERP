@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth-session';
 import { prisma } from '@repo/db';
 import { devStore } from '@/lib/dev-store';
+import { isDevStoreFallbackAllowed } from '@/lib/dev-store-guard';
 
 export async function GET() {
   try {
@@ -70,7 +71,14 @@ export async function GET() {
         },
       });
     } catch (dbErr: any) {
-      console.warn('[Shift Current GET] Database offline, serving devStore shift:', dbErr.message);
+      if (!isDevStoreFallbackAllowed()) {
+        console.error('[Shift Current GET] Database error, no fallback in this environment:', dbErr);
+        return NextResponse.json(
+          { error: 'A server error occurred. Please try again.' },
+          { status: 500 }
+        );
+      }
+      console.warn('[Shift Current GET] Database offline, using devStore fallback (non-production only):', dbErr.message);
       const shift = devStore.activeShift;
       if (!shift || shift.status !== 'open') {
         return NextResponse.json({ success: true, hasActiveShift: false, activeShift: null });
@@ -101,7 +109,7 @@ export async function GET() {
       });
     }
   } catch (error: any) {
-    console.error('[Shift Current GET Error]:', error);
+    console.error('[Current Shift Error]:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

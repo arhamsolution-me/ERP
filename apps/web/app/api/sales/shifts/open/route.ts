@@ -3,6 +3,7 @@ import { getSession } from '@/lib/auth-session';
 import { prisma } from '@repo/db';
 import { createAuditLog } from '@/lib/audit';
 import { devStore } from '@/lib/dev-store';
+import { isDevStoreFallbackAllowed } from '@/lib/dev-store-guard';
 
 export async function POST(req: Request) {
   try {
@@ -92,7 +93,14 @@ export async function POST(req: Request) {
         },
       });
     } catch (dbErr: any) {
-      console.warn('[Shift Open POST] Database offline, opening devStore shift:', dbErr.message);
+      if (!isDevStoreFallbackAllowed()) {
+        console.error('[Shift Open POST] Database error, no fallback in this environment:', dbErr);
+        return NextResponse.json(
+          { error: 'A server error occurred. Please try again.' },
+          { status: 500 }
+        );
+      }
+      console.warn('[Shift Open POST] Database offline, using devStore fallback (non-production only):', dbErr.message);
       devStore.activeShift = {
         id: `shift-dev-${Date.now()}`,
         terminalCode: terminalCode || 'POS-01',

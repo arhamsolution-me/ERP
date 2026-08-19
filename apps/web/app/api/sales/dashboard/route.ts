@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth-session';
 import { prisma } from '@repo/db';
 import { devStore } from '@/lib/dev-store';
+import { isDevStoreFallbackAllowed } from '@/lib/dev-store-guard';
 
 export async function GET() {
   try {
@@ -139,7 +140,14 @@ export async function GET() {
         topSelling,
       });
     } catch (dbErr: any) {
-      console.warn('[Sales Dashboard GET] Database offline, computing from devStore:', dbErr.message);
+      if (!isDevStoreFallbackAllowed()) {
+        console.error('[Sales Dashboard GET] Database error, no fallback in this environment:', dbErr);
+        return NextResponse.json(
+          { error: 'A server error occurred. Please try again.' },
+          { status: 500 }
+        );
+      }
+      console.warn('[Sales Dashboard GET] Database offline, using devStore fallback (non-production only):', dbErr.message);
       const txs = devStore.transactions;
       const totalRev = txs.reduce((sum, t) => sum + Number(t.total), 0);
       const orderCount = txs.length;

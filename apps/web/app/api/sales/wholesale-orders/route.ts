@@ -3,6 +3,7 @@ import { getSession } from '@/lib/auth-session';
 import { prisma } from '@repo/db';
 import { createAuditLog } from '@/lib/audit';
 import { devStore } from '@/lib/dev-store';
+import { isDevStoreFallbackAllowed } from '@/lib/dev-store-guard';
 
 export async function GET(req: Request) {
   try {
@@ -95,7 +96,14 @@ export async function GET(req: Request) {
 
       return NextResponse.json({ success: true, orders: enriched });
     } catch (dbErr: any) {
-      console.warn('[Wholesale Orders GET] Database offline, serving devStore orders:', dbErr.message);
+      if (!isDevStoreFallbackAllowed()) {
+        console.error('[Wholesale Orders GET] Database error, no fallback in this environment:', dbErr);
+        return NextResponse.json(
+          { error: 'A server error occurred. Please try again.' },
+          { status: 500 }
+        );
+      }
+      console.warn('[Wholesale Orders GET] Database offline, using devStore fallback (non-production only):', dbErr.message);
       const filtered = devStore.wholesaleOrders.filter((o) => {
         const matchStatus = !status || o.status === status;
         const matchCust = !customerId || o.customer?.id === customerId;
@@ -245,7 +253,14 @@ export async function POST(req: Request) {
         },
       });
     } catch (dbErr: any) {
-      console.warn('[Wholesale Order POST] Database offline, creating in devStore:', dbErr.message);
+      if (!isDevStoreFallbackAllowed()) {
+        console.error('[Wholesale Order POST] Database error, no fallback in this environment:', dbErr);
+        return NextResponse.json(
+          { error: 'A server error occurred. Please try again.' },
+          { status: 500 }
+        );
+      }
+      console.warn('[Wholesale Order POST] Database offline, using devStore fallback (non-production only):', dbErr.message);
       const matchedCust = devStore.customers.find((c) => c.id === customerId);
       let calcTotal = 0;
       const devItems: any[] = [];

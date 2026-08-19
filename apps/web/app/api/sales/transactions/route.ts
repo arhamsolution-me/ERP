@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth-session';
 import { prisma } from '@repo/db';
 import { devStore } from '@/lib/dev-store';
+import { isDevStoreFallbackAllowed } from '@/lib/dev-store-guard';
 
 export async function GET(req: Request) {
   try {
@@ -110,7 +111,14 @@ export async function GET(req: Request) {
 
       return NextResponse.json({ success: true, transactions: enriched });
     } catch (dbErr: any) {
-      console.warn('[Transactions GET] Database offline, serving devStore transactions:', dbErr.message);
+      if (!isDevStoreFallbackAllowed()) {
+        console.error('[Transactions GET] Database error, no fallback in this environment:', dbErr);
+        return NextResponse.json(
+          { error: 'A server error occurred. Please try again.' },
+          { status: 500 }
+        );
+      }
+      console.warn('[Transactions GET] Database offline, using devStore fallback (non-production only):', dbErr.message);
       const filtered = devStore.transactions.filter((tx) => {
         const matchSearch =
           !search ||

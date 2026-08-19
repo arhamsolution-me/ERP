@@ -3,6 +3,7 @@ import { getSession } from '@/lib/auth-session';
 import { prisma } from '@repo/db';
 import { createAuditLog } from '@/lib/audit';
 import { devStore } from '@/lib/dev-store';
+import { isDevStoreFallbackAllowed } from '@/lib/dev-store-guard';
 
 export async function POST(req: Request) {
   try {
@@ -164,7 +165,14 @@ export async function POST(req: Request) {
         total: total.toString(),
       });
     } catch (dbErr: any) {
-      console.warn('[Checkout POST] Database offline, processing via devStore:', dbErr.message);
+      if (!isDevStoreFallbackAllowed()) {
+        console.error('[Checkout POST] Database error, no fallback in this environment:', dbErr);
+        return NextResponse.json(
+          { error: 'A server error occurred. Please try again.' },
+          { status: 500 }
+        );
+      }
+      console.warn('[Checkout POST] Database offline, using devStore fallback (non-production only):', dbErr.message);
       let devSubtotal = 0;
       const devItems: any[] = [];
 

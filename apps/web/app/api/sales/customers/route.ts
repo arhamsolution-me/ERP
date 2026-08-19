@@ -3,6 +3,7 @@ import { getSession } from '@/lib/auth-session';
 import { prisma } from '@repo/db';
 import { createAuditLog } from '@/lib/audit';
 import { devStore } from '@/lib/dev-store';
+import { isDevStoreFallbackAllowed } from '@/lib/dev-store-guard';
 
 export async function GET() {
   try {
@@ -18,7 +19,14 @@ export async function GET() {
       });
       return NextResponse.json({ success: true, customers });
     } catch (dbErr: any) {
-      console.warn('[Customers GET] Database offline, serving devStore fallback:', dbErr.message);
+      if (!isDevStoreFallbackAllowed()) {
+        console.error('[Customers GET] Database error, no fallback in this environment:', dbErr);
+        return NextResponse.json(
+          { error: 'A server error occurred. Please try again.' },
+          { status: 500 }
+        );
+      }
+      console.warn('[Customers GET] Database offline, using devStore fallback (non-production only):', dbErr.message);
       return NextResponse.json({ success: true, customers: devStore.customers });
     }
   } catch (error: any) {
@@ -63,7 +71,14 @@ export async function POST(req: Request) {
 
       return NextResponse.json({ success: true, customer });
     } catch (dbErr: any) {
-      console.warn('[Customers POST] Database offline, storing in devStore:', dbErr.message);
+      if (!isDevStoreFallbackAllowed()) {
+        console.error('[Customers POST] Database error, no fallback in this environment:', dbErr);
+        return NextResponse.json(
+          { error: 'A server error occurred. Please try again.' },
+          { status: 500 }
+        );
+      }
+      console.warn('[Customers POST] Database offline, using devStore fallback (non-production only):', dbErr.message);
       const newCust: any = {
         id: `cust-dev-${Date.now()}`,
         name,

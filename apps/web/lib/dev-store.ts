@@ -303,7 +303,9 @@ class DevStore {
   ];
 }
 
-// Global persistence across hot reloads
+// WARNING: devStore is for local development only and must NEVER be reachable
+// or used as a fallback in production environments. All callers must be gated
+// via isDevStoreFallbackAllowed() from @/lib/dev-store-guard.
 const globalForDevStore = globalThis as unknown as { devStore?: DevStore };
 export const devStore = globalForDevStore.devStore || new DevStore();
 if (process.env.NODE_ENV !== 'production') globalForDevStore.devStore = devStore;

@@ -3,6 +3,7 @@ import { getSession } from '@/lib/auth-session';
 import { prisma } from '@repo/db';
 import { createAuditLog } from '@/lib/audit';
 import { devStore } from '@/lib/dev-store';
+import { isDevStoreFallbackAllowed } from '@/lib/dev-store-guard';
 
 export async function GET(req: Request) {
   try {
@@ -69,7 +70,14 @@ export async function GET(req: Request) {
 
       return NextResponse.json({ success: true, products: enrichedProducts });
     } catch (dbErr: any) {
-      console.warn('[Inventory Products GET] Database unavailable, serving dev store fallback:', dbErr.message);
+      if (!isDevStoreFallbackAllowed()) {
+        console.error('[Inventory Products GET] Database error, no fallback in this environment:', dbErr);
+        return NextResponse.json(
+          { error: 'A server error occurred. Please try again.' },
+          { status: 500 }
+        );
+      }
+      console.warn('[Inventory Products GET] Database offline, using devStore fallback (non-production only):', dbErr.message);
       const filtered = devStore.products.filter((p) => {
         const matchSearch =
           !search ||
@@ -191,7 +199,14 @@ export async function POST(req: Request) {
 
       return NextResponse.json({ success: true, product: result.product });
     } catch (dbErr: any) {
-      console.warn('[Inventory Product POST] Database offline, storing in dev store:', dbErr.message);
+      if (!isDevStoreFallbackAllowed()) {
+        console.error('[Inventory Product POST] Database error, no fallback in this environment:', dbErr);
+        return NextResponse.json(
+          { error: 'A server error occurred. Please try again.' },
+          { status: 500 }
+        );
+      }
+      console.warn('[Inventory Product POST] Database offline, using devStore fallback (non-production only):', dbErr.message);
       const newProdId = `prod-dev-${Date.now()}`;
       const newVarId = `var-dev-${Date.now()}`;
 
