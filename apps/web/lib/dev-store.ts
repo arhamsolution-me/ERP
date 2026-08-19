@@ -207,31 +207,7 @@ class DevStore {
     },
   ];
 
-  public customers: DevCustomer[] = [
-    {
-      id: 'cust-001',
-      name: 'Al-Madina Departmental Store',
-      phone: '+92 300 1234567',
-      email: 'procurement@almadina.pk',
-      customer_type: 'wholesale',
-      credit_limit: '500000',
-    },
-    {
-      id: 'cust-002',
-      name: 'Kashif Trading Co.',
-      phone: '+92 321 9876543',
-      email: 'orders@kashiftrade.com',
-      customer_type: 'wholesale',
-      credit_limit: '1000000',
-    },
-    {
-      id: 'cust-003',
-      name: 'Ahmed Retail Customer',
-      phone: '+92 333 5551234',
-      email: 'ahmed@gmail.com',
-      customer_type: 'retail',
-    },
-  ];
+  public customers: DevCustomer[] = [];
 
   public activeShift: DevShift | null = null;
 

@@ -16,6 +16,8 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
+    "db:delete-users": "node delete-users.js",
+    "db:wipe": "node wipe-db.js",
     "lint": "eslint . --max-warnings 0",
     "test": "echo \"No tests in db\" && exit 0"
   },
