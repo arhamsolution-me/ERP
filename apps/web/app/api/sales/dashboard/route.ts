@@ -153,41 +153,79 @@ export async function GET() {
       const orderCount = txs.length;
       const avg = orderCount > 0 ? Math.round(totalRev / orderCount) : 0;
 
+      // Group revenue by day of week from actual transactions
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const revenueByDay: Record<string, number> = {
+        Mon: 0,
+        Tue: 0,
+        Wed: 0,
+        Thu: 0,
+        Fri: 0,
+        Sat: 0,
+        Sun: 0,
+      };
+
+      for (const t of txs) {
+        const d = days[new Date(t.createdAt).getDay()];
+        if (d && revenueByDay[d] !== undefined) {
+          revenueByDay[d] += Number(t.total);
+        }
+      }
+
       const revenueTrend = [
-        { day: 'Mon', revenue: 12000 },
-        { day: 'Tue', revenue: 18500 },
-        { day: 'Wed', revenue: 15400 },
-        { day: 'Thu', revenue: 22000 },
-        { day: 'Fri', revenue: 29500 },
-        { day: 'Sat', revenue: 34000 },
-        { day: 'Sun', revenue: totalRev > 0 ? totalRev : 24500 },
+        { day: 'Mon', revenue: revenueByDay.Mon || 0 },
+        { day: 'Tue', revenue: revenueByDay.Tue || 0 },
+        { day: 'Wed', revenue: revenueByDay.Wed || 0 },
+        { day: 'Thu', revenue: revenueByDay.Thu || 0 },
+        { day: 'Fri', revenue: revenueByDay.Fri || 0 },
+        { day: 'Sat', revenue: revenueByDay.Sat || 0 },
+        { day: 'Sun', revenue: revenueByDay.Sun || 0 },
       ];
 
-      const topSelling = devStore.products.map((p) => ({
-        name: p.name,
-        sku: p.sku,
-        quantity: 12,
-        revenue: p.defaultPrice * 12,
-      }));
+      // Aggregate top selling products from actual transaction items
+      const productSalesMap = new Map<string, { name: string; sku: string; quantity: number; revenue: number }>();
+      for (const t of txs) {
+        for (const item of t.items) {
+          const existing = productSalesMap.get(item.sku) || {
+            name: item.productName,
+            sku: item.sku,
+            quantity: 0,
+            revenue: 0,
+          };
+          existing.quantity += item.quantity;
+          existing.revenue += Number(item.lineTotal);
+          productSalesMap.set(item.sku, existing);
+        }
+      }
+      const topSelling = Array.from(productSalesMap.values()).sort((a, b) => b.revenue - a.revenue);
+
+      // Payment method breakdown from actual transactions
+      const cashTotal = txs.filter((t) => t.paymentMethod === 'cash').reduce((sum, t) => sum + Number(t.total), 0);
+      const cardTotal = txs.filter((t) => t.paymentMethod === 'card').reduce((sum, t) => sum + Number(t.total), 0);
+      const digitalTotal = txs.filter((t) => t.paymentMethod === 'jazzcash' || t.paymentMethod === 'easypaisa').reduce((sum, t) => sum + Number(t.total), 0);
+
+      const paymentBreakdown = totalRev > 0
+        ? [
+            { name: 'Cash', value: Math.round((cashTotal / totalRev) * 100), fill: '#0284c7' },
+            { name: 'Card', value: Math.round((cardTotal / totalRev) * 100), fill: '#6366f1' },
+            { name: 'Digital', value: Math.round((digitalTotal / totalRev) * 100), fill: '#e11d48' },
+          ].filter((p) => p.value > 0)
+        : [{ name: 'Cash', value: 100, fill: '#0284c7' }];
 
       return NextResponse.json({
         success: true,
         metrics: {
-          todayRevenue: totalRev > 0 ? totalRev : 24500,
-          yesterdayRevenue: 21000,
-          growthPercent: 16.7,
-          totalOrdersCount: orderCount > 0 ? orderCount : 8,
-          avgTicketValue: avg > 0 ? avg : 3062,
+          todayRevenue: totalRev,
+          yesterdayRevenue: 0,
+          growthPercent: 0,
+          totalOrdersCount: orderCount,
+          avgTicketValue: avg,
           totalCustomers: devStore.customers.length,
           hasActiveShift: Boolean(devStore.activeShift && devStore.activeShift.status === 'open'),
           activeShiftOpening: Number(devStore.activeShift?.openingCash || 0),
         },
         revenueTrend,
-        paymentBreakdown: [
-          { name: 'Cash', value: 65, fill: '#0284c7' },
-          { name: 'Card', value: 25, fill: '#6366f1' },
-          { name: 'JazzCash', value: 10, fill: '#e11d48' },
-        ],
+        paymentBreakdown,
         topSelling,
       });
     }

@@ -117,7 +117,7 @@ class DevStore {
       hsnCode: '6205.20',
       defaultPrice: 2450,
       unitPrice: 2450,
-      totalQuantity: 150,
+      totalQuantity: 0,
       variants: [
         {
           id: 'var-001-m',
@@ -148,7 +148,7 @@ class DevStore {
       hsnCode: '6203.42',
       defaultPrice: 3800,
       unitPrice: 3800,
-      totalQuantity: 85,
+      totalQuantity: 0,
       variants: [
         {
           id: 'var-002-32',
@@ -170,7 +170,7 @@ class DevStore {
       hsnCode: '4203.30',
       defaultPrice: 1200,
       unitPrice: 1200,
-      totalQuantity: 240,
+      totalQuantity: 0,
       variants: [
         {
           id: 'var-003-std',
@@ -192,7 +192,7 @@ class DevStore {
       hsnCode: '6403.99',
       defaultPrice: 6500,
       unitPrice: 6500,
-      totalQuantity: 42,
+      totalQuantity: 0,
       variants: [
         {
           id: 'var-004-42',
@@ -233,74 +233,11 @@ class DevStore {
     },
   ];
 
-  public activeShift: DevShift | null = {
-    id: 'shift-dev-001',
-    terminalCode: 'POS-01',
-    cashierId: '00000000-0000-0000-0000-000000000002',
-    openingCash: '0',
-    openedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-    status: 'open',
-  };
+  public activeShift: DevShift | null = null;
 
-  public transactions: DevTransaction[] = [
-    {
-      id: 'tx-dev-001',
-      receiptNumber: 'INV-A8F19B02',
-      cashierId: '00000000-0000-0000-0000-000000000002',
-      terminalId: 'POS-01',
-      customer: { id: 'cust-003', name: 'Ahmed Retail Customer', phone: '+92 333 5551234' },
-      subtotal: '2450',
-      tax: '417',
-      discount: '0',
-      total: '2867',
-      totalRefunded: '0',
-      remainingRefundable: '2867',
-      paymentMethod: 'cash',
-      syncStatus: 'synced',
-      createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      status: 'completed',
-      items: [
-        {
-          id: 'item-001',
-          variantId: 'var-001-m',
-          productName: 'Premium Oxford Cotton Shirt',
-          sku: 'SKU-SHIRT-BLK',
-          quantity: 1,
-          unitPrice: '2450',
-          lineTotal: '2450',
-        },
-      ],
-      refundHistory: [],
-    },
-  ];
+  public transactions: DevTransaction[] = [];
 
-  public wholesaleOrders: DevWholesaleOrder[] = [
-    {
-      id: 'wo-dev-001',
-      orderNumber: 'WO-7F9C2B10',
-      status: 'confirmed',
-      totalAmount: '49000',
-      createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-      customer: {
-        id: 'cust-001',
-        name: 'Al-Madina Departmental Store',
-        phone: '+92 300 1234567',
-        email: 'procurement@almadina.pk',
-        creditLimit: '500000',
-      },
-      items: [
-        {
-          id: 'wo-it-001',
-          variantId: 'var-001-m',
-          productName: 'Premium Oxford Cotton Shirt (M)',
-          sku: 'SKU-SHIRT-BLK',
-          quantity: 20,
-          unitPrice: '2450',
-          lineTotal: '49000',
-        },
-      ],
-    },
-  ];
+  public wholesaleOrders: DevWholesaleOrder[] = [];
 }
 
 // WARNING: devStore is for local development only and must NEVER be reachable
