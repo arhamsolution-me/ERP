@@ -172,7 +172,7 @@ export async function GET() {
           avgTicketValue: avg > 0 ? avg : 3062,
           totalCustomers: devStore.customers.length,
           hasActiveShift: Boolean(devStore.activeShift && devStore.activeShift.status === 'open'),
-          activeShiftOpening: Number(devStore.activeShift?.openingCash || 5000),
+          activeShiftOpening: Number(devStore.activeShift?.openingCash || 0),
         },
         revenueTrend,
         paymentBreakdown: [

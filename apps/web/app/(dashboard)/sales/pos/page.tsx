@@ -37,7 +37,7 @@ export default function PosTerminalPage() {
   // Shift Gating state
   const [shiftChecking, setShiftChecking] = useState(true);
   const [hasActiveShift, setHasActiveShift] = useState(true);
-  const [quickOpeningCash, setQuickOpeningCash] = useState('5000');
+  const [quickOpeningCash, setQuickOpeningCash] = useState('0');
   const [openShiftLoading, setOpenShiftLoading] = useState(false);
 
   useEffect(() => {
@@ -230,31 +230,21 @@ export default function PosTerminalPage() {
           <div className="flex items-start gap-3">
             <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
             <div>
-              <h3 className="text-sm font-bold text-amber-900">Register Cash Drawer is Closed</h3>
+              <h3 className="text-sm font-bold text-amber-900">Register Shift is Closed</h3>
               <p className="text-xs text-amber-700 mt-0.5">
-                A register shift must be opened with a starting cash float before processing transactions.
+                Open a cashier register shift to begin processing point-of-sale transactions.
               </p>
             </div>
           </div>
 
           <form onSubmit={handleQuickOpenShift} className="flex items-center gap-2 w-full md:w-auto">
-            <div className="relative">
-              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">PKR</span>
-              <input
-                type="number"
-                min="0"
-                required
-                value={quickOpeningCash}
-                onChange={(e) => setQuickOpeningCash(e.target.value)}
-                className="bg-white border border-amber-300 rounded-xl py-1.5 pl-10 pr-2 text-xs font-mono font-bold w-32 focus:outline-none"
-              />
-            </div>
             <button
               type="submit"
               disabled={openShiftLoading}
-              className="bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs px-4 py-2 rounded-xl shadow-xs cursor-pointer whitespace-nowrap"
+              className="bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-xs cursor-pointer whitespace-nowrap inline-flex items-center gap-1.5"
             >
-              {openShiftLoading ? 'Opening...' : 'Quick Open Shift'}
+              {openShiftLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Unlock className="w-3.5 h-3.5" />}
+              <span>{openShiftLoading ? 'Opening...' : 'Open Shift Now'}</span>
             </button>
           </form>
         </div>

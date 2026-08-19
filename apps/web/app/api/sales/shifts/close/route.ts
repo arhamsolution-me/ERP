@@ -103,7 +103,7 @@ export async function POST(req: Request) {
     } catch (dbErr: any) {
       console.warn('[Shift Close POST] Database offline, closing devStore shift:', dbErr.message);
       const shift = devStore.activeShift;
-      const opening = Number(shift?.openingCash || 5000);
+      const opening = Number(shift?.openingCash || 0);
       const txs = devStore.transactions;
       const cashSales = txs.filter((t) => t.paymentMethod === 'cash').reduce((sum, t) => sum + Number(t.total), 0);
       const expected = opening + cashSales;

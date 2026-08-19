@@ -237,7 +237,7 @@ class DevStore {
     id: 'shift-dev-001',
     terminalCode: 'POS-01',
     cashierId: '00000000-0000-0000-0000-000000000002',
-    openingCash: '5000',
+    openingCash: '0',
     openedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
     status: 'open',
   };

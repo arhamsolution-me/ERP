@@ -32,8 +32,8 @@ sequenceDiagram
     participant DB as PostgreSQL
     participant Audit as AuditLog
 
-    Cashier->>Terminal: Open Shift (5,000 PKR Float)
-    Terminal->>DB: Shift(status: 'open', opening_cash: 5000)
+    Cashier->>Terminal: Open Shift
+    Terminal->>DB: Shift(status: 'open', opening_cash: 0)
     Cashier->>Terminal: Process POS Transactions (Cash/Card/Digital)
     Terminal->>DB: PosTransaction rows created
     Cashier->>Terminal: Close Shift (Enter counted cash)

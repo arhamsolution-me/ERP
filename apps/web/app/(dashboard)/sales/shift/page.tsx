@@ -18,7 +18,7 @@ import Link from 'next/link';
 export default function PosShiftPage() {
   const [loading, setLoading] = useState(true);
   const [shiftData, setShiftData] = useState<any>(null);
-  const [openingCash, setOpeningCash] = useState('5000');
+  const [openingCash, setOpeningCash] = useState('0');
   const [closingCash, setClosingCash] = useState('');
   const [supervisorNote, setSupervisorNote] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
@@ -229,41 +229,19 @@ export default function PosShiftPage() {
             <div>
               <h2 className="text-lg font-bold text-slate-900">Open Register Shift</h2>
               <p className="text-xs text-slate-500">
-                Count the physical cash float in your till and enter the starting amount to unlock the POS.
+                Initialize your cashier register session to start processing point-of-sale transactions.
               </p>
             </div>
           </div>
 
           <form onSubmit={handleOpenShift} className="space-y-4 max-w-lg">
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                Starting Cash Float (PKR)
-              </label>
-              <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">
-                  PKR
-                </span>
-                <input
-                  type="number"
-                  min="0"
-                  required
-                  value={openingCash}
-                  onChange={(e) => setOpeningCash(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-14 pr-4 text-base font-mono font-bold text-slate-900 focus:outline-none focus:border-sky-600"
-                />
-              </div>
-              <span className="text-[11px] text-slate-400 mt-1 block">
-                Standard till opening amount is typically PKR 5,000.
-              </span>
-            </div>
-
             <button
               type="submit"
               disabled={actionLoading}
               className="inline-flex items-center gap-2 bg-sky-700 hover:bg-sky-800 text-white font-bold text-sm px-6 py-3 rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50"
             >
               {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Unlock className="w-4 h-4" />}
-              <span>Open Shift & Unlock POS</span>
+              <span>Open Shift &amp; Unlock POS</span>
             </button>
           </form>
         </div>
